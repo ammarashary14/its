@@ -1,13 +1,13 @@
 /* Compact people page; practical, illustrated introductions to the forms. */
-body[data-page="team"] .team-hero { display: grid; grid-template-columns: .9fr 1.1fr; gap: 50px; align-items: center; padding-block: 34px 26px; }
+body[data-page="team"] .team-hero { display: grid; grid-template-columns: .9fr 1.1fr; gap: 50px; align-items: center; padding-block: 26px 20px; }
 body[data-page="team"] .team-hero .eyebrow { margin-bottom: 11px; font-size: 9px; }
 body[data-page="team"] .team-hero h1 { margin: 0; font-size: clamp(43px, 4.5vw, 59px); }
 body[data-page="team"] .team-hero .lead { margin: 0; font-size: 14px; max-width: 540px; line-height: 1.8; }
-body[data-page="team"] .team-section { padding-block: 19px 43px; }
-.team-roster-note { color: var(--muted); font-size: 11px; line-height: 1.65; margin-bottom: 19px; max-width: 830px; }
+body[data-page="team"] .team-section { padding-block: 14px 32px; }
+.team-roster-note { color: var(--muted); font-size: 11px; line-height: 1.65; margin-bottom: 14px; max-width: 830px; }
 body[data-page="team"] .staff-avatar { border-radius: 6px; }
-body[data-page="team"] .staff-info { padding-top: 16px; }
-body[data-page="team"] .team-callout { display: flex; justify-content: space-between; align-items: center; gap: 35px; padding: 29px 33px; margin-bottom: 49px; }
+body[data-page="team"] .staff-info { padding-top: 12px; }
+body[data-page="team"] .team-callout { display: flex; justify-content: space-between; align-items: center; gap: 35px; padding: 24px 29px; margin-bottom: 36px; }
 body[data-page="team"] .team-callout .eyebrow { margin-bottom: 10px; }
 body[data-page="team"] .team-callout h2 { font-size: 32px; margin-bottom: 11px; }
 body[data-page="team"] .team-callout p:not(.eyebrow) { margin-bottom: 0; max-width: 560px; font-size: 12px; }
@@ -61,13 +61,13 @@ body[data-page="team"] .team-callout .button { flex-shrink: 0; font-size: 12px; 
   body[data-page="team"] .team-callout h2 { font-size: 29px; }
 }
 @media (max-width: 650px) {
-  body[data-page="team"] .team-hero { grid-template-columns: 1fr; gap: 13px; padding-block: 26px 19px; }
+  body[data-page="team"] .team-hero { grid-template-columns: 1fr; gap: 11px; padding-block: 21px 15px; }
   body[data-page="team"] .team-hero h1 { font-size: 43px; }
   body[data-page="team"] .team-hero .eyebrow { font-size: 8px; margin-bottom: 9px; }
   body[data-page="team"] .team-hero .lead { font-size: 12px; line-height: 1.75; }
-  body[data-page="team"] .team-section { padding-block: 15px 30px; }
-  .team-roster-note { font-size: 10px; margin-bottom: 16px; }
-  body[data-page="team"] .team-callout { display: block; padding: 25px; margin-bottom: 35px; }
+  body[data-page="team"] .team-section { padding-block: 12px 24px; }
+  .team-roster-note { font-size: 10px; margin-bottom: 12px; }
+  body[data-page="team"] .team-callout { display: block; padding: 21px; margin-bottom: 28px; }
   body[data-page="team"] .team-callout .button { margin-top: 20px; }
   .form-page:has(.form-intro-rich) { padding-top: 30px; }
   .form-intro-rich { grid-template-columns: 1fr; gap: 25px; padding-bottom: 27px; margin-bottom: 27px; }
