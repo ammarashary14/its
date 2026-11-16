@@ -113,6 +113,14 @@ body { background: var(--paper); color: var(--ink); }
 .contact-inner h2 { font-size: 32px; margin-bottom: 13px; }
 .contact-inner p:last-child { color: var(--muted); font-size: 13px; margin: 0; }
 .contact-email { color: var(--accent); text-decoration: underline; text-underline-offset: 5px; overflow-wrap: anywhere; font-weight: 600; }
+.tutoring-focus { display: grid; grid-template-columns: .85fr 1.15fr; gap: 80px; padding: 45px 0 65px; margin-bottom: 65px; border-top: 1px solid var(--line); }
+.tutoring-focus h2 { font-size: 42px; margin-bottom: 0; }
+.tutoring-focus-copy p { color: var(--muted); font-size: 14px; line-height: 1.85; }
+.tutoring-focus-copy strong { color: var(--ink); font-weight: 700; }
+.subject-tags { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; list-style: none; margin: 23px 0; }
+.subject-tags li { font-size: 11px; font-weight: 600; padding: 6px 13px; border: 1px solid var(--line); border-radius: 24px; background: var(--surface-soft); }
+@media(max-width:850px) { .tutoring-focus { gap: 40px; } .tutoring-focus h2 { font-size: 36px; } }
+@media(max-width:650px) { .tutoring-focus { grid-template-columns: 1fr; gap: 25px; padding: 35px 0 0; margin-bottom: 55px; } .tutoring-focus h2 { font-size: 36px; } }
 .contact-inner>.contact-email { font-size: 18px; flex-shrink: 0; }
 .faq-list details a { text-decoration: underline; text-underline-offset: 3px; color: var(--accent); }
 .closing-section { background: var(--closing); color: var(--closing-text); }
