@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "python3 -m http.server 3000 --bind 0.0.0.0",
     "build": "node scripts/build.mjs",
-    "check": "node --check assets/app.js && node --check assets/theme.js && node --check assets/forms.js && node --check assets/application-config.js && node --check assets/application.js && node --check assets/editor.js && node scripts/check.mjs"
-  }
+    "check": "node --check assets/app.js && node --check assets/theme.js && node --check assets/forms.js && node --check assets/application-config.js && node --check assets/application.js && node --check assets/editor.js && node scripts/check.mjs && node --check assets/content-schema.js && node --check assets/site-content.js && node --check assets/owner.js",
+    "test:owner": "node --test tests/cloudflare-owner.test.mjs"
+  },
+  "type": "module"
 }

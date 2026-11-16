@@ -1,6 +1,6 @@
 # BTS · Breaking the Sky
 
-A first website draft for a nonprofit whose volunteers bring grade-level curriculum into schools. Built with static HTML, CSS, and JavaScript. No production framework or package installation is required.
+A first website draft for a nonprofit whose volunteers bring grade-level curriculum into schools. Built with static HTML, CSS, and JavaScript, with optional Cloudflare Pages Functions for owner publishing and analytics. No production framework or package installation is required.
 
 ## Preview locally
 
@@ -36,6 +36,9 @@ Connect `ammarashary14/its` to Cloudflare Pages. Use no framework preset, `npm r
 - `assets/theme.css`: warm linen beige, charcoal typography, centered curriculum, neutral dark mode, and form layouts. Edit the theme variables at the top to change the palette.
 - `assets/theme.js`: starts in light mode; an explicitly chosen light/dark preference is saved in `localStorage` under `bts-theme` and shared across pages.
 - `assets/forms.js`: client-side validation, review/edit, direct volunteer application delivery through FormSubmit, and tutoring email drafts. Change `recipient` and the FormSubmit endpoint here, and the visible contact links in the HTML, to update the recipient. A new recipient or site origin requires FormSubmit activation.
+- `owner.html` and `assets/owner.js`: owner dashboard for site content, community links, staff profiles, and future Cloudflare traffic stats.
+- `assets/site-content.json`, `assets/content-schema.js`, and `assets/site-content.js`: published content defaults, shared validation, and public rendering. Local drafts appear only with `?preview=1`.
+- `functions/api/` and `server/`: Cloudflare owner authentication, D1 publishing, and traffic analytics APIs. See `docs/cloudflare-owner-setup.md`.
 - `editor.html` and `assets/editor.js`: edit the volunteer application with a live preview, add/remove/reorder questions, and import/export draft configuration.
 - `assets/application-config.js`: the published volunteer application schema and validation. `assets/application.js` renders the questions and optionally previews a local draft.
 - `assets/`: local photos, fonts, and the favicon. All visual assets are included. The volunteer application sends a request to FormSubmit only after the applicant reviews and submits it.
@@ -67,3 +70,15 @@ Photos are illustrative stock images, not photos of BTS participants. Replace th
 ## Verification
 
 `npm run check` checks JavaScript syntax, internal links and assets, unique page IDs, primary headings, image metadata, and ARIA relationships. Additional DOM interaction checks are run during development. Visual browser QA still needs to be performed in an environment with an available browser preview.
+
+## Owner dashboard
+
+Open `owner.html`. The current GitHub Pages and owner-private preview deployments support a draft workspace: edit homepage/team copy, manage profile names, roles, biographies, photos, visibility and order, and set community contact links. Save drafts on the current device, preview the homepage or team page, and export `bts-site-content.json` for publication. The dashboard also links to the existing application editor. It does not receive or store applicant submissions.
+
+The public community section has a Discord join button and an email link. Its Discord invite is intentionally empty until the owner adds it under **Site content → Community**. Optional profile Discord usernames can be copied; profile email addresses open an email draft. No Discord invite or username has been invented. Discord and Gmail symbols are local SVG assets from [Simple Icons](https://simpleicons.org/).
+
+Before Cloudflare is connected, **Publish changes** is disabled and traffic metrics are marked unavailable. There is no client-side password or pretend authentication. The existing private preview uses its platform access controls; the public GitHub dashboard shell only edits drafts in the visitor’s browser.
+
+Dashboard exports include a content payload and draft revision metadata. Preserve that envelope when importing back into the dashboard. When importing a file here for manual publication, validate its content payload and exclude hidden profiles from any public JSON or HTML. Exports may include hidden profiles, so keep backup files in private storage. On the connected Cloudflare backend, hidden records stay in D1 and are omitted by the public content API; the authenticated owner API returns them for editing.
+
+Follow [Cloudflare owner setup](docs/cloudflare-owner-setup.md) when connecting hosting. The backend supports verified Cloudflare Access identity, same-origin publication, optimistic revision checks, and server-only analytics tokens. The live account connection and traffic queries have not been configured yet. Run `npm run test:owner` for the backend checks; browser UI verification requires an available browser environment.

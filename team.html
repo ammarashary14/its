@@ -9,8 +9,9 @@
     <link rel="icon" href="assets/favicon.svg?v=ivory-3" type="image/svg+xml">
     <script src="assets/theme.js?v=beige-6"></script>
   <link rel="stylesheet" href="assets/style.css?v=ivory-3">
-  <link rel="stylesheet" href="assets/theme.css?v=web-7">
+  <link rel="stylesheet" href="assets/theme.css?v=owner-8">
     <script src="assets/app.js?v=ivory-3" defer></script>
+    <script type="module" src="assets/site-content.js?v=owner-8"></script>
   </head>
   <body data-page="team">
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -27,8 +28,8 @@
     <main id="main-content">
       <section class="team-hero container" aria-labelledby="team-title">
         <p class="eyebrow">THE PEOPLE BEHIND BTS</p>
-        <h1 id="team-title">Good people.<br><span class="serif-accent">A shared purpose.</span></h1>
-        <p class="lead">A little curiosity goes further when we share it. Meet the people helping Breaking the Sky bring new ideas into the classroom.</p>
+        <h1 id="team-title"><span data-site-field="team.title">Our people.</span><br data-site-break="team.titleAccent" hidden><span class="serif-accent" data-site-field="team.titleAccent" hidden></span></h1>
+        <p class="lead" data-site-field="team.intro">A little curiosity goes further when we share it. Meet the people helping Breaking the Sky bring new ideas into the classroom.</p>
         <svg class="team-star" width="125" height="125" viewBox="0 0 125 125" fill="none" aria-hidden="true">
           <path d="M65 9 72 45 108 28 85 59 119 73 81 79 93 114 63 90 36 116 42 80 7 75 39 58 18 27 53 44Z" fill="#f5ce42" stroke="#212c3d" stroke-width="2.5" stroke-linejoin="round"/>
         </svg>
@@ -40,10 +41,10 @@
             <p class="eyebrow">MANY PERSPECTIVES. ONE PURPOSE.</p>
             <h2 id="meet-team-title">Meet our team.</h2>
           </div>
-          <p>Our team profiles are coming soon. The cards below are placeholders, with suggested roles ready to personalize.</p>
+          <p data-site-field="team.sectionIntro">Our team profiles are coming soon. The cards below are placeholders, with suggested roles ready to personalize.</p>
         </div>
 
-        <div class="team-grid">
+        <div class="team-grid" data-site-people>
           <article class="staff-card">
             <div class="staff-avatar avatar-one">
               <svg viewBox="0 0 320 320" fill="none" aria-hidden="true">

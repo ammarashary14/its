@@ -257,3 +257,41 @@ h3,h4{font-weight:600;letter-spacing:-.035em}
 .application-success .form-help { font-size: 12px!important; overflow-wrap: anywhere; }
 .application-success .text-link { margin-top: 14px; font-size: 13px; }
 .submission-check { display: inline-grid; place-items: center; width: 48px; height: 48px; margin-bottom: 24px; border: 1px solid var(--accent); border-radius: 50%; color: var(--accent); font-size: 24px; }
+
+/* Owner draft previews and editable public profiles. */
+.site-preview-banner { margin: 20px auto 0; width: calc(100% - 40px); max-width: 1080px; padding: 18px 22px; border: 1px solid var(--accent); border-radius: 7px; background: var(--surface); color: var(--ink); font-size: 13px; line-height: 1.65; }
+.site-preview-banner strong { display: block; font-size: 14px; margin-bottom: 4px; }
+.site-preview-banner p { margin-bottom: 8px; }
+.site-preview-banner a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.staff-avatar .staff-photo { width: 100%; height: 100%; object-fit: cover; }
+.staff-info p { white-space: pre-line; overflow-wrap: anywhere; }
+.team-empty { grid-column: 1 / -1; padding: 30px; border: 1px solid var(--line); border-radius: 7px; color: var(--muted); text-align: center; }
+
+/* Community invitations and optional profile contact details. */
+.community-section { max-width: 1080px; padding-top: 72px; }
+.community-panel { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 65px; padding: 42px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-raised); }
+.community-intro .eyebrow { margin-bottom: 15px; }
+.community-intro h2 { font-size: 42px; margin-bottom: 21px; }
+.community-intro p:not(.eyebrow) { color: var(--muted); font-size: 14px; line-height: 1.8; }
+.community-server-name { display: block; font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.community-links { display: grid; gap: 13px; min-width: 0; }
+.community-link { display: flex; align-items: center; gap: 17px; width: 100%; padding: 22px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; text-align: left; line-height: 1.5; }
+.community-link>span:nth-child(2) { flex: 1; min-width: 0; }
+.community-link strong { display: block; font-size: 14px; font-weight: 600; }
+.community-link small { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; overflow-wrap: anywhere; }
+.community-link>span:last-child { font-size: 22px; color: var(--accent); }
+.community-link[href]:hover { border-color: var(--accent); }
+.community-link:disabled { cursor: default; }
+.community-link .social-icon { width: 27px; height: 27px; flex-shrink: 0; }
+.social-icon { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
+[data-theme="dark"] .social-icon { filter: invert(1) hue-rotate(180deg); }
+.staff-contacts { margin-top: 17px; display: grid; gap: 9px; }
+.staff-contact { display: flex; align-items: center; gap: 9px; padding: 0; border: 0; background: transparent; text-align: left; color: var(--accent); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.staff-contact>span { min-width: 0; }
+.staff-contact:hover { text-decoration: underline; text-underline-offset: 3px; }
+.staff-contact-status { font-size: 11px; line-height: 1.6; color: var(--muted); margin-bottom: 0; }
+@media (max-width: 850px) { .community-panel { padding: 30px; gap: 30px; }.community-intro h2 { font-size: 37px; } }
+@media (max-width: 650px) { .community-section { padding-top: 50px; }.community-panel { grid-template-columns: 1fr; padding: 26px; gap: 24px; }.community-intro h2 { font-size: 35px; }.community-link { padding: 18px; }.staff-contact { font-size: 11px; } }
+[data-site-field], [data-site-headline] { overflow-wrap: anywhere; }
+.hero [data-site-headline] .highlight-word { white-space: normal; }
+.community-intro { min-width: 0; overflow-wrap: anywhere; }

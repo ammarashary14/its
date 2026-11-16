@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const pages = ['index.html', 'team.html', 'apply.html', 'tutoring.html', 'editor.html'];
+const pages = ['index.html', 'team.html', 'apply.html', 'tutoring.html', 'editor.html', 'owner.html'];
 const content = new Map(await Promise.all(pages.map(async page => [page, await readFile(path.join(root, page), 'utf8')])));
 const errors = [];
 let references = 0;

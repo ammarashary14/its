@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e9dfce">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Owner dashboard · Breaking the Sky</title>
+  <meta name="description" content="Manage Breaking the Sky website content, team profiles, and application questions.">
+  <link rel="icon" href="assets/favicon.svg?v=ivory-3" type="image/svg+xml">
+  <script src="assets/theme.js?v=beige-6"></script>
+  <script src="assets/application-config.js?v=application-5" defer></script>
+  <link rel="stylesheet" href="assets/style.css?v=ivory-3">
+  <link rel="stylesheet" href="assets/theme.css?v=owner-8">
+  <link rel="stylesheet" href="assets/owner.css?v=owner-8">
+  <script type="module" src="assets/owner.js?v=owner-8"></script>
+</head>
+<body class="owner-body">
+  <a class="skip-link" href="#owner-main">Skip to dashboard</a>
+  <div class="owner-shell">
+    <aside class="owner-sidebar">
+      <a class="owner-brand" href="index.html" aria-label="Breaking the Sky home"><span>bts</span><small>BREAKING<br>THE SKY</small></a>
+      <p class="owner-nav-label">YOUR WORKSPACE</p>
+      <nav class="owner-nav" aria-label="Dashboard navigation">
+        <button type="button" data-panel="overview" aria-current="page"><span aria-hidden="true">◫</span>Overview</button>
+        <button type="button" data-panel="content"><span aria-hidden="true">≡</span>Site content</button>
+        <button type="button" data-panel="people"><span aria-hidden="true">♧</span>Team profiles</button>
+        <button type="button" data-panel="applications"><span aria-hidden="true">▤</span>Applications</button>
+        <button type="button" data-panel="traffic"><span aria-hidden="true">↗</span>Traffic stats</button>
+        <button type="button" data-panel="settings"><span aria-hidden="true">⚙</span>Settings</button>
+      </nav>
+      <div class="owner-sidebar-bottom"><span class="owner-mode-dot" aria-hidden="true"></span><strong id="sidebar-mode">Draft workspace</strong><p id="sidebar-mode-help">Drafts stay on this device.</p><a href="index.html" target="_blank" rel="noopener">View the website <span aria-hidden="true">↗</span></a></div>
+    </aside>
+    <div class="owner-workspace">
+      <header class="owner-topbar"><div><span class="owner-breadcrumb">Breaking the Sky</span><span aria-hidden="true"> / </span><strong id="current-section">Overview</strong></div><button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Dark</span></button></header>
+      <main id="owner-main" class="owner-main">
+        <div class="owner-connection-note" id="connection-note"><span class="owner-note-mark" aria-hidden="true">○</span><div><strong id="connection-heading">Draft workspace</strong><p id="connection-description">Connect Cloudflare to publish changes and view traffic. Drafts save on this device; visitors see the published website.</p></div><button type="button" class="owner-inline-button" data-open-panel="settings">Connection details ↗</button></div>
+        <div class="owner-actionbar"><p id="draft-state">Loading your website…</p><div><button type="button" class="owner-secondary" id="export-content" disabled>Export draft ↓</button><button type="button" class="owner-secondary" id="save-draft" disabled>Save draft</button><button type="button" class="owner-primary" id="publish-content" disabled title="Connect Cloudflare to enable owner-only publishing">Publish changes ↗</button></div></div>
+        <p id="owner-status" class="owner-status" role="status" aria-live="polite"></p>
+        <noscript><p class="owner-error">Enable JavaScript to use the dashboard. You can still <a href="index.html">view the website</a>.</p></noscript>
+
+        <section class="owner-panel" id="panel-overview" aria-labelledby="heading-overview">
+          <div class="owner-section-intro"><p class="eyebrow">THE OWNER’S DESK</p><h1 id="heading-overview" tabindex="-1">Owner dashboard.</h1><p>Edit the website, update the team, and prepare your next changes.</p></div>
+          <div class="owner-metrics"><article class="owner-metric"><p>Team profiles</p><strong id="profile-count">—</strong><small id="profile-count-note">Loading profiles</small></article><article class="owner-metric"><p>Application questions</p><strong id="question-count">—</strong><small>Your published volunteer form</small></article><article class="owner-metric"><p>Page views</p><strong id="overview-pageviews">—</strong><small id="overview-traffic-note">Available after Cloudflare connects</small></article></div>
+          <div class="owner-overview-grid"><article class="owner-card owner-edit-card"><p class="eyebrow">MAKE IT FEEL LIKE BTS</p><h2>Edit your website.</h2><p>Refresh your introduction, explain the curriculum, and give visitors a clear next step.</p><button type="button" class="owner-inline-button" data-open-panel="content">Edit site content <span aria-hidden="true">→</span></button><svg viewBox="0 0 150 110" aria-hidden="true" class="owner-notebook"><path d="M19 29c22-4 39 0 57 12 17-12 34-16 55-12l-3 65c-22-3-37 1-53 10-18-10-36-12-58-9Zm57 12-1 63M29 44l31 8m-31 5 31 8m-31 5 31 8m30-26 28-7m-28 20 28-7m-28 20 28-7"/></svg></article><article class="owner-card"><div class="owner-card-heading"><h2>Your team.</h2><button type="button" class="owner-inline-button" data-open-panel="people">Manage team ↗</button></div><div id="team-overview" class="owner-team-overview"></div><p class="owner-card-footnote">Profiles marked as placeholders are ready to personalize.</p></article></div>
+          <div class="owner-publishing-note"><span aria-hidden="true">↗</span><div><strong>Draft, preview, then publish.</strong><p>Save your edits and check the public pages in preview. Until Cloudflare is connected, export your draft and share it in our chat to put it live.</p></div><a class="owner-inline-button" href="index.html?preview=1" data-preview target="_blank" rel="noopener">Preview homepage ↗</a></div>
+        </section>
+
+        <section class="owner-panel" id="panel-content" aria-labelledby="heading-content" hidden>
+          <div class="owner-section-intro"><p class="eyebrow">THE WORDS THAT WELCOME PEOPLE</p><h2 id="heading-content" tabindex="-1">Site content.</h2><p>Edit the words on your homepage and team page. Your changes stay in draft until published.</p></div>
+          <div class="owner-editor-header"><p>Text only · Your layout and illustrations stay in place.</p><a class="owner-inline-button" href="index.html?preview=1" data-preview target="_blank" rel="noopener">Preview homepage ↗</a></div>
+          <form id="site-content-form" class="owner-content-form" autocomplete="off"><div id="content-fields"></div></form>
+        </section>
+
+        <section class="owner-panel" id="panel-people" aria-labelledby="heading-people" hidden>
+          <div class="owner-section-intro"><p class="eyebrow">THE PEOPLE BEHIND BTS</p><h2 id="heading-people" tabindex="-1">Team profiles.</h2><p>Add photos, introduce your people, and share what each person brings to the work.</p></div>
+          <div class="owner-editor-header"><button id="add-person" type="button" class="owner-primary" disabled>Add a team member +</button><a class="owner-inline-button" href="team.html?preview=1" data-preview target="_blank" rel="noopener">Preview team page ↗</a></div>
+          <div class="owner-people-layout"><div><div id="people-list" class="owner-people-list" aria-label="Choose a team profile"></div><p class="owner-card-footnote">Drag-free ordering: use the up and down buttons on a profile.</p></div><div class="owner-profile-workspace"><div id="person-editor" class="owner-card"></div><div class="owner-profile-preview"><p class="eyebrow">PROFILE PREVIEW</p><article id="person-preview"></article></div></div></div>
+        </section>
+
+        <section class="owner-panel" id="panel-applications" aria-labelledby="heading-applications" hidden>
+          <div class="owner-section-intro"><p class="eyebrow">WELCOME YOUR NEXT VOLUNTEERS</p><h2 id="heading-applications" tabindex="-1">Applications.</h2><p>Shape the questions you ask and keep the next step clear.</p></div>
+          <div class="owner-two-column"><article class="owner-card"><span class="owner-card-icon" aria-hidden="true">▤</span><h2>Your volunteer form.</h2><p>Edit questions, change required answers, and reorder the application in the form editor.</p><p class="owner-card-footnote">Question changes use the application editor’s own draft and export flow.</p><a class="owner-primary" href="editor.html">Open application editor ↗</a><a class="owner-secondary" href="apply.html?published=1" target="_blank" rel="noopener">View published application ↗</a></article><article class="owner-card"><span class="owner-card-icon" aria-hidden="true">↗</span><h2>Delivered to your inbox.</h2><p>Submitted applications arrive at <strong>ammarashary@gmail.com</strong>. This dashboard does not store or display applicants’ personal information.</p><a class="owner-inline-button" href="https://mail.google.com/mail/u/?authuser=ammarashary%40gmail.com#search/from%3Aformsubmit.co" target="_blank" rel="noopener">Open application emails ↗</a><p class="owner-card-footnote">Application counts aren’t available here. Check your inbox for submissions.</p></article></div>
+        </section>
+
+        <section class="owner-panel" id="panel-traffic" aria-labelledby="heading-traffic" hidden>
+          <div class="owner-section-intro"><p class="eyebrow">UNDERSTAND YOUR REACH</p><h2 id="heading-traffic" tabindex="-1">Traffic stats.</h2><p>See how people reach the website once Cloudflare analytics is connected.</p></div>
+          <div class="owner-editor-header"><label class="owner-period-label" for="stats-days">Time period<select id="stats-days"><option value="7">Last 7 complete days</option><option value="30">Last 30 complete days</option></select></label><button class="owner-secondary" id="refresh-stats" type="button" disabled>Refresh stats ↻</button></div>
+          <div id="stats-unconnected" class="owner-card owner-empty-state"><svg viewBox="0 0 110 80" aria-hidden="true"><path d="M15 8v57h83M29 54V39m19 15V29m20 25V18m19 36V7"/></svg><h2>No traffic data yet.</h2><p id="stats-empty-description">Connect Cloudflare and enable analytics to see real traffic here. No tracking numbers are being estimated.</p><button type="button" class="owner-inline-button" data-open-panel="settings">See connection details →</button></div>
+          <div id="stats-connected" hidden><div class="owner-metrics"><article class="owner-metric"><p>Page views</p><strong id="stats-pageviews">—</strong><small>Pages requested in this period</small></article><article class="owner-metric"><p>Requests</p><strong id="stats-requests">—</strong><small>All requests, including assets</small></article><article class="owner-metric"><p>Bandwidth</p><strong id="stats-bytes">—</strong><small>Data served by Cloudflare</small></article></div><div class="owner-card"><div class="owner-card-heading"><h2>Day by day.</h2><small id="stats-updated"></small></div><p class="owner-card-footnote" id="stats-period"></p><div class="owner-table-scroll"><table class="owner-stats-table"><caption>Daily Cloudflare zone traffic. Unique IP addresses are counted separately each day.</caption><thead><tr><th scope="col">Date</th><th scope="col">Page views</th><th scope="col">Requests</th><th scope="col">Unique IPs</th></tr></thead><tbody id="stats-rows"></tbody></table></div></div></div>
+        </section>
+
+        <section class="owner-panel" id="panel-settings" aria-labelledby="heading-settings" hidden>
+          <div class="owner-section-intro"><p class="eyebrow">A PLACE FOR THE PRACTICAL THINGS</p><h2 id="heading-settings" tabindex="-1">Settings.</h2><p>Keep a copy of your work and see what’s connected.</p></div>
+          <div class="owner-two-column"><article class="owner-card"><h2>Website connection.</h2><dl class="owner-connection-list"><div><dt>Editing mode</dt><dd id="settings-mode">Drafts on this device</dd></div><div><dt>Owner access</dt><dd id="settings-auth">Not connected</dd></div><div><dt>Live publishing</dt><dd id="settings-publishing">Connect Cloudflare</dd></div><div><dt>Traffic analytics</dt><dd id="settings-analytics">Not connected</dd></div></dl><p class="owner-card-footnote" id="settings-explanation">On GitHub Pages, this is a local draft editor. It has no access to change the live site. Cloudflare will protect owner access and enable publishing when configured.</p><a class="owner-inline-button" id="owner-signin" href="owner.html" hidden>Sign in through Cloudflare ↗</a></article><article class="owner-card"><h2>Your draft, backed up.</h2><p>Export a copy before switching devices. Import a saved draft to pick up where you left off.</p><div class="owner-settings-actions"><button type="button" id="settings-export" class="owner-secondary" disabled>Export draft ↓</button><button type="button" id="import-content" class="owner-secondary" disabled>Import draft ↑</button></div><input id="import-file" type="file" accept="application/json,.json" hidden><hr><h3>Start from the published version.</h3><p class="owner-card-footnote">This discards your local edits. Export them first if you want to keep a copy.</p><button type="button" id="discard-draft" class="owner-danger" disabled>Discard draft & reload published content</button></article></div>
+          <article class="owner-card owner-setup-card"><h2>When we connect Cloudflare.</h2><ol><li><strong>Protect the dashboard.</strong><span>Only the approved owner can publish changes.</span></li><li><strong>Connect content storage.</strong><span>Your published edits will be available across devices and to site visitors.</span></li><li><strong>Enable traffic analytics.</strong><span>Real page views, requests, and daily traffic will appear here.</span></li></ol><p class="owner-card-footnote">Until then, save and preview your draft here, then export it and share the file in our chat to publish.</p></article>
+        </section>
+      </main>
+      <footer class="owner-footer"><span>Breaking the Sky · Owner workspace</span><a href="index.html" target="_blank" rel="noopener">Back to the website ↗</a></footer>
+    </div>
+  </div>
+</body>
+</html>

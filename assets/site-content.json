@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "home": {
+    "headline": "Big questions.",
+    "headlineAccent": "Boundless possibilities.",
+    "description": "Volunteer-led math and science learning, shaped around each grade. Explore our curriculum, find individual support, or help a student take their next step.",
+    "curriculumTitle": "A place to learn.",
+    "curriculumAccent": "At every grade.",
+    "curriculumIntro": "Math, biology, chemistry, physics, and earth science—introduced at the right level, with room to ask questions and understand the ideas. Choose a grade band to explore a sample lesson.",
+    "aboutTitle": "A classroom today.",
+    "aboutAccent": "A world of possibility tomorrow.",
+    "aboutText": "We’re a nonprofit with a simple belief: a new perspective can open a whole new world. BTS connects volunteers with schools to bring curriculum-based learning to students at different grade levels.",
+    "tutoringTitle": "Your questions.",
+    "tutoringAccent": "Your pace.",
+    "tutoringIntro": "Sometimes a little individual attention can make a big difference. Our 1-on-1 tutoring focuses on the math and science topics you want to understand better, with room to ask questions, revisit tricky ideas, and work through problems.",
+    "contactIntro": "Questions about a lesson, a school visit, or getting involved? Start a conversation with Breaking the Sky."
+  },
+  "team": {
+    "title": "Our people.",
+    "titleAccent": "",
+    "intro": "A little curiosity goes further when we share it. Meet the people helping Breaking the Sky bring new ideas into the classroom.",
+    "sectionIntro": "Our team profiles are coming soon. The cards below are placeholders, with suggested roles ready to personalize."
+  },
+  "people": [
+    {
+      "id": "staff-1",
+      "name": "Name coming soon",
+      "role": "Organization lead",
+      "bio": "A short introduction and background will go here.",
+      "photo": "",
+      "photoAlt": "",
+      "visible": true,
+      "placeholder": true,
+      "discord": "",
+      "email": ""
+    },
+    {
+      "id": "staff-2",
+      "name": "Name coming soon",
+      "role": "Curriculum lead",
+      "bio": "A short introduction and background will go here.",
+      "photo": "",
+      "photoAlt": "",
+      "visible": true,
+      "placeholder": true,
+      "discord": "",
+      "email": ""
+    },
+    {
+      "id": "staff-3",
+      "name": "Name coming soon",
+      "role": "Volunteer coordinator",
+      "bio": "A short introduction and background will go here.",
+      "photo": "",
+      "photoAlt": "",
+      "visible": true,
+      "placeholder": true,
+      "discord": "",
+      "email": ""
+    },
+    {
+      "id": "staff-4",
+      "name": "Name coming soon",
+      "role": "School partnerships",
+      "bio": "A short introduction and background will go here.",
+      "photo": "",
+      "photoAlt": "",
+      "visible": true,
+      "placeholder": true,
+      "discord": "",
+      "email": ""
+    }
+  ],
+  "community": {
+    "name": "Breaking the Sky community",
+    "description": "Join our Discord community for updates, conversations, and ways to get involved.",
+    "discordInvite": "",
+    "email": "ammarashary@gmail.com"
+  }
+}
