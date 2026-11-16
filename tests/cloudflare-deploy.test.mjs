@@ -52,6 +52,33 @@ test('API provider and network errors never expose raw error messages or credent
   await assert.rejects(network('/accounts/example/access/apps'), error => !error.message.includes(TOKEN) && error.status === 0);
 });
 
+test('disabled Access reports dashboard onboarding without exposing arbitrary provider text', async () => {
+  const api = createCloudflareApi({ token: TOKEN, fetcher: async () => new Response(JSON.stringify({
+    success: false, errors: [{ code: 9999, message: 'access.api.error.not_enabled: Access is not enabled. ' + TOKEN }]
+  }), { status: 403 }) });
+  await assert.rejects(api('/accounts/example/access/organizations'), error => {
+    assert.equal(error.status, 403);
+    assert.equal(error.providerCode, 'access.api.error.not_enabled');
+    assert.equal(error.operation, 'GET Access organization');
+    assert.match(error.message, /Complete Zero Trust onboarding/);
+    assert.ok(!error.message.includes(TOKEN));
+    return true;
+  });
+});
+
+test('generic 9999 permission errors are not misidentified as disabled Access', async () => {
+  const api = createCloudflareApi({ token: TOKEN, fetcher: async () => new Response(JSON.stringify({
+    success: false, errors: [{ code: 9999, message: 'Permission denied ' + TOKEN }]
+  }), { status: 403 }) });
+  await assert.rejects(api('/accounts/example/access/apps'), error => {
+    assert.equal(error.providerCode, undefined);
+    assert.equal(error.operation, 'GET Access applications');
+    assert.match(error.message, /Check the build token permissions/);
+    assert.ok(!error.message.includes(TOKEN));
+    return true;
+  });
+});
+
 test('existing database is preserved, migrations precede enabled intake, and config is cleaned', async t => {
   const cwd = await fixture(t); const calls = []; const configs = []; const logs = [];
   const result = await deployCloudflare(inputs(cwd, { log: text => logs.push(text), runWrangler: async args => {

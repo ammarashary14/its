@@ -42,7 +42,20 @@ export function createCloudflareApi({ token, fetcher = fetch, timeoutMs = 20000 
       try { envelope = JSON.parse(raw); } catch { throw new CloudflareApiError(response.status); }
       if (!response.ok || !envelope || envelope.success !== true) {
         const codes = Array.isArray(envelope?.errors) ? envelope.errors.map(error => error?.code) : [];
-        throw new CloudflareApiError(response.status, codes);
+        const resource = /\/access\/organizations(?:\?|$)/.test(path) ? 'Access organization'
+          : /\/access\/identity_providers(?:\/|\?|$)/.test(path) ? 'Access identity providers'
+          : /\/access\/apps(?:\/|\?|$)/.test(path) ? 'Access applications' : 'account resource';
+        // Map only a known provider identifier to a fixed message. Never forward
+        // arbitrary response text, account identifiers, or credentials to logs.
+        const accessDisabled = response.status === 403 && Array.isArray(envelope?.errors) && envelope.errors.some(error =>
+          error?.code === 9999 && typeof error.message === 'string' && error.message.startsWith('access.api.error.not_enabled:'));
+        const error = accessDisabled
+          ? new CloudflareApiError(response.status, codes, `Cloudflare Access is not enabled for this account. Complete Zero Trust onboarding at https://one.dash.cloudflare.com/ and retry the build. Operation: ${method} ${resource} (HTTP 403; code 9999).`)
+          : new CloudflareApiError(response.status, codes);
+        error.operation = `${method} ${resource}`;
+        if (accessDisabled) error.providerCode = 'access.api.error.not_enabled';
+        else error.message += ` Operation: ${error.operation}.`;
+        throw error;
       }
       return envelope;
     } catch (error) {
