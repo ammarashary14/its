@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="190" height="230" viewBox="0 0 190 230" fill="none" aria-hidden="true" focusable="false">
+  <g stroke="#607365" stroke-linecap="round" stroke-linejoin="round">
+    <!-- A growing idea, part botanical study and part chemistry notebook. -->
+    <path d="M99 160c-8-25-10-46-5-68 4-17 5-35 2-56" stroke-width="1.65"/>
+    <path d="M94 93c-22-2-34-17-35-37 24 4 38 15 35 37Z" fill="#e3e8e1" stroke-width="1.5"/>
+    <path d="M96 76c4-25 19-40 39-45-1 22-15 42-39 45Z" fill="#e3e8e1" stroke-width="1.5"/>
+    <path d="M93 119c-23 1-39-8-47-25 24-3 40 5 47 25Z" fill="#e3e8e1" stroke-width="1.5"/>
+    <path d="M94 110c9-20 24-28 46-26-10 19-26 28-46 26Z" fill="#e3e8e1" stroke-width="1.5"/>
+    <path d="M97 48c-13-8-18-21-13-35 14 7 19 20 13 35Z" fill="#e3e8e1" stroke-width="1.5"/>
+    <path d="m94 90-29-28m13 12-2-9m9 18-9-1m21-8 32-36m-19 22 1-12m6 5 11-2m-35 66L52 98m23 12-5-10m13 15-13 1m26-8 38-20m-25 13 4-10m4 6 11 1M97 45 86 19" stroke-width=".9" opacity=".75"/>
+    <path d="M62 59c3 16 14 27 28 30m10-18c20-5 30-18 33-33m-81 58c12-1 24 3 32 11" stroke-width=".55" opacity=".4"/>
+    <!-- The narrow-necked flask is drawn in two loose passes. -->
+    <path d="M82 135h31m-27 1-1 24-28 44c-5 8-2 13 7 13h72c8 0 11-6 6-13l-33-45 1-23" stroke-width="1.8"/>
+    <path d="m89 140-1 22-28 44c-3 5-1 8 5 8m49-74-1 18 32 47c3 5 3 8-1 11" stroke-width=".65" opacity=".45"/>
+    <path d="M72 185c11-6 20 4 30 0s14-4 24 0l15 21c3 5 1 8-5 8H65c-6 0-7-3-4-8l11-21Z" fill="#e3e8e1" stroke-width=".9"/>
+    <path d="m113 171 7-1m-5 9 9-1m-5 10 10-1m-5 10 12-1" stroke-width="1.1"/>
+    <circle cx="87" cy="194" r="3.7" stroke-width="1"/>
+    <circle cx="103" cy="205" r="2.2" stroke-width=".9"/>
+    <circle cx="104" cy="173" r="2.5" stroke-width="1"/>
+    <path d="m65 208 6 1m3 1 9 1m-21 11c26 2 58 2 81-1" stroke-width=".75" opacity=".5"/>
+    <path d="m38 57 1-6 2 6 6 2-6 1-2 6-1-6-6-1 6-2Zm107 76 2-6 1 6 6 2-6 1-1 6-2-6-5-1 5-2Z" stroke-width="1"/>
+    <path d="m153 61 4-4m-2 13 6 1M37 139l-5-2m10 10-1 6" stroke-width="1.1"/>
+  </g>
+</svg>
