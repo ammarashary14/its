@@ -114,7 +114,7 @@
   const trackingQuery = new URLSearchParams(location.search);
   const trackingPath = location.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
   const canonicalPath = trackingPath === '/index' ? '/' : trackingPath;
-  const publicPaths = new Set(['/', '/curriculum', '/team', '/tutoring', '/community', '/contact', '/apply', '/schools', '/sponsors', '/donate']);
+  const publicPaths = new Set(['/', '/curriculum', '/team', '/tutoring', '/community', '/calendar', '/contact', '/apply', '/schools', '/sponsors', '/donate']);
   const isDraftView = () => trackingQuery.has('preview') || trackingQuery.has('draft') || document.body.dataset.draft === 'true' || document.querySelector('[data-draft="true"]');
   if (trackingHost && location.protocol === 'https:' && publicPaths.has(canonicalPath) && typeof fetch === 'function') {
     let counted = false; let ready = document.readyState === 'complete';

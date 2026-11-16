@@ -35,6 +35,7 @@ The `functions/` adapters also remain available for a Cloudflare Pages deploymen
 - `curriculum.html`, `community.html`, and `contact.html`: dedicated destinations for the main navigation; the curriculum grade browser and contact routes are preserved.
 - `team.html`: four staff placeholders. Replace the suggested roles, names, bios, and SVG portraits with the actual team. Add/remove an entire `article.staff-card` to change the roster.
 - `apply.html`: volunteer application with interests, grade preferences, availability, experience, and motivation.
+- `calendar.html`: public month calendar and upcoming events, managed in the owner dashboard. Starts empty until events are published.
 - `tutoring.html`: tutoring request with contact information, grade, subjects, goals, format, and availability.
 - `schools.html`, `sponsors.html`, and `donate.html`: school partnerships, sponsorship information, and the donation destination. Schools and the donation link start empty until the owner adds them.
 - `assets/app.js`: illustrative grade-level lessons, accessible tab interactions, and mobile navigation.
@@ -42,7 +43,7 @@ The `functions/` adapters also remain available for a Cloudflare Pages deploymen
 - `assets/theme.css`: warm linen beige, charcoal typography, centered curriculum, neutral dark mode, and form layouts. Edit the theme variables at the top to change the palette.
 - `assets/theme.js`: starts in light mode; an explicitly chosen light/dark preference is saved in `localStorage` under `bts-theme` and shared across pages.
 - `assets/forms.js`: client-side validation, review/edit, volunteer application delivery, and tutoring email drafts. It uses FormSubmit on the current preview; a configured Cloudflare intake can store new applications for owner review. A failed submission never switches providers automatically. A new FormSubmit recipient or site origin requires activation.
-- `owner.html` and `assets/owner.js`: owner dashboard for site content, community links, staff profiles, and aggregate site statistics.
+- `owner.html` and `assets/owner.js`: owner dashboard for site content, community links, staff profiles, calendar events, and aggregate site statistics.
 - `assets/site-content.json`, `assets/content-schema.js`, and `assets/site-content.js`: published content defaults, shared validation, and public rendering. Local drafts appear only with `?preview=1`.
 - `functions/api/` and `server/`: Cloudflare owner authentication, D1 publishing, and traffic analytics APIs. See `docs/cloudflare-owner-setup.md`.
 - `editor.html` and `assets/editor.js`: edit the volunteer application with a live preview, add/remove/reorder questions, and import/export draft configuration.
@@ -107,7 +108,7 @@ Use **Owner dashboard → Schools served** to add school names, locations, grade
 
 Blank social profiles show “Coming soon” on the Community page and stay out of the footer. Blank donation settings display the upcoming-donations message instead of a payment button. No school or sponsor endorsements are fabricated. `npm run test:content` checks the added data and URL validation.
 
-The owner has registered and attached `breakingthesky.com` at Cloudflare and approved launch. The source configuration now preserves that custom domain. Backend features must still pass their connection checks before being described as live.
+The owner registered and attached `breakingthesky.com` at Cloudflare and approved launch. On November 16, 2026, the deployment succeeded and live checks confirmed public pages, enabled application intake, D1 content access, a recorded page-view event, and the owner sign-in redirect. The owner sign-in code email was delivered. Authenticated dashboard actions and admissions Gmail delivery still need a complete live test.
 
 ## Application review and decision emails
 
@@ -116,3 +117,12 @@ The owner has registered and attached `breakingthesky.com` at Cloudflare and app
 GitHub Pages and the static private preview cannot receive applications into this inbox or send decision emails. Existing FormSubmit submissions remain in the email inbox. Once [application review setup](docs/application-review-setup.md) is completed, new submissions can go into private D1 storage. The authenticated owner can select a record, choose Accept or Reject, review the recipient and exact message, then send. Only an acknowledged email-provider response marks the decision sent; ambiguous delivery is locked for checking to prevent duplicate messages. The domain is attached by the owner. Gmail and live owner access require the documented account setup; code and local tests alone do not verify those connections.
 
 `npm run test:applications` verifies the private endpoints, real SQLite storage behavior, revisions, and duplicate-send protection with mocked email delivery.
+
+
+## Calendar
+
+Open **Owner dashboard → Calendar** to set the calendar’s IANA time zone and add events. Each event has a title, date, optional start/end time, category, location, description, and optional HTTPS details link. New events start hidden. Enable **Show on public calendar**, save a draft, preview it, then publish through the owner dashboard. Blank times are all-day events; timed events end later on the same day.
+
+The public month view supports previous/next/today, date selection, and upcoming events. Dates stay in the calendar’s configured time zone rather than shifting with the visitor’s device. Hidden events are omitted from the public content API and retained in authenticated owner content. Older content and exports default to an empty calendar in UTC.
+
+`npm run test:calendar` checks shared validation, hidden event handling, date boundaries, and calendar behavior. Migration `0005_calendar_analytics.sql` adds calendar page counting while preserving existing statistics.

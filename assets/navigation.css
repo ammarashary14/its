@@ -4,7 +4,7 @@
 .header-inner{gap:20px}
 .footer-main nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;align-content:start}
 .footer-socials:not([hidden]){padding-block:0 25px}
-@media(max-width:1230px){
+@media(max-width:1320px){
   .header-actions{margin-left:auto}
   .menu-toggle{display:flex;align-items:center;gap:12px;background:transparent;border:1px solid var(--line);border-radius:6px;padding:8px 12px;min-height:42px;font-size:11px;font-weight:700}
   .menu-toggle span{font-size:21px;line-height:1}

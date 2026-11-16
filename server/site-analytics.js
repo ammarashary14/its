@@ -1,6 +1,6 @@
 import { HttpError, json, failure, requireMethod, requireSameOrigin, readJson } from './http.js';
 
-const PUBLIC_PATHS = new Set(['/', '/curriculum', '/team', '/tutoring', '/community', '/contact', '/apply', '/schools', '/sponsors', '/donate']);
+const PUBLIC_PATHS = new Set(['/', '/curriculum', '/team', '/tutoring', '/community', '/calendar', '/contact', '/apply', '/schools', '/sponsors', '/donate']);
 export function siteAnalyticsConfigured(env) {
   return env.BTS_SITE_ANALYTICS_ENABLED === 'true' && typeof env.BTS_DB?.prepare === 'function';
 }

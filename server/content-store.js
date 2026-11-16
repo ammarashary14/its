@@ -14,7 +14,10 @@ export async function readContent(env, { publicView = false } = {}) {
   let content;
   try { content = validateSiteContent(JSON.parse(row.content_json)); }
   catch { throw new HttpError(503, 'content_unavailable', 'The saved website content could not be loaded.'); }
-  if (publicView) content.people = content.people.filter(person => person.visible);
+  if (publicView) {
+    content.people = content.people.filter(person => person.visible);
+    content.calendar.events = content.calendar.events.filter(event => event.visible);
+  }
   return { content, revision: row.revision, updatedAt: row.updated_at };
 }
 export async function publishContent(env, value) {

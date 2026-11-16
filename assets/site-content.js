@@ -1,4 +1,5 @@
-import { validateSiteContent, SITE_DRAFT_KEY } from './content-schema.js?v=full-11';
+import { validateSiteContent, SITE_DRAFT_KEY } from './content-schema.js?v=calendar-14';
+import { renderCalendar, showCalendarUnavailable } from './calendar.js?v=calendar-14';
 
 const page = document.body?.dataset.page;
 const preview = new URLSearchParams(window.location.search).get('preview') === '1';
@@ -184,6 +185,7 @@ export function renderSiteContent(raw) {
   socialLinks(content.community);
   schoolPartners(content.schools);
   donationLink(content.donation);
+  if (page === 'calendar') renderCalendar(content.calendar);
   document.dispatchEvent(new CustomEvent('bts:content-updated', { detail: { preview } }));
 }
 function readDraft() {
@@ -234,15 +236,17 @@ async function initialize() {
   const draft = preview ? readDraft() : null;
   if (draft) renderSiteContent(draft);
   else if (publishedContent) renderSiteContent(publishedContent);
+  else if (page === 'calendar') showCalendarUnavailable();
   if (preview) showPreviewBanner(Boolean(draft));
 }
-if (['home', 'team', 'curriculum', 'community', 'contact', 'tutoring', 'apply', 'sponsors', 'schools', 'donate'].includes(page)) {
+if (['home', 'team', 'curriculum', 'community', 'contact', 'tutoring', 'apply', 'sponsors', 'schools', 'donate', 'calendar'].includes(page)) {
   initialize().catch(() => { /* Keep the complete, server-served HTML if data is unavailable. */ });
   if (preview) window.addEventListener('storage', event => {
     if (event.key !== SITE_DRAFT_KEY) return;
     const draft = readDraft();
     if (draft) renderSiteContent(draft);
     else if (publishedContent) renderSiteContent(publishedContent);
+    else if (page === 'calendar') showCalendarUnavailable();
     showPreviewBanner(Boolean(draft));
   });
 }

@@ -1,11 +1,11 @@
-import { validateSiteContent } from './content-schema.js?v=full-11';
+import { validateSiteContent, CONTENT_LIMITS, CALENDAR_CATEGORIES } from './content-schema.js?v=calendar-14';
 import { editProfilePhoto } from './photo-cropper.js?v=photo-10';
 
 const DRAFT_KEY = 'bts-site-draft-v1';
 const $ = selector => document.querySelector(selector);
 const clone = value => JSON.parse(JSON.stringify(value));
-const state = { content: null, published: null, baseRevision: 0, serverRevision: 0, savedAt: null, dirty: false, hasDraft: false, authenticated: false, canPublish: false, loading: false, selectedPerson: null, analyticsConfigured: false, photoBusy: false, ownerComplete: false };
-const INCOMPLETE_DRAFT_MESSAGE = 'This draft may not include hidden profiles. Export it, reload the complete owner content in Settings, and reapply your edits before publishing.';
+const state = { content: null, published: null, baseRevision: 0, serverRevision: 0, savedAt: null, dirty: false, hasDraft: false, authenticated: false, canPublish: false, loading: false, selectedPerson: null, selectedEvent: null, analyticsConfigured: false, photoBusy: false, ownerComplete: false };
+const INCOMPLETE_DRAFT_MESSAGE = 'This draft may not include hidden profiles or calendar events. Export it, reload the complete owner content in Settings, and reapply your edits before publishing.';
 function restoreDraft(value, serverRevision) {
   const envelope = value && typeof value === 'object' && Object.hasOwn(value, 'content');
   const content = validateSiteContent(envelope ? value.content : value);
@@ -16,7 +16,7 @@ function restoreDraft(value, serverRevision) {
   return { content, baseRevision, ownerComplete, savedAt: envelope && typeof value.savedAt === 'string' ? value.savedAt : null };
 }
 function draftEnvelope(content = state.content, savedAt = state.savedAt) { return { content, baseRevision: state.baseRevision, ownerComplete: state.ownerComplete, savedAt }; }
-const sectionNames = { overview: 'Overview', content: 'Site content', people: 'Team profiles', schools: 'Schools served', applications: 'Applications', traffic: 'Traffic stats', settings: 'Settings' };
+const sectionNames = { overview: 'Overview', content: 'Site content', people: 'Team profiles', schools: 'Schools served', calendar: 'Calendar', applications: 'Applications', traffic: 'Traffic stats', settings: 'Settings' };
 const contentGroups = [
   ['Homepage introduction', 'The first words visitors see.', [['home.headline','Headline',160],['home.headlineAccent','Second headline line',160],['home.description','Introduction',2000,true]]],
   ['Curriculum', 'Introduce math and science learning at each grade.', [['home.curriculumTitle','Heading',160],['home.curriculumAccent','Second heading line',160],['home.curriculumIntro','Curriculum description',2000,true]]],
@@ -131,7 +131,60 @@ function renderSchools() {
     card.append(fields); container.append(card);
   });
 }
-function renderAll() { renderContentFields();renderOverview();renderPeopleList();renderPersonEditor();renderSchools();updateDraftState(); }
+const calendarCategoryNames = { school: 'School visit', tutoring: 'Tutoring', volunteer: 'Volunteer', community: 'Community', other: 'Other' };
+function currentCalendarEvent() { return state.content?.calendar.events.find(event => event.id === state.selectedEvent); }
+function renderCalendarList() {
+  const calendar = state.content.calendar;
+  const events = calendar.events;
+  const container = $('#calendar-event-list'); container.replaceChildren();
+  $('#add-calendar-event').disabled = events.length >= CONTENT_LIMITS.calendarEvents || state.loading || state.photoBusy;
+  $('#calendar-event-count').textContent = `${events.length} event${events.length === 1 ? '' : 's'} · ${events.filter(event => event.visible).length} visible on the calendar`;
+  if (!events.length) container.append(node('p', 'owner-card-footnote', 'No events yet. Add a school visit, tutoring session, or community event when you’re ready.'));
+  for (const event of events) {
+    const button = node('button', 'owner-calendar-selector'); button.type = 'button'; button.dataset.calendarEventId = event.id;
+    button.setAttribute('aria-pressed', String(event.id === state.selectedEvent));
+    button.append(node('strong', '', event.title || 'Untitled event'), node('span', '', event.date || 'Choose a date'));
+    const detail = node('small', '', [calendarCategoryNames[event.category] || 'Other', event.startTime || 'All day', event.visible ? 'Visible' : 'Hidden'].join(' · '));
+    button.append(detail); container.append(button);
+  }
+}
+function renderCalendarEditor() {
+  const container = $('#calendar-event-editor'); container.replaceChildren();
+  const event = currentCalendarEvent();
+  if (!event) { container.append(node('h3', '', 'Plan your next event.'), node('p', 'owner-card-footnote', 'Add an event to set its date, time, location, and details.')); return; }
+  const heading = node('div', 'owner-calendar-editor-heading'); heading.append(node('h3', '', 'Event details'));
+  const remove = node('button', 'owner-danger', 'Remove event'); remove.type = 'button'; remove.dataset.calendarAction = 'remove'; heading.append(remove); container.append(heading);
+  const fields = node('div', 'owner-field-grid');
+  const definitions = [['title', 'Event title', 'text', 160, true], ['date', 'Date', 'date', 10, true], ['startTime', 'Start time (optional)', 'time', 5], ['endTime', 'End time (optional)', 'time', 5], ['location', 'Location or meeting details (optional)', 'text', 250], ['url', 'More information / registration link (optional)', 'url', 1000], ['description', 'Description (optional)', 'textarea', 2000]];
+  for (const [key, label, type, maximum, required] of definitions) {
+    const field = node('label', 'owner-field' + (key === 'description' || key === 'title' ? ' full-width' : ''), label);
+    const input = node(type === 'textarea' ? 'textarea' : 'input'); input.id = `calendar-event-${key}`; input.dataset.calendarField = key; input.value = event[key]; input.maxLength = maximum; input.required = Boolean(required);
+    if (type === 'textarea') input.rows = 5; else input.type = type;
+    // Set values after the native input type so browsers retain supported date/time values.
+    input.value = event[key];
+    if (type === 'date') { input.min = '2000-01-01'; input.max = '2199-12-31'; }
+    if (type === 'time') input.step = '60';
+    if (key === 'url') input.placeholder = 'https://';
+    field.htmlFor = input.id; field.append(input); fields.append(field);
+  }
+  const category = node('label', 'owner-field', 'Event type');
+  const select = node('select'); select.id = 'calendar-event-category'; select.dataset.calendarField = 'category';
+  for (const value of CALENDAR_CATEGORIES) { const option = node('option', '', calendarCategoryNames[value]); option.value = value; select.append(option); }
+  select.value = event.category; category.htmlFor = select.id; category.append(select); fields.append(category);
+  const visibility = node('label', 'owner-profile-check owner-calendar-visibility'); const checkbox = node('input'); checkbox.type = 'checkbox'; checkbox.id = 'calendar-event-visible'; checkbox.dataset.calendarField = 'visible'; checkbox.checked = event.visible; visibility.append(checkbox, node('span', '', 'Show this event on the public calendar')); fields.append(visibility);
+  container.append(fields);
+  const timeHelp = node('p', 'owner-card-footnote', 'Leave both times blank for an all-day event. An end time needs a start time and must be later on the same day. All times use the calendar’s time zone.');
+  const allDay = node('button', 'owner-inline-button', 'Clear times / make all-day'); allDay.type = 'button'; allDay.dataset.calendarAction = 'all-day';
+  container.append(timeHelp, allDay, node('p', 'owner-card-footnote', 'Save your draft and preview the calendar before publishing. Hidden events stay available here for editing.'));
+}
+function renderCalendar() {
+  const calendar = state.content.calendar;
+  if (!calendar.events.some(event => event.id === state.selectedEvent)) state.selectedEvent = calendar.events[0]?.id || null;
+  $('#calendar-time-zone').value = calendar.timeZone;
+  renderCalendarList(); renderCalendarEditor();
+}
+function renderAll() { renderContentFields();renderOverview();renderPeopleList();renderPersonEditor();renderSchools();renderCalendar();updateDraftState(); }
+
 function saveDraft(showMessage = true) {
   try { const content=validateSiteContent(state.content);const savedAt=new Date().toISOString();localStorage.setItem(DRAFT_KEY,JSON.stringify(draftEnvelope(content,savedAt)));state.content=content;state.savedAt=savedAt;state.hasDraft=true;state.dirty=false;updateDraftState();if(showMessage)status(state.ownerComplete?'Draft saved on this device. Visitors still see the published website.':INCOMPLETE_DRAFT_MESSAGE,!state.ownerComplete);return true; }
   catch(error){status(error.name==='QuotaExceededError'?'This device doesn’t have enough space to save the draft. Remove a large photo or export a copy to keep your work.':error.message||'Could not save this draft. Export a copy to keep your work.',true);return false;}
@@ -178,7 +231,7 @@ function numeric(value) { return Number.isFinite(value)&&value>=0?value:null; }
 function numberText(value) { return numeric(value)===null?'—':new Intl.NumberFormat().format(value); }
 function byteText(value) {if(numeric(value)===null)return'—';if(value<1024)return value+' B';const units=['KB','MB','GB','TB'];let n=value/1024,index=0;while(n>=1024&&index<units.length-1){n/=1024;index++;}return new Intl.NumberFormat(undefined,{maximumFractionDigits:1}).format(n)+' '+units[index];}
 let statsRequestId = 0;
-const statsPageNames = { '/': 'Home', '/curriculum': 'Curriculum', '/team': 'Our people', '/tutoring': '1-on-1 tutoring', '/community': 'Community', '/contact': 'Contact us', '/apply': 'Volunteer application', '/schools': 'Schools we serve', '/sponsors': 'Sponsors', '/donate': 'Donate' };
+const statsPageNames = { '/': 'Home', '/curriculum': 'Curriculum', '/team': 'Our people', '/tutoring': '1-on-1 tutoring', '/community': 'Community', '/contact': 'Contact us', '/apply': 'Volunteer application', '/schools': 'Schools we serve', '/sponsors': 'Sponsors', '/donate': 'Donate', '/calendar': 'Calendar' };
 function statsDate(value) {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
   const date = new Date(value + 'T12:00:00Z');
@@ -285,6 +338,45 @@ $('#add-school').addEventListener('click',()=>{
   if (!state.content || state.loading || state.photoBusy || state.content.schools.length >= 30) return;
   const id = 'school-' + (crypto.randomUUID?.() || Math.random().toString(36).slice(2)).slice(0,24);
   state.content.schools.push({id,name:'',location:'',grades:'',description:'',website:''}); markDirty(); renderSchools(); document.getElementById(`school-${id}-name`).focus();
+});
+$('#calendar-time-zone').addEventListener('input',event=>{
+  if (!state.content || state.loading || state.photoBusy) return;
+  state.content.calendar.timeZone = event.target.value; markDirty();
+});
+$('#calendar-event-list').addEventListener('click',event=>{
+  if (!state.content || state.loading || state.photoBusy) return;
+  const button = event.target.closest('[data-calendar-event-id]'); if (!button) return;
+  state.selectedEvent = button.dataset.calendarEventId; renderCalendarList(); renderCalendarEditor();
+  $('#calendar-event-title')?.focus({preventScroll:true});
+});
+$('#calendar-event-editor').addEventListener('input',event=>{
+  if (!state.content || state.loading || state.photoBusy) return;
+  const key = event.target.dataset.calendarField; const item = currentCalendarEvent();
+  if (!item || !['title','date','startTime','endTime','category','location','description','url','visible'].includes(key)) return;
+  item[key] = key === 'visible' ? event.target.checked : event.target.value;
+  markDirty(); renderCalendarList();
+});
+$('#calendar-event-editor').addEventListener('click',event=>{
+  if (!state.content || state.loading || state.photoBusy) return;
+  const button = event.target.closest('[data-calendar-action]'); const item = currentCalendarEvent(); if (!button || !item) return;
+  if (button.dataset.calendarAction === 'remove') {
+    if (!confirm('Remove ' + (item.title || 'this event') + ' from your calendar draft?')) return;
+    const index = state.content.calendar.events.indexOf(item);
+    state.content.calendar.events.splice(index, 1);
+    state.selectedEvent = state.content.calendar.events[Math.min(index, state.content.calendar.events.length - 1)]?.id || null;
+    markDirty(); renderCalendar();
+    ($('#calendar-event-title') || $('#add-calendar-event')).focus({preventScroll:true});
+  } else if (button.dataset.calendarAction === 'all-day') {
+    item.startTime = ''; item.endTime = '';
+    $('#calendar-event-startTime').value = ''; $('#calendar-event-endTime').value = '';
+    markDirty(); renderCalendarList(); status('Event times cleared. This event is now all-day.');
+  }
+});
+$('#add-calendar-event').addEventListener('click',()=>{
+  if (!state.content || state.loading || state.photoBusy || state.content.calendar.events.length >= CONTENT_LIMITS.calendarEvents) return;
+  const id = 'event-' + (crypto.randomUUID?.() || Math.random().toString(36).slice(2)).slice(0,24);
+  state.content.calendar.events.push({id,title:'',date:'',startTime:'',endTime:'',category:'other',location:'',description:'',url:'',visible:false});
+  state.selectedEvent = id; markDirty(); renderCalendar(); $('#calendar-event-title').focus({preventScroll:true});
 });
 $('#people-list').addEventListener('click',event=>{const button=event.target.closest('[data-person-id]');if(!button)return;state.selectedPerson=button.dataset.personId;renderPeopleList();renderPersonEditor();});
 $('#person-editor').addEventListener('input',event=>{const key=event.target.dataset.personField;const person=currentPerson();if(!key||!person)return;person[key]=event.target.type==='checkbox'?event.target.checked:event.target.value;markDirty();renderPeopleList();renderPersonPreview();renderOverview();});

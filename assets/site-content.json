@@ -82,5 +82,9 @@
   "schools": [],
   "donation": {
     "url": ""
+  },
+  "calendar": {
+    "timeZone": "UTC",
+    "events": []
   }
 }

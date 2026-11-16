@@ -12,10 +12,10 @@
   <script src="assets/application-config.js?v=application-5" defer></script>
   <link rel="stylesheet" href="assets/style.css?v=ivory-3">
   <link rel="stylesheet" href="assets/theme.css?v=photo-10">
-  <link rel="stylesheet" href="assets/owner.css?v=photo-10">
+  <link rel="stylesheet" href="assets/owner.css?v=calendar-14">
   <link rel="stylesheet" href="assets/photo-cropper.css?v=photo-10">
   <link rel="stylesheet" href="assets/owner-schools.css?v=full-11">
-  <script type="module" src="assets/owner.js?v=stats-12b"></script>
+  <script type="module" src="assets/owner.js?v=calendar-14"></script>
   <link rel="stylesheet" href="assets/owner-applications.css?v=full-11">
   <script type="module" src="assets/owner-applications.js?v=launch-12"></script>
 </head>
@@ -30,6 +30,7 @@
         <button type="button" data-panel="content"><span aria-hidden="true">≡</span>Site content</button>
         <button type="button" data-panel="people"><span aria-hidden="true">♧</span>Team profiles</button>
         <button type="button" data-panel="schools"><span aria-hidden="true">⌂</span>Schools served</button>
+        <button type="button" data-panel="calendar"><span aria-hidden="true">▦</span>Calendar</button>
         <button type="button" data-panel="applications"><span aria-hidden="true">▤</span>Applications</button>
         <button type="button" data-panel="traffic"><span aria-hidden="true">↗</span>Traffic stats</button>
         <button type="button" data-panel="settings"><span aria-hidden="true">⚙</span>Settings</button>
@@ -67,6 +68,14 @@
           <div class="owner-section-intro"><p class="eyebrow">LEARNING IN OUR COMMUNITIES</p><h2 id="heading-schools" tabindex="-1">Schools served.</h2><p>Add the schools BTS currently works with. Only include details you’re ready to share publicly.</p></div>
           <div class="owner-editor-header"><button id="add-school" type="button" class="owner-primary" disabled>Add a school +</button><a class="owner-inline-button" href="schools.html?preview=1" data-preview target="_blank" rel="noopener">Preview schools page ↗</a></div>
           <div id="school-fields" class="owner-content-form"></div>
+        </section>
+
+        <section class="owner-panel" id="panel-calendar" aria-labelledby="heading-calendar" hidden>
+          <div class="owner-section-intro"><p class="eyebrow">WHAT’S NEXT AT BTS</p><h2 id="heading-calendar" tabindex="-1">Calendar.</h2><p>Add school visits, tutoring sessions, volunteer gatherings, and community events. Publish when the details are ready to share.</p></div>
+          <div class="owner-editor-header"><button id="add-calendar-event" type="button" class="owner-primary" disabled>Add an event +</button><a class="owner-inline-button" href="calendar.html?preview=1" data-preview target="_blank" rel="noopener">Preview calendar ↗</a></div>
+          <div class="owner-card owner-calendar-settings"><label class="owner-field" for="calendar-time-zone">Calendar time zone<input id="calendar-time-zone" type="text" maxlength="100" list="calendar-time-zone-suggestions" placeholder="America/Chicago" autocomplete="off" required aria-describedby="calendar-time-zone-help"></label><datalist id="calendar-time-zone-suggestions"><option value="UTC"></option><option value="America/Chicago"></option><option value="America/New_York"></option><option value="America/Denver"></option><option value="America/Los_Angeles"></option><option value="Europe/London"></option><option value="Asia/Kolkata"></option></datalist><p id="calendar-time-zone-help" class="owner-card-footnote">Use a time zone such as America/Chicago or UTC. All event times use this zone. Changing it keeps the dates and times as entered.</p></div>
+          <p id="calendar-event-count" class="owner-card-footnote"></p>
+          <div class="owner-calendar-layout"><div id="calendar-event-list" class="owner-calendar-list" aria-label="Choose a calendar event"></div><div id="calendar-event-editor" class="owner-card"></div></div>
         </section>
 
         <section class="owner-panel" id="panel-applications" aria-labelledby="heading-applications" hidden>

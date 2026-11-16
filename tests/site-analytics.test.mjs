@@ -8,12 +8,25 @@ import { ownerStats } from '../server/owner-api.js';
 
 const origin = 'https://breakingthesky.com';
 const analyticsSchema = await readFile(new URL('../migrations/0004_site_analytics.sql', import.meta.url), 'utf8');
+const calendarAnalyticsSchema = await readFile(new URL('../migrations/0005_calendar_analytics.sql', import.meta.url), 'utf8');
 const applicationsSchema = await readFile(new URL('../migrations/0002_applications.sql', import.meta.url), 'utf8');
-const publicPaths = ['/', '/curriculum', '/team', '/tutoring', '/community', '/contact', '/apply', '/schools', '/sponsors', '/donate'];
+const publicPaths = ['/', '/curriculum', '/team', '/tutoring', '/community', '/calendar', '/contact', '/apply', '/schools', '/sponsors', '/donate'];
+
+test('calendar migration preserves existing counts and keeps private paths excluded', () => {
+  const connection = new DatabaseSync(':memory:');
+  connection.exec(analyticsSchema);
+  connection.prepare('INSERT INTO site_page_views VALUES (?, ?, ?)').run('2026-11-16', '/', 42);
+  connection.exec(calendarAnalyticsSchema);
+  connection.prepare('INSERT INTO site_page_views VALUES (?, ?, ?)').run('2026-11-16', '/calendar', 1);
+  assert.equal(connection.prepare('SELECT page_views FROM site_page_views WHERE path = ?').get('/').page_views, 42);
+  assert.equal(connection.prepare('SELECT page_views FROM site_page_views WHERE path = ?').get('/calendar').page_views, 1);
+  assert.throws(() => connection.prepare('INSERT INTO site_page_views VALUES (?, ?, ?)').run('2026-11-16', '/owner', 1));
+  connection.close();
+});
 
 function database({ analytics = true, applications = true } = {}) {
   const connection = new DatabaseSync(':memory:');
-  if (analytics) connection.exec(analyticsSchema);
+  if (analytics) { connection.exec(analyticsSchema); connection.exec(calendarAnalyticsSchema); }
   if (applications) connection.exec(applicationsSchema);
   const operations = [];
   return { connection, operations, prepare(sql) {
@@ -41,7 +54,7 @@ function addApplication(db, createdAt, index = 1) {
   );
 }
 
-test('page aliases normalize to exactly ten public aggregate paths', () => {
+test('page aliases normalize to exactly eleven public aggregate paths', () => {
   for (const path of publicPaths) {
     assert.equal(normalizePublicPath(path), path);
     if (path !== '/') assert.equal(normalizePublicPath(path + '.html'), path);

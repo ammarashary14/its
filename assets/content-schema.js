@@ -1,6 +1,7 @@
 /** Shared browser/Cloudflare schema. This file contains no private owner data. */
 export const SITE_DRAFT_KEY = 'bts-site-draft-v1';
-export const CONTENT_LIMITS = Object.freeze({ people: 20, schools: 30, photo: 350 * 1024, document: Math.floor(1.8 * 1024 * 1024) });
+export const CONTENT_LIMITS = Object.freeze({ people: 20, schools: 30, calendarEvents: 100, photo: 350 * 1024, document: Math.floor(1.8 * 1024 * 1024) });
+export const CALENDAR_CATEGORIES = Object.freeze(['school', 'tutoring', 'volunteer', 'community', 'other']);
 const homeFields = Object.freeze({
   headline: 160, headlineAccent: 160, description: 2000,
   curriculumTitle: 160, curriculumAccent: 160, curriculumIntro: 2000,
@@ -123,6 +124,57 @@ function donation(value) {
   object(value, 'Donation settings');
   return { url: externalWebsite(value.url, 'Donation link') };
 }
+function calendarDate(value, label) {
+  const date = text(value, label, 10);
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+  if (!match) throw new Error(`${label} must use YYYY-MM-DD.`);
+  const [year, month, day] = match.slice(1).map(Number);
+  const actual = new Date(Date.UTC(year, month - 1, day));
+  if (year < 2000 || year > 2199 || actual.getUTCFullYear() !== year || actual.getUTCMonth() !== month - 1 || actual.getUTCDate() !== day) {
+    throw new Error(`${label} must be a real date between 2000 and 2199.`);
+  }
+  return date;
+}
+function calendarTime(value, label) {
+  const time = text(value === undefined ? '' : value, label, 5, true);
+  if (time && !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time)) throw new Error(`${label} must use a 24-hour HH:mm time, or be blank.`);
+  return time;
+}
+function calendar(value) {
+  if (value === undefined) return { timeZone: 'UTC', events: [] };
+  object(value, 'Calendar');
+  const timeZone = text(value.timeZone, 'Calendar time zone', 100);
+  // Intl accepts fixed offsets in some runtimes; this calendar uses named IANA
+  // zones so dates and local times retain their intended daylight-saving rules.
+  if (!/^[A-Za-z][A-Za-z0-9_+.-]*(?:\/[A-Za-z0-9_+.-]+)*$/.test(timeZone)) throw new Error('Choose a valid IANA calendar time zone, such as America/Chicago or UTC.');
+  try { new Intl.DateTimeFormat('en', { timeZone }).format(0); }
+  catch { throw new Error('Choose a valid IANA calendar time zone, such as America/Chicago or UTC.'); }
+  if (!Array.isArray(value.events) || value.events.length > CONTENT_LIMITS.calendarEvents) throw new Error('Keep no more than 100 calendar events.');
+  const ids = new Set();
+  const events = value.events.map((event, index) => {
+    const label = `Event ${index + 1}`;
+    object(event, label);
+    if (typeof event.id !== 'string' || !/^[a-z][a-z0-9-]{0,49}$/.test(event.id) || ids.has(event.id) || ['__proto__', 'constructor', 'prototype'].includes(event.id)) throw new Error(`${label} needs a unique valid ID.`);
+    ids.add(event.id);
+    if (!CALENDAR_CATEGORIES.includes(event.category)) throw new Error(`${label} needs a valid category.`);
+    if (typeof event.visible !== 'boolean') throw new Error(`${label} needs a visibility setting.`);
+    const startTime = calendarTime(event.startTime, `${label} start time`);
+    const endTime = calendarTime(event.endTime, `${label} end time`);
+    if (endTime && (!startTime || endTime <= startTime)) throw new Error(`${label} end time must be later than its start time on the same day.`);
+    return {
+      id: event.id,
+      title: text(event.title, `${label} title`, 160),
+      date: calendarDate(event.date, `${label} date`),
+      startTime, endTime,
+      category: event.category,
+      location: text(event.location === undefined ? '' : event.location, `${label} location`, 250, true),
+      description: text(event.description === undefined ? '' : event.description, `${label} description`, 2000, true),
+      url: externalWebsite(event.url, `${label} link`),
+      visible: event.visible
+    };
+  });
+  return { timeZone, events };
+}
 export function validateSiteContent(value) {
   object(value, 'Site content');
   if (value.version !== 1) throw new Error('Choose a version 1 BTS site content file.');
@@ -135,6 +187,7 @@ export function validateSiteContent(value) {
     community: community(value.community === undefined ? COMMUNITY_DEFAULTS : value.community),
     schools: schools(value.schools),
     donation: donation(value.donation),
+    calendar: calendar(value.calendar),
     people: value.people.map((person, index) => {
       object(person, `Profile ${index + 1}`);
       if (typeof person.id !== 'string' || !/^[a-z][a-z0-9-]{0,49}$/.test(person.id) || ids.has(person.id) || ['__proto__', 'constructor', 'prototype'].includes(person.id)) throw new Error(`Profile ${index + 1} needs a unique valid ID.`);
