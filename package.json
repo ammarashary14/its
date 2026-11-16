@@ -15,7 +15,8 @@
     "test:setup": "node --test tests/cloudflare-deploy.test.mjs tests/cloudflare-access-setup.test.mjs",
     "test:gmail": "node --test tests/gmail-mailer.test.mjs",
     "test:stats": "node --test tests/site-analytics.test.mjs",
-    "test:calendar": "node --test tests/calendar-content.test.mjs tests/calendar-ui.test.mjs"
+    "test:calendar": "node --test tests/calendar-content.test.mjs tests/calendar-ui.test.mjs",
+    "test:runtime": "node --test tests/worker-fetch-compatibility.test.mjs"
   },
   "type": "module",
   "engines": {

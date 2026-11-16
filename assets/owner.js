@@ -2,9 +2,11 @@ import { validateSiteContent, CONTENT_LIMITS, CALENDAR_CATEGORIES } from './cont
 import { editProfilePhoto } from './photo-cropper.js?v=photo-10';
 
 const DRAFT_KEY = 'bts-site-draft-v1';
+const WEBSITE_BASE = new URL('../', import.meta.url);
+const STATIC_PREVIEW = /(?:\.github\.io|\.chatgpt\.site)$/.test(location.hostname) || ['localhost','127.0.0.1','[::1]'].includes(location.hostname) || location.protocol === 'file:';
 const $ = selector => document.querySelector(selector);
 const clone = value => JSON.parse(JSON.stringify(value));
-const state = { content: null, published: null, baseRevision: 0, serverRevision: 0, savedAt: null, dirty: false, hasDraft: false, authenticated: false, canPublish: false, loading: false, selectedPerson: null, selectedEvent: null, analyticsConfigured: false, photoBusy: false, ownerComplete: false };
+const state = { content: null, published: null, baseRevision: 0, serverRevision: 0, savedAt: null, dirty: false, hasDraft: false, authenticated: false, canPublish: false, loading: false, selectedPerson: null, selectedEvent: null, analyticsConfigured: false, photoBusy: false, ownerComplete: false, reconnecting: false };
 const INCOMPLETE_DRAFT_MESSAGE = 'This draft may not include hidden profiles or calendar events. Export it, reload the complete owner content in Settings, and reapply your edits before publishing.';
 function restoreDraft(value, serverRevision) {
   const envelope = value && typeof value === 'object' && Object.hasOwn(value, 'content');
@@ -36,9 +38,9 @@ function getPath(value, path) { const [group,key] = path.split('.'); return valu
 function setPath(path, value) { const [group,key] = path.split('.'); state.content[group][key] = value; }
 function markDirty() { state.dirty = true; updateDraftState(); }
 function updateDraftState() {
-  $('#draft-state').textContent = state.loading ? 'Publishing your changes…' : state.dirty ? 'Unsaved changes on this page' : state.hasDraft ? `Draft saved on this device${state.savedAt ? ' · '+formatSaved(state.savedAt) : ''}` : 'Viewing the published content';
+  $('#draft-state').textContent = state.reconnecting ? 'Checking owner connection…' : state.loading ? 'Publishing your changes…' : state.dirty ? 'Unsaved changes on this page' : state.hasDraft ? `Draft saved on this device${state.savedAt ? ' · '+formatSaved(state.savedAt) : ''}` : 'Viewing the published content';
   $('#publish-content').disabled = !state.canPublish || !state.ownerComplete || state.loading || state.photoBusy || !state.content;
-  $('#publish-content').title = !state.canPublish ? 'Connect Cloudflare and verify owner access to publish' : !state.ownerComplete ? INCOMPLETE_DRAFT_MESSAGE : 'Publish these changes to the live website';
+  $('#publish-content').title = !state.canPublish ? 'Reconnect owner access to publish your saved draft' : !state.ownerComplete ? INCOMPLETE_DRAFT_MESSAGE : 'Publish these changes to the live website';
 }
 function activatePanel(name, focus = true) {
   if (!sectionNames[name]) name = 'overview';
@@ -48,13 +50,22 @@ function activatePanel(name, focus = true) {
   history.replaceState(null, '', '#panel-'+name);
   if (focus) $('#heading-'+name).focus({preventScroll:true});
 }
+function connectionError(message, code, status = 0) { const error = new Error(message); error.code = code; error.status = status; return error; }
 async function request(path, options = {}) {
+  const url = new URL(path, WEBSITE_BASE);
+  const privateRequest = path.startsWith('api/owner/');
   const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 10000);
   try {
-    const response = await fetch(path, { credentials:'same-origin', cache:'no-store', ...options, signal:controller.signal });
+    const response = await fetch(url.href, { credentials: 'same-origin', cache: 'no-store', ...options, headers: { Accept: 'application/json', ...options.headers }, ...(privateRequest ? { redirect: 'manual' } : {}), signal: controller.signal });
+    if (privateRequest && (response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400))) throw connectionError('Sign in through Cloudflare to reconnect your owner session.', 'sign_in_required', 401);
     let data; try { data = await response.json(); } catch { data = null; }
-    if (!response.ok || !data) { const error = new Error(data?.error || data?.reason || 'The connection is unavailable.'); error.status = response.status; error.code = data?.code; throw error; }
+    if (privateRequest && response.ok && !data) throw connectionError('Sign in through Cloudflare to reconnect your owner session.', 'sign_in_required', 401);
+    if (!response.ok || !data) throw connectionError(data?.error || data?.reason || 'The owner connection could not be checked right now.', data?.code || 'connection_unavailable', response.status);
     return data;
+  } catch (error) {
+    if (error.name === 'AbortError') throw connectionError('The connection timed out. Your draft is still on this device.', 'request_timeout');
+    if (typeof error.code === 'string' && error.status !== undefined) throw error;
+    throw connectionError('The website could not be reached. Your draft is still on this device.', 'network_unavailable');
   } finally { clearTimeout(timeout); }
 }
 function avatar(person, className = 'owner-avatar') {
@@ -220,12 +231,46 @@ async function adjustPhoto(source, personId, existing = false) {
     else if (focusBefore?.isConnected) focusBefore.focus({ preventScroll: true });
   }
 }
-function applyConnection(session, ownerContent, sessionError) {
-  state.authenticated=Boolean(session?.owner);state.canPublish=Boolean(session?.owner&&ownerContent);state.analyticsConfigured=Boolean(session?.analyticsConfigured);
-  if(state.canPublish){$('#connection-heading').textContent='Owner connected';$('#connection-description').textContent='Save a draft, preview your changes, then publish them to the website. Only the approved owner can publish.';$('#sidebar-mode').textContent='Owner connected';$('#sidebar-mode-help').textContent=session.email;$('#settings-mode').textContent='Owner publishing';$('#settings-auth').textContent=session.email;$('#settings-publishing').textContent='Connected';$('#settings-explanation').textContent='Owner access is verified by Cloudflare. Publish changes makes this draft visible on the website.';}
-  else if(state.authenticated){$('#connection-heading').textContent='Content storage not connected';$('#connection-description').textContent='Owner access is verified. You can save local drafts while Cloudflare content storage is being connected.';$('#settings-auth').textContent=session.email;$('#settings-publishing').textContent='Storage setup needed';$('#settings-explanation').textContent='Owner access is working, but content storage is not ready. Your edits remain local drafts.';}
-  else if(sessionError?.status===401||sessionError?.status===403){$('#connection-heading').textContent='Owner sign-in required';$('#connection-description').textContent='You can work on a local draft. Sign in as the approved owner to publish changes.';$('#settings-auth').textContent='Sign-in required';$('#owner-signin').hidden=false;}
-  $('#settings-analytics').textContent=state.analyticsConfigured?'Configured':'Not connected';$('#refresh-stats').disabled=!state.authenticated;updateDraftState();
+function connectionDescription(error, fallback) {
+  if (error?.code === 'identity_unavailable') return 'Cloudflare sign-in verification is temporarily unavailable. Your draft is safe. Reconnect to try again.';
+  if (error?.code === 'request_timeout') return 'The connection timed out. Your draft is safe. Reconnect to try again.';
+  if (error?.code === 'network_unavailable') return 'The website could not be reached. Your draft is safe. Reconnect when the connection is available.';
+  return (error?.message || fallback) + ' Your draft remains on this device.';
+}
+function applyConnection(session, ownerContent, sessionError, ownerContentError) {
+  state.authenticated = Boolean(session?.owner); state.canPublish = Boolean(session?.owner && ownerContent); state.analyticsConfigured = Boolean(session?.analyticsConfigured);
+  // Start from a known state so reconnect failures never leave stale "connected" labels.
+  $('#connection-heading').textContent = 'Draft workspace';
+  $('#connection-description').textContent = 'This preview saves drafts on this device. Open the hosted website to sign in and publish.';
+  $('#sidebar-mode').textContent = 'Draft workspace'; $('#sidebar-mode-help').textContent = 'Drafts stay on this device.';
+  $('#settings-mode').textContent = 'Drafts on this device'; $('#settings-auth').textContent = 'Not connected'; $('#settings-publishing').textContent = 'Not connected';
+  $('#settings-explanation').textContent = 'This preview has no access to publish website changes. Your local drafts are preserved.';
+  $('#owner-signin').hidden = true; $('#connection-signin').hidden = true; $('#reconnect-owner').hidden = STATIC_PREVIEW;
+  const signInUrl = new URL('owner', WEBSITE_BASE); signInUrl.searchParams.set('signin', '1'); signInUrl.hash = location.hash;
+  $('#owner-signin').href = signInUrl.href; $('#connection-signin').href = signInUrl.href;
+  if (state.canPublish) {
+    $('#connection-heading').textContent = 'Owner connected'; $('#connection-description').textContent = 'Save a draft, preview your changes, then publish them to the website. Only the approved owner can publish.';
+    $('#sidebar-mode').textContent = 'Owner connected'; $('#sidebar-mode-help').textContent = session.email;
+    $('#settings-mode').textContent = 'Owner publishing'; $('#settings-auth').textContent = session.email; $('#settings-publishing').textContent = 'Connected';
+    $('#settings-explanation').textContent = 'Owner access is verified by Cloudflare. Publish changes makes this draft visible on the website.';
+  } else if (state.authenticated) {
+    $('#connection-heading').textContent = 'Website content unavailable';
+    $('#connection-description').textContent = connectionDescription(ownerContentError, 'Owner sign-in is verified, but the website content could not be loaded.');
+    $('#sidebar-mode').textContent = 'Connection needs attention'; $('#settings-auth').textContent = session.email; $('#settings-publishing').textContent = 'Content unavailable';
+    $('#settings-explanation').textContent = $('#connection-description').textContent;
+    if (!STATIC_PREVIEW) { $('#owner-signin').hidden = false; $('#connection-signin').hidden = false; }
+  } else if (!STATIC_PREVIEW) {
+    const needsSignIn = sessionError?.status === 401 || sessionError?.status === 403 || sessionError?.code === 'sign_in_required';
+    $('#connection-heading').textContent = needsSignIn ? 'Owner sign-in required' : sessionError?.code === 'identity_unavailable' ? 'Couldn’t verify owner sign-in' : 'Owner connection unavailable';
+    $('#connection-description').textContent = needsSignIn ? connectionDescription(sessionError, 'Sign in as an approved owner to publish changes.') : connectionDescription(sessionError, 'The owner connection could not be checked right now.');
+    $('#sidebar-mode').textContent = needsSignIn ? 'Sign-in required' : 'Connection needs attention';
+    $('#settings-auth').textContent = needsSignIn ? 'Sign-in required' : 'Verification unavailable'; $('#settings-publishing').textContent = 'Connection required';
+    $('#settings-explanation').textContent = $('#connection-description').textContent;
+    $('#owner-signin').hidden = false; $('#connection-signin').hidden = false;
+  }
+  $('#settings-analytics').textContent = state.analyticsConfigured ? 'Configured' : 'Not connected'; $('#refresh-stats').disabled = !state.authenticated;
+  if (!state.authenticated) { statsRequestId++; $('#stats-connected').hidden = true; $('#stats-unconnected').hidden = false; $('#overview-pageviews').textContent = '—'; $('#overview-traffic-note').textContent = STATIC_PREVIEW ? 'Available on the hosted website' : 'Reconnect to view page views'; }
+  updateDraftState();
 }
 function numeric(value) { return Number.isFinite(value)&&value>=0?value:null; }
 function numberText(value) { return numeric(value)===null?'—':new Intl.NumberFormat().format(value); }
@@ -399,20 +444,41 @@ $('#import-file').addEventListener('change',async event=>{
     if(saveDraft(false))status(!state.ownerComplete?INCOMPLETE_DRAFT_MESSAGE:state.baseRevision!==state.serverRevision?'This imported draft is based on an older published version. Export it, reload the latest owner content, and reapply your edits before publishing.':'Draft imported and saved on this device. Preview it before publishing.',!state.ownerComplete||state.baseRevision!==state.serverRevision);
   }catch(error){status(error.message||'This draft could not be imported.',true);}finally{event.target.value='';}
 });
+$('#reconnect-owner').addEventListener('click',async()=>{
+  if (state.loading || state.photoBusy || state.reconnecting) return;
+  if (state.dirty && !saveDraft(false)) return;
+  state.reconnecting = true; state.loading = true; updateDraftState(); lockEditors(true);
+  status('Checking the owner connection. Your draft is preserved.');
+  try { await initialize(); }
+  finally { state.reconnecting = false; state.loading = false; lockEditors(false); if (state.content) renderAll(); updateDraftState(); $('#reconnect-owner').focus({preventScroll:true}); }
+});
+for (const link of [$('#owner-signin'), $('#connection-signin')]) link.addEventListener('click',event=>{
+  if (state.loading || state.photoBusy || state.reconnecting || (state.dirty && !saveDraft(false))) event.preventDefault();
+});
 $('#discard-draft').addEventListener('click',async()=>{if(!confirm('Discard the draft on this device and reload published content? Export first if you want to keep it.'))return;try{localStorage.removeItem(DRAFT_KEY);}catch{status('Could not remove the saved draft. Your browser may be blocking storage.',true);return;}state.dirty=false;state.hasDraft=false;state.savedAt=null;await initialize();status('Published content reloaded.');});
 $('#refresh-stats').addEventListener('click',loadStats);$('#stats-days').addEventListener('change',loadStats);
 window.addEventListener('beforeunload',event=>{if(state.dirty||state.loading||state.photoBusy){event.preventDefault();event.returnValue='';}});
 
 async function initialize() {
-  const [baseResult,publicResult,sessionResult]=await Promise.allSettled([request('assets/site-content.json'),request('api/content'),request('api/owner/session')]);
-  let ownerContent=null;const session=sessionResult.status==='fulfilled'&&sessionResult.value.owner===true?sessionResult.value:null;
-  if(session){try{ownerContent=await request('api/owner/content');}catch{ownerContent=null;}}
+  const [baseResult,publicResult,sessionResult] = await Promise.allSettled([request('assets/site-content.json'),request('api/content'),request('api/owner/session')]);
+  let ownerContent = null, ownerContentError = null;
+  const session = sessionResult.status === 'fulfilled' && sessionResult.value.owner === true ? sessionResult.value : null;
+  const sessionError = sessionResult.status === 'rejected' ? sessionResult.reason : session ? null : connectionError('The owner service returned an unexpected response. Reconnect to try again.', 'invalid_session');
+  if (session) {
+    try {
+      const candidate = await request('api/owner/content');
+      if (!Number.isInteger(candidate.revision) || candidate.revision < 0 || (candidate.content === null && candidate.revision !== 0)) throw connectionError('The website content response could not be verified.', 'invalid_content_response');
+      if (candidate.content !== null) validateSiteContent(candidate.content);
+      ownerContent = candidate;
+    } catch (error) { ownerContentError = error; }
+  }
+  applyConnection(session,ownerContent,sessionError,ownerContentError);
   try {
     const remote=ownerContent|| (publicResult.status==='fulfilled'?publicResult.value:null);const base=baseResult.status==='fulfilled'?baseResult.value:null;const published=validateSiteContent(remote?.content||base);state.published=clone(published);state.content=clone(published);state.serverRevision=Number.isInteger(remote?.revision)?remote.revision:0;state.baseRevision=state.serverRevision;state.ownerComplete=Boolean(session&&ownerContent)||state.serverRevision===0;state.savedAt=null;state.hasDraft=false;state.dirty=false;
     let draftIssue='';try{const raw=localStorage.getItem(DRAFT_KEY);if(raw){const saved=restoreDraft(JSON.parse(raw),state.serverRevision);state.content=saved.content;state.baseRevision=saved.baseRevision;state.ownerComplete=saved.ownerComplete;state.savedAt=saved.savedAt;state.hasDraft=true;if(!state.ownerComplete)draftIssue=INCOMPLETE_DRAFT_MESSAGE;else if(state.baseRevision!==state.serverRevision)draftIssue='The published site has changed since this draft was saved. Export your draft before reloading published content.';}}catch{draftIssue='Your saved draft could not be loaded. Published content is shown; the saved file has not been overwritten.';}
-    state.selectedPerson=state.content.people[0]?.id||null;applyConnection(session,ownerContent,sessionResult.status==='rejected'?sessionResult.reason:null);renderAll();['save-draft','export-content','settings-export','import-content','discard-draft'].forEach(id=>$('#'+id).disabled=false);$('#add-person').disabled=state.content.people.length>=20;
+    state.selectedPerson=state.content.people[0]?.id||null;renderAll();['save-draft','export-content','settings-export','import-content','discard-draft'].forEach(id=>$('#'+id).disabled=false);$('#add-person').disabled=state.content.people.length>=20;
     if(draftIssue)status(draftIssue,true);else status('');if(state.authenticated)loadStats();
-  } catch {status('The website content could not be loaded. Please refresh to try again. Your saved draft has not been changed.',true);}
+  } catch {status('The website content could not be loaded. Please reconnect to try again. Your saved draft has not been changed.',true);}
 }
 activatePanel(location.hash.slice(1).replace(/^panel-/,'')||'overview',false);
 initialize();
