@@ -17,6 +17,10 @@ npm run build
 
 The build copies only website files into `dist/`; source tooling and work files are excluded.
 
+## GitHub Pages preview
+
+The site can be served directly from the repository root. In the repository's **Settings → Pages**, choose **Deploy from a branch**, select **main** and **/ (root)**, then save. The expected preview address is `https://ammarashary14.github.io/its/` once GitHub reports a successful deployment. `.nojekyll` keeps GitHub from processing this static site through Jekyll. All asset and page links are relative, so the `/its/` project path works without changes. The Cloudflare-only `_headers` file is not applied by GitHub Pages.
+
 ## Cloudflare Pages — after content approval
 
 Connect `ammarashary14/its` to Cloudflare Pages. Use no framework preset, `npm run build` as the build command, and `dist` as the output directory. Set the production branch to `main`. Add the custom domain after deployment. No Cloudflare project or deployment has been created as part of this draft.
