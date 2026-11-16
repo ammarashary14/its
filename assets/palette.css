@@ -1,0 +1,83 @@
+/* Color only: warm beige with distinct, gentle colors for each kind of content. */
+:root {
+  --paper: #f1e7d8;
+  --ink: #2c3933;
+  --muted: #526056;
+  --accent: #355e4c;
+  --accent-hover: #284b3c;
+  --on-accent: #fffaf0;
+  --surface: #fff8ec;
+  --surface-soft: #e9eadc;
+  --surface-raised: #f8efdf;
+  --sand: #f1e2b5;
+  --sage: #deeadb;
+  --sky: #dfecef;
+  --clay: #f2ddcf;
+  --line: #c9c5b5;
+  --closing: #deeadb;
+  --closing-text: #2c3933;
+  --shadow: #384b3b0c;
+  --warm-mark: #b46845;
+}
+
+:root[data-theme="dark"] {
+  --paper: #222a27;
+  --ink: #f5f0e5;
+  --muted: #c0c8be;
+  --accent: #b9d5be;
+  --accent-hover: #cfe5d2;
+  --on-accent: #21392c;
+  --surface: #2d3731;
+  --surface-soft: #344238;
+  --surface-raised: #373d34;
+  --sand: #4c4530;
+  --sage: #344a3c;
+  --sky: #30434c;
+  --clay: #4d3c34;
+  --line: #566259;
+  --closing: #344a3c;
+  --closing-text: #f5f0e5;
+  --shadow: #00000018;
+  --warm-mark: #dfa983;
+}
+
+/* Cream frames the page; colored panels keep the beige from feeling flat. */
+.site-header, .site-footer { background-color: var(--surface); }
+.brand-mark { color: var(--accent); }
+.home-notebook { background-color: var(--sky); }
+.home-note-snake { background-color: var(--surface); }
+.home-note-ring { background-color: var(--clay); }
+.home-note-mark { color: var(--warm-mark); }
+.home-rich .home-route-learn { background-color: var(--sage); }
+.home-rich .home-route-support { background-color: var(--sky); }
+.home-rich .home-route-connect { background-color: var(--clay); }
+.home-rich .home-invitation .eyebrow { color: inherit; }
+.hero .highlight-word svg { stroke: var(--warm-mark); }
+
+/* Clear color cues for learning, community, and ways to get involved. */
+.grade-tabs { background-color: var(--sky); }
+.grade-tab[aria-selected="true"] { background-color: var(--accent); color: var(--on-accent); }
+.grade-tab[aria-selected="true"] span { color: inherit; }
+.activity-card { background-color: var(--sand); }
+.skill-tags>span { background-color: var(--sage); }
+.learning-notebook, .curriculum-notebook, .sponsor-notebook { background-color: var(--sky); }
+.application-prompts, .application-email-note { background-color: var(--sage); }
+.team-callout { background-color: var(--sage); }
+.staff-avatar svg { filter: none; }
+.photo-frame img, .belief-photo>img { filter: none; }
+.community-page .community-panel { background-color: var(--sky); }
+.community-social-section, .contact-note, .school-inquiry-details { background-color: var(--sage); }
+.school-logo { background-color: var(--sage); }
+.school-card:nth-child(3n + 2) .school-logo { background-color: var(--sky); }
+.school-card:nth-child(3n) .school-logo { background-color: var(--clay); }
+.sponsor-inquiry, .donate-pending { background-color: var(--clay); }
+.donation-sketch { background-color: var(--sky); }
+.donate-options>a:first-child { background-color: var(--sage); }
+.donate-options>a:nth-child(2) { background-color: var(--clay); }
+.calendar-agenda { background-color: var(--sky); }
+.calendar-upcoming-list>li:nth-child(3n + 1) { background-color: var(--sage); }
+.calendar-upcoming-list>li:nth-child(3n + 2) { background-color: var(--sky); }
+.calendar-upcoming-list>li:nth-child(3n) { background-color: var(--clay); }
+
+/* Keep the decorative underline warm in both modes. */
+[data-theme="dark"] .hero .highlight-word svg { stroke: var(--warm-mark); }
