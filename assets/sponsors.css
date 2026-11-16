@@ -1,0 +1,46 @@
+/* Sponsorship: useful support, drawn like an open field notebook. */
+.sponsors-page h1,.sponsors-page h2,.sponsors-page h3{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:-.035em}
+.sponsors-page h1 em,.sponsors-page h2 em{font-weight:400}
+.sponsor-hero{display:grid;grid-template-columns:1.1fr 1fr;align-items:center;gap:70px;padding-block:55px 48px}
+.sponsor-hero h1{font-size:clamp(44px,4.7vw,67px);line-height:1.07;margin:0 0 25px}
+.sponsor-hero-copy>.eyebrow{margin-bottom:19px}
+.sponsor-hero-copy>p:not(.eyebrow){font-size:13px;line-height:1.85;color:var(--muted);max-width:500px}
+.sponsor-hero-copy>.sponsor-lead{font-size:17px;color:var(--ink);line-height:1.65;max-width:450px;margin-bottom:16px}
+.sponsor-hero .button{margin-top:12px;font-size:12px}
+.sponsor-notebook{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:4px;position:relative;padding:23px 28px 31px;box-shadow:7px 7px 0 var(--surface-soft);transform:rotate(1.3deg)}
+.sponsor-notebook:before{position:absolute;content:'';inset:58px 0 0;background:repeating-linear-gradient(transparent 0,transparent 29px,var(--line) 30px,transparent 31px);opacity:.35;pointer-events:none}
+.sponsor-notebook-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:8px;letter-spacing:.13em;color:var(--muted);font-weight:700;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.sponsor-sketch{display:block;width:100%;stroke:var(--accent);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;position:relative}
+.sponsor-sketch .sketch-fill{fill:var(--surface)}
+.sponsor-sketch .sketch-orbit{stroke-width:1.5;stroke-dasharray:4 8;opacity:.7}
+.sponsor-sketch .sketch-faint{opacity:.5;stroke-width:1.6}
+.sponsor-notebook figcaption{text-align:center;font:400 26px/1.25 Georgia,'Times New Roman',serif;position:relative;margin-top:-5px}
+.sponsor-notebook figcaption em{font-size:24px}
+.sponsor-roster{display:grid;grid-template-columns:1fr 1fr;gap:35px;align-items:center;padding-block:34px 38px;border-block:1px solid var(--line)}
+.sponsor-roster .eyebrow{margin-bottom:11px}
+.sponsor-roster h2{font-size:30px;margin:0;max-width:360px}
+.sponsor-roster-note{display:flex;align-items:center;gap:23px}
+.sponsor-seal{display:grid;place-items:center;border:1px solid var(--line);width:62px;height:62px;flex-shrink:0;border-radius:50%;font-size:35px;line-height:1;color:var(--accent)}
+.sponsor-roster-note p{font-size:12px;line-height:1.8;color:var(--muted);margin:0}
+.sponsor-roster-note strong{font-size:13px;font-weight:600;color:var(--ink)}
+.sponsor-support{padding-block:62px 57px}
+.sponsor-section-heading{display:flex;justify-content:space-between;gap:40px;align-items:flex-end;margin-bottom:30px}
+.sponsor-section-heading .eyebrow{margin-bottom:14px}
+.sponsor-section-heading h2{font-size:42px;line-height:1.1;margin:0}
+.sponsor-section-heading>p{max-width:375px;margin:0 0 3px;font-size:13px;color:var(--muted);line-height:1.85}
+.sponsor-pathway{display:grid;grid-template-columns:58px minmax(0,1fr) 220px;align-items:start;gap:25px;border-top:1px solid var(--line);padding-block:26px}
+.sponsor-pathway:last-child{border-bottom:1px solid var(--line)}
+.sponsor-number{font:italic 27px/1.2 Georgia,'Times New Roman',serif;color:var(--accent)}
+.sponsor-pathway h3{font-size:27px;margin-bottom:10px}
+.sponsor-pathway p{font-size:13px;color:var(--muted);line-height:1.8;max-width:560px;margin:0}
+.sponsor-pathway>.sponsor-pathway-note{font-size:11px;padding-left:22px;border-left:1px solid var(--line);margin-top:3px;line-height:1.7}
+.sponsor-inquiry{display:grid;grid-template-columns:1.4fr 1fr;gap:70px;align-items:center;background:var(--surface-soft);padding:37px 44px 40px;margin-bottom:65px;border-radius:5px;border:1px solid var(--line)}
+.sponsor-inquiry .eyebrow{margin-bottom:13px}
+.sponsor-inquiry h2{font-size:36px;margin-bottom:15px}
+.sponsor-inquiry>div>p:not(.eyebrow){font-size:13px;color:var(--muted);line-height:1.8;max-width:450px;margin-bottom:23px}
+.sponsor-note{border-left:1px solid var(--line);padding-left:42px}
+.sponsor-note-label{font-size:8px;letter-spacing:.11em;color:var(--muted);font-weight:700;display:block;margin-bottom:16px}
+.sponsor-note>p{font:400 28px/1.25 Georgia,'Times New Roman',serif;margin-bottom:20px}
+.sponsor-note .text-link{font-size:11px}
+@media(max-width:950px){.sponsor-hero{gap:35px}.sponsor-hero h1{font-size:48px}.sponsor-notebook{padding:20px}.sponsor-notebook figcaption{font-size:23px}.sponsor-notebook figcaption em{font-size:22px}.sponsor-pathway{grid-template-columns:42px minmax(0,1fr) 150px;gap:20px}.sponsor-inquiry{gap:30px;padding:30px}.sponsor-note{padding-left:28px}.sponsor-section-heading>p{max-width:320px}}
+@media(max-width:650px){.sponsor-hero{grid-template-columns:1fr;gap:32px;padding-block:34px 38px}.sponsor-hero h1{font-size:47px;line-height:1.06}.sponsor-hero-copy>.sponsor-lead{font-size:16px;max-width:100%}.sponsor-hero-copy>p:not(.eyebrow){font-size:12px}.sponsor-hero-copy>.sponsor-lead{font-size:16px}.sponsor-hero .button{margin-top:8px}.sponsor-notebook{max-width:420px;width:calc(100% - 10px);justify-self:center;padding:20px 22px 26px}.sponsor-notebook figcaption{font-size:25px}.sponsor-roster{grid-template-columns:1fr;gap:23px;padding-block:28px}.sponsor-roster h2{font-size:29px;max-width:none}.sponsor-roster-note{gap:18px}.sponsor-seal{width:49px;height:49px;font-size:28px}.sponsor-roster-note p{font-size:11px}.sponsor-roster-note strong{font-size:12px}.sponsor-support{padding-block:37px}.sponsor-section-heading{display:block;margin-bottom:25px}.sponsor-section-heading h2{font-size:36px;margin-bottom:19px}.sponsor-section-heading>p{max-width:none;font-size:12px}.sponsor-pathway{grid-template-columns:31px minmax(0,1fr);gap:14px;padding-block:23px}.sponsor-number{font-size:22px}.sponsor-pathway h3{font-size:26px}.sponsor-pathway p{font-size:12px}.sponsor-pathway>.sponsor-pathway-note{grid-column:2;padding:0;border:0;font-size:10px;max-width:none;margin:0}.sponsor-pathway-note br{display:none}.sponsor-inquiry{grid-template-columns:1fr;gap:28px;margin-bottom:40px;padding:25px}.sponsor-inquiry h2{font-size:32px}.sponsor-inquiry>div>p:not(.eyebrow){font-size:12px}.sponsor-note{border-left:0;border-top:1px solid var(--line);padding:24px 0 0}.sponsor-note>p{font-size:27px;margin-bottom:15px}.sponsor-note>p br{display:none}}

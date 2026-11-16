@@ -14,7 +14,10 @@
   <link rel="stylesheet" href="assets/theme.css?v=photo-10">
   <link rel="stylesheet" href="assets/owner.css?v=photo-10">
   <link rel="stylesheet" href="assets/photo-cropper.css?v=photo-10">
-  <script type="module" src="assets/owner.js?v=photo-10"></script>
+  <link rel="stylesheet" href="assets/owner-schools.css?v=full-11">
+  <script type="module" src="assets/owner.js?v=full-11"></script>
+  <link rel="stylesheet" href="assets/owner-applications.css?v=full-11">
+  <script type="module" src="assets/owner-applications.js?v=full-11"></script>
 </head>
 <body class="owner-body">
   <a class="skip-link" href="#owner-main">Skip to dashboard</a>
@@ -26,6 +29,7 @@
         <button type="button" data-panel="overview" aria-current="page"><span aria-hidden="true">◫</span>Overview</button>
         <button type="button" data-panel="content"><span aria-hidden="true">≡</span>Site content</button>
         <button type="button" data-panel="people"><span aria-hidden="true">♧</span>Team profiles</button>
+        <button type="button" data-panel="schools"><span aria-hidden="true">⌂</span>Schools served</button>
         <button type="button" data-panel="applications"><span aria-hidden="true">▤</span>Applications</button>
         <button type="button" data-panel="traffic"><span aria-hidden="true">↗</span>Traffic stats</button>
         <button type="button" data-panel="settings"><span aria-hidden="true">⚙</span>Settings</button>
@@ -49,7 +53,7 @@
 
         <section class="owner-panel" id="panel-content" aria-labelledby="heading-content" hidden>
           <div class="owner-section-intro"><p class="eyebrow">THE WORDS THAT WELCOME PEOPLE</p><h2 id="heading-content" tabindex="-1">Site content.</h2><p>Edit the words across your website pages. Your changes stay in draft until published.</p></div>
-          <div class="owner-editor-header"><p>Text only · Your layout and illustrations stay in place.</p><div class="owner-page-previews"><a class="owner-inline-button" href="index.html?preview=1" data-preview target="_blank" rel="noopener">Home ↗</a><a class="owner-inline-button" href="curriculum.html?preview=1" data-preview target="_blank" rel="noopener">Curriculum ↗</a><a class="owner-inline-button" href="community.html?preview=1" data-preview target="_blank" rel="noopener">Community ↗</a><a class="owner-inline-button" href="contact.html?preview=1" data-preview target="_blank" rel="noopener">Contact ↗</a><a class="owner-inline-button" href="tutoring.html?preview=1" data-preview target="_blank" rel="noopener">Tutoring ↗</a></div></div>
+          <div class="owner-editor-header"><p>Text only · Your layout and illustrations stay in place.</p><div class="owner-page-previews"><a class="owner-inline-button" href="index.html?preview=1" data-preview target="_blank" rel="noopener">Home ↗</a><a class="owner-inline-button" href="curriculum.html?preview=1" data-preview target="_blank" rel="noopener">Curriculum ↗</a><a class="owner-inline-button" href="community.html?preview=1" data-preview target="_blank" rel="noopener">Community ↗</a><a class="owner-inline-button" href="contact.html?preview=1" data-preview target="_blank" rel="noopener">Contact ↗</a><a class="owner-inline-button" href="tutoring.html?preview=1" data-preview target="_blank" rel="noopener">Tutoring ↗</a><a class="owner-inline-button" href="schools.html?preview=1" data-preview target="_blank" rel="noopener">Schools ↗</a><a class="owner-inline-button" href="donate.html?preview=1" data-preview target="_blank" rel="noopener">Donate ↗</a></div></div>
           <form id="site-content-form" class="owner-content-form" autocomplete="off"><div id="content-fields"></div></form>
         </section>
 
@@ -59,10 +63,26 @@
           <div class="owner-people-layout"><div><div id="people-list" class="owner-people-list" aria-label="Choose a team profile"></div><p class="owner-card-footnote">Drag-free ordering: use the up and down buttons on a profile.</p></div><div class="owner-profile-workspace"><div id="person-editor" class="owner-card"></div><div class="owner-profile-preview"><p class="eyebrow">PROFILE PREVIEW</p><article id="person-preview"></article></div></div></div>
         </section>
 
-        <section class="owner-panel" id="panel-applications" aria-labelledby="heading-applications" hidden>
-          <div class="owner-section-intro"><p class="eyebrow">WELCOME YOUR NEXT VOLUNTEERS</p><h2 id="heading-applications" tabindex="-1">Applications.</h2><p>Shape the questions you ask and keep the next step clear.</p></div>
-          <div class="owner-two-column"><article class="owner-card"><span class="owner-card-icon" aria-hidden="true">▤</span><h2>Your volunteer form.</h2><p>Edit questions, change required answers, and reorder the application in the form editor.</p><p class="owner-card-footnote">Question changes use the application editor’s own draft and export flow.</p><a class="owner-primary" href="editor.html">Open application editor ↗</a><a class="owner-secondary" href="apply.html?published=1" target="_blank" rel="noopener">View published application ↗</a></article><article class="owner-card"><span class="owner-card-icon" aria-hidden="true">↗</span><h2>Delivered to your inbox.</h2><p>Submitted applications arrive at <strong>ammarashary@gmail.com</strong>. This dashboard does not store or display applicants’ personal information.</p><a class="owner-inline-button" href="https://mail.google.com/mail/u/?authuser=ammarashary%40gmail.com#search/from%3Aformsubmit.co" target="_blank" rel="noopener">Open application emails ↗</a><p class="owner-card-footnote">Application counts aren’t available here. Check your inbox for submissions.</p></article></div>
+        <section class="owner-panel" id="panel-schools" aria-labelledby="heading-schools" hidden>
+          <div class="owner-section-intro"><p class="eyebrow">LEARNING IN OUR COMMUNITIES</p><h2 id="heading-schools" tabindex="-1">Schools served.</h2><p>Add the schools BTS currently works with. Only include details you’re ready to share publicly.</p></div>
+          <div class="owner-editor-header"><button id="add-school" type="button" class="owner-primary" disabled>Add a school +</button><a class="owner-inline-button" href="schools.html?preview=1" data-preview target="_blank" rel="noopener">Preview schools page ↗</a></div>
+          <div id="school-fields" class="owner-content-form"></div>
         </section>
+
+        <section class="owner-panel" id="panel-applications" aria-labelledby="heading-applications" hidden>
+          <div class="owner-section-intro"><p class="eyebrow">WELCOME YOUR NEXT VOLUNTEERS</p><h2 id="heading-applications" tabindex="-1">Applications.</h2><p>Read applications, write your decision messages, and review each email before sending.</p></div>
+          <div class="owner-application-tools"><a class="owner-secondary" href="editor.html">Edit application questions ↗</a><a class="owner-inline-button" href="apply.html?published=1" target="_blank" rel="noopener">View application ↗</a><a class="owner-inline-button" href="https://mail.google.com/mail/u/?authuser=ammarashary%40gmail.com#search/from%3Aformsubmit.co" target="_blank" rel="noopener">Existing application emails ↗</a></div>
+          <div id="owner-applications-workspace">
+            <p id="application-connection" class="owner-card-footnote">Connect Cloudflare to review new applications here. Existing FormSubmit applications remain in your email inbox.</p>
+            <p id="applications-status" class="owner-status" role="status" aria-live="polite"></p>
+            <section class="owner-card application-inbox-card" aria-labelledby="application-inbox-title"><div class="owner-card-heading"><div><h3 id="application-inbox-title">Application inbox</h3><p id="application-inbox-count" class="owner-card-footnote">Not connected</p></div><button type="button" id="refresh-applications" class="owner-secondary">Refresh inbox ↻</button></div><div class="application-review-layout"><div id="application-inbox" aria-label="Choose an application"></div><article id="application-detail"></article></div></section>
+            <section class="owner-card application-templates" aria-labelledby="email-templates-title"><p class="eyebrow">IN YOUR OWN WORDS</p><h3 id="email-templates-title">Email messages</h3><p class="owner-card-footnote">Write the messages applicants receive when you accept or reject them. Use <code>{{name}}</code>, <code>{{email}}</code>, or <code>{{reference}}</code> to personalize each message. Saving a template never sends an email.</p><div class="decision-template-grid">
+              <section aria-labelledby="acceptance-template-title"><h4 id="acceptance-template-title">Acceptance message</h4><label class="owner-field" for="template-accepted-subject">Email subject<input id="template-accepted-subject" type="text" maxlength="200" data-template-input></label><label class="owner-field" for="template-accepted-body">Your message<textarea id="template-accepted-body" rows="8" maxlength="10000" data-template-input placeholder="Hi {{name}},"></textarea></label><details class="template-sample"><summary>Preview with a sample applicant</summary><p class="owner-card-footnote">Sample only · sample@example.com · BTS-SAMPLE</p><strong id="template-accepted-preview-subject"></strong><pre id="template-accepted-preview-body"></pre></details></section>
+              <section aria-labelledby="rejection-template-title"><h4 id="rejection-template-title">Rejection message</h4><label class="owner-field" for="template-rejected-subject">Email subject<input id="template-rejected-subject" type="text" maxlength="200" data-template-input></label><label class="owner-field" for="template-rejected-body">Your message<textarea id="template-rejected-body" rows="8" maxlength="10000" data-template-input placeholder="Hi {{name}},"></textarea></label><details class="template-sample"><summary>Preview with a sample applicant</summary><p class="owner-card-footnote">Sample only · sample@example.com · BTS-SAMPLE</p><strong id="template-rejected-preview-subject"></strong><pre id="template-rejected-preview-body"></pre></details></section>
+            </div><p id="template-draft-state" class="owner-card-footnote"></p><div class="application-template-actions"><button type="button" id="save-template-draft" class="owner-secondary">Save message draft</button><button type="button" id="save-email-templates" class="owner-primary" disabled>Save messages to server</button><button type="button" id="export-email-templates" class="owner-inline-button">Export messages ↓</button><button type="button" id="import-email-templates" class="owner-inline-button">Import messages ↑</button><button type="button" id="load-server-templates" class="owner-inline-button" disabled>Load saved messages</button></div><input type="file" id="email-template-file" accept="application/json,.json" hidden><p class="owner-card-footnote">Message drafts stay on this device until you save them to the connected server. They are separate from the website content draft. Applicant records are never stored in this browser.</p></section>
+          </div>
+        </section>
+
 
         <section class="owner-panel" id="panel-traffic" aria-labelledby="heading-traffic" hidden>
           <div class="owner-section-intro"><p class="eyebrow">UNDERSTAND YOUR REACH</p><h2 id="heading-traffic" tabindex="-1">Traffic stats.</h2><p>See how people reach the website once Cloudflare analytics is connected.</p></div>

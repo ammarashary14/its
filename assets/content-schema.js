@@ -1,6 +1,6 @@
 /** Shared browser/Cloudflare schema. This file contains no private owner data. */
 export const SITE_DRAFT_KEY = 'bts-site-draft-v1';
-export const CONTENT_LIMITS = Object.freeze({ people: 20, photo: 350 * 1024, document: Math.floor(1.8 * 1024 * 1024) });
+export const CONTENT_LIMITS = Object.freeze({ people: 20, schools: 30, photo: 350 * 1024, document: Math.floor(1.8 * 1024 * 1024) });
 const homeFields = Object.freeze({
   headline: 160, headlineAccent: 160, description: 2000,
   curriculumTitle: 160, curriculumAccent: 160, curriculumIntro: 2000,
@@ -14,7 +14,9 @@ export const COMMUNITY_DEFAULTS = Object.freeze({
   name: 'Breaking the Sky community',
   description: 'Join our Discord community for updates, conversations, and ways to get involved.',
   discordInvite: '',
-  email: 'ammarashary@gmail.com'
+  email: 'ammarashary@gmail.com',
+  instagram: '',
+  facebook: ''
 });
 export const SITE_TEXT_FIELDS = Object.freeze({ home: homeFields, team: teamFields, community: communityFields });
 function object(value, label) {
@@ -55,11 +57,71 @@ function discordInvite(value) {
   if (result && !/^https:\/\/(?:discord\.gg\/|discord\.com\/invite\/)[A-Za-z0-9_-]{2,100}\/?$/.test(result)) throw new Error('Use a discord.gg or discord.com/invite server invitation link.');
   return result;
 }
+function socialProfile(value, platform) {
+  const label = platform === 'instagram' ? 'Instagram' : 'Facebook';
+  const result = text(value === undefined ? '' : value, `${label} profile link`, 500, true);
+  if (!result) return '';
+  const invalid = () => new Error(`Use a full https://${platform}.com profile or page link, or leave it blank.`);
+  if (/[\s\\\x00-\x1f\x7f]/.test(result)) throw invalid();
+  let url;
+  try { url = new URL(result); } catch { throw invalid(); }
+  const hosts = platform === 'instagram' ? ['instagram.com', 'www.instagram.com'] : ['facebook.com', 'www.facebook.com', 'm.facebook.com'];
+  if (url.protocol !== 'https:' || !hosts.includes(url.hostname) || url.username || url.password || url.port) throw invalid();
+  const path = url.pathname;
+  if (platform === 'instagram') {
+    if (!/^\/[A-Za-z0-9._]{1,30}\/?$/.test(path) || /^\/(?:accounts|explore|direct|p|reel|reels|stories|about|developer|legal|privacy|web)\/?$/i.test(path)) throw invalid();
+    url.search = '';
+  } else if (path === '/profile.php') {
+    const id = url.searchParams.get('id');
+    if (!id || !/^\d{3,30}$/.test(id)) throw invalid();
+    url.search = `?id=${id}`;
+  } else {
+    if (!/^\/(?:[A-Za-z0-9.]{2,100}\/?|(?:people|pages)\/[A-Za-z0-9._-]{1,150}\/\d{3,30}\/?)$/.test(path) || /^\/(?:l.php|login|login.php|logout.php|dialog|share|sharer|sharer.php|watch|reel|reels|photo|photos|help|privacy|policies|marketplace|gaming|groups|events|settings|people|pages)\/?$/i.test(path)) throw invalid();
+    url.search = '';
+  }
+  url.hash = '';
+  return url.href;
+}
 function community(value) {
   const result = section(value, communityFields, 'Community');
   result.discordInvite = discordInvite(value.discordInvite);
   result.email = emailAddress(value.email, 'Community email');
+  result.instagram = socialProfile(value.instagram, 'instagram');
+  result.facebook = socialProfile(value.facebook, 'facebook');
   return result;
+}
+function externalWebsite(value, label) {
+  const result = text(value === undefined ? '' : value, label, 1000, true);
+  if (!result) return '';
+  const invalid = () => new Error(`${label} must be a full HTTPS link without a username or password.`);
+  if (/[\s\\\x00-\x1f\x7f]/.test(result)) throw invalid();
+  let url;
+  try { url = new URL(result); } catch { throw invalid(); }
+  if (url.protocol !== 'https:' || !url.hostname.includes('.') || url.username || url.password || url.port) throw invalid();
+  return url.href;
+}
+function schools(value) {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.length > CONTENT_LIMITS.schools) throw new Error('Keep no more than 30 school partnerships.');
+  const ids = new Set();
+  return value.map((school, index) => {
+    object(school, `School ${index + 1}`);
+    if (typeof school.id !== 'string' || !/^[a-z][a-z0-9-]{0,49}$/.test(school.id) || ids.has(school.id) || ['__proto__', 'constructor', 'prototype'].includes(school.id)) throw new Error(`School ${index + 1} needs a unique valid ID.`);
+    ids.add(school.id);
+    return {
+      id: school.id,
+      name: text(school.name, `School ${index + 1} name`, 160),
+      location: text(school.location === undefined ? '' : school.location, `School ${index + 1} location`, 160, true),
+      grades: text(school.grades === undefined ? '' : school.grades, `School ${index + 1} grades`, 100, true),
+      description: text(school.description === undefined ? '' : school.description, `School ${index + 1} description`, 1000, true),
+      website: externalWebsite(school.website, `School ${index + 1} website`)
+    };
+  });
+}
+function donation(value) {
+  if (value === undefined) return { url: '' };
+  object(value, 'Donation settings');
+  return { url: externalWebsite(value.url, 'Donation link') };
 }
 export function validateSiteContent(value) {
   object(value, 'Site content');
@@ -71,6 +133,8 @@ export function validateSiteContent(value) {
     home: section(value.home, homeFields, 'Homepage'),
     team: section(value.team, teamFields, 'Team page', ['titleAccent']),
     community: community(value.community === undefined ? COMMUNITY_DEFAULTS : value.community),
+    schools: schools(value.schools),
+    donation: donation(value.donation),
     people: value.people.map((person, index) => {
       object(person, `Profile ${index + 1}`);
       if (typeof person.id !== 'string' || !/^[a-z][a-z0-9-]{0,49}$/.test(person.id) || ids.has(person.id) || ['__proto__', 'constructor', 'prototype'].includes(person.id)) throw new Error(`Profile ${index + 1} needs a unique valid ID.`);

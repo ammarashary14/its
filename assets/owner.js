@@ -1,4 +1,4 @@
-import { validateSiteContent } from './content-schema.js?v=owner-8';
+import { validateSiteContent } from './content-schema.js?v=full-11';
 import { editProfilePhoto } from './photo-cropper.js?v=photo-10';
 
 const DRAFT_KEY = 'bts-site-draft-v1';
@@ -16,7 +16,7 @@ function restoreDraft(value, serverRevision) {
   return { content, baseRevision, ownerComplete, savedAt: envelope && typeof value.savedAt === 'string' ? value.savedAt : null };
 }
 function draftEnvelope(content = state.content, savedAt = state.savedAt) { return { content, baseRevision: state.baseRevision, ownerComplete: state.ownerComplete, savedAt }; }
-const sectionNames = { overview: 'Overview', content: 'Site content', people: 'Team profiles', applications: 'Applications', traffic: 'Traffic stats', settings: 'Settings' };
+const sectionNames = { overview: 'Overview', content: 'Site content', people: 'Team profiles', schools: 'Schools served', applications: 'Applications', traffic: 'Traffic stats', settings: 'Settings' };
 const contentGroups = [
   ['Homepage introduction', 'The first words visitors see.', [['home.headline','Headline',160],['home.headlineAccent','Second headline line',160],['home.description','Introduction',2000,true]]],
   ['Curriculum', 'Introduce math and science learning at each grade.', [['home.curriculumTitle','Heading',160],['home.curriculumAccent','Second heading line',160],['home.curriculumIntro','Curriculum description',2000,true]]],
@@ -24,6 +24,8 @@ const contentGroups = [
   ['1-on-1 tutoring', 'Help students understand the support available.', [['home.tutoringTitle','Heading',160],['home.tutoringAccent','Second heading line',160],['home.tutoringIntro','Tutoring introduction',2000,true]]],
   ['Contact', 'A clear invitation to get in touch.', [['home.contactIntro','Contact introduction',2000,true]]],
   ['Community', 'Add a Discord invitation and the public community email address.', [['community.name','Community name',100],['community.description','Community introduction',1000,true],['community.discordInvite','Discord server invite (optional)',200,false,true],['community.email','Public contact email',254]]],
+  ['Social media', 'Add your BTS profiles to the Community page and website footer. Leave a link blank until the account is ready.', [['community.instagram','Instagram profile link (optional)',500,false,true],['community.facebook','Facebook page or profile link (optional)',500,false,true]]],
+  ['Donations', 'Add the HTTPS link to your organization’s donation provider. Leave it blank until you are ready to accept donations.', [['donation.url','Donation link (optional)',1000,false,true]]],
   ['Team page', 'Set the scene before visitors meet your people.', [['team.title','Heading',160],['team.titleAccent','Second heading line (optional)',160,false,true],['team.intro','Team introduction',2000,true],['team.sectionIntro','Introduction above profiles',2000,true]]]
 ];
 
@@ -77,7 +79,7 @@ function renderContentFields() {
     const group=node('section','owner-content-group');group.append(node('h2','',heading),node('p','',description)); const grid=node('div','owner-field-grid');
     fields.forEach(([path,label,limit,multiline,optional])=>{
       const field=node('label','owner-field'+(multiline?' full-width':''),label); const input=node(multiline?'textarea':'input');input.id='edit-'+path.replace('.','-');input.dataset.contentPath=path;input.value=getPath(state.content,path);input.maxLength=limit;input.required=!optional;
-      if(multiline)input.rows=4;else input.type=path==='community.email'?'email':path==='community.discordInvite'?'url':'text';field.htmlFor=input.id;field.append(input);grid.append(field);
+      if(multiline)input.rows=4;else input.type=path==='community.email'?'email':['community.discordInvite','community.instagram','community.facebook','donation.url'].includes(path)?'url':'text';field.htmlFor=input.id;field.append(input);if(path==='community.instagram')input.placeholder='https://www.instagram.com/your-account/';if(path==='community.facebook')input.placeholder='https://www.facebook.com/your-page/';grid.append(field);
     }); group.append(grid);container.append(group);
   });
 }
@@ -108,7 +110,28 @@ function renderPersonEditor() {
   const cropPhoto=node('button','owner-secondary','Crop / adjust photo');cropPhoto.type='button';cropPhoto.dataset.personAction='crop-photo';cropPhoto.disabled=!person.photo;photos.append(cropPhoto);
   const removePhoto=node('button','owner-inline-button','Remove photo');removePhoto.type='button';removePhoto.dataset.personAction='remove-photo';removePhoto.disabled=!person.photo;photos.append(removePhoto);form.append(photos);container.append(form);renderPersonPreview();
 }
-function renderAll() { renderContentFields();renderOverview();renderPeopleList();renderPersonEditor();updateDraftState(); }
+function renderSchools() {
+  const container = $('#school-fields'); container.replaceChildren();
+  const schools = state.content.schools;
+  $('#add-school').disabled = schools.length >= 30 || state.loading || state.photoBusy;
+  if (!schools.length) container.append(node('p', 'owner-card owner-school-empty', 'No schools added yet. Add the schools BTS currently works with when you’re ready to share them.'));
+  schools.forEach((school, index) => {
+    const card = node('section', 'owner-content-group owner-school-editor'); card.dataset.schoolId = school.id;
+    const heading = node('div', 'owner-school-heading');
+    const title = node('h3', '', school.name || 'New school'); title.dataset.schoolTitle = school.id;
+    const remove = node('button', 'owner-danger', 'Remove'); remove.type = 'button'; remove.dataset.removeSchool = school.id; remove.setAttribute('aria-label', 'Remove ' + (school.name || 'new school'));
+    heading.append(title, remove); card.append(heading);
+    const fields = node('div', 'owner-field-grid');
+    for (const [key, label, maximum, multiline] of [['name','School name',160],['location','City / area (optional)',160],['grades','Grades served (optional)',100],['website','School website (optional)',1000],['description','About this partnership (optional)',1000,true]]) {
+      const field = node('label', 'owner-field' + (multiline ? ' full-width' : ''), label);
+      const input = node(multiline ? 'textarea' : 'input'); input.id = `school-${school.id}-${key}`; input.dataset.schoolField = key; input.value = school[key]; input.maxLength = maximum; input.required = key === 'name';
+      if (multiline) input.rows = 3; else input.type = key === 'website' ? 'url' : 'text';
+      field.htmlFor = input.id; field.append(input); fields.append(field);
+    }
+    card.append(fields); container.append(card);
+  });
+}
+function renderAll() { renderContentFields();renderOverview();renderPeopleList();renderPersonEditor();renderSchools();updateDraftState(); }
 function saveDraft(showMessage = true) {
   try { const content=validateSiteContent(state.content);const savedAt=new Date().toISOString();localStorage.setItem(DRAFT_KEY,JSON.stringify(draftEnvelope(content,savedAt)));state.content=content;state.savedAt=savedAt;state.hasDraft=true;state.dirty=false;updateDraftState();if(showMessage)status(state.ownerComplete?'Draft saved on this device. Visitors still see the published website.':INCOMPLETE_DRAFT_MESSAGE,!state.ownerComplete);return true; }
   catch(error){status(error.name==='QuotaExceededError'?'This device doesn’t have enough space to save the draft. Remove a large photo or export a copy to keep your work.':error.message||'Could not save this draft. Export a copy to keep your work.',true);return false;}
@@ -189,6 +212,24 @@ document.querySelectorAll('[data-panel]').forEach(button=>button.addEventListene
 document.querySelectorAll('[data-open-panel]').forEach(button=>button.addEventListener('click',()=>activatePanel(button.dataset.openPanel)));
 $('#site-content-form').addEventListener('submit',event=>event.preventDefault());
 $('#content-fields').addEventListener('input',event=>{const path=event.target.dataset.contentPath;if(path){setPath(path,event.target.value);markDirty();}});
+$('#school-fields').addEventListener('input',event=>{
+  if (state.loading || state.photoBusy) return;
+  const key = event.target.dataset.schoolField; const id = event.target.closest('[data-school-id]')?.dataset.schoolId;
+  const school = state.content?.schools.find(item => item.id === id); if (!school || !['name','location','grades','website','description'].includes(key)) return;
+  school[key] = event.target.value; markDirty();
+  if (key === 'name') { event.target.closest('[data-school-id]').querySelector('[data-school-title]').textContent = school.name || 'New school'; event.target.closest('[data-school-id]').querySelector('[data-remove-school]').setAttribute('aria-label', 'Remove ' + (school.name || 'new school')); }
+});
+$('#school-fields').addEventListener('click',event=>{
+  if (state.loading || state.photoBusy) return;
+  const button = event.target.closest('[data-remove-school]'); if (!button) return;
+  const school = state.content.schools.find(item => item.id === button.dataset.removeSchool); if (!school || !confirm('Remove ' + (school.name || 'this school') + ' from the draft?')) return;
+  state.content.schools = state.content.schools.filter(item => item.id !== school.id); markDirty(); renderSchools(); $('#add-school').focus({preventScroll:true});
+});
+$('#add-school').addEventListener('click',()=>{
+  if (!state.content || state.loading || state.photoBusy || state.content.schools.length >= 30) return;
+  const id = 'school-' + (crypto.randomUUID?.() || Math.random().toString(36).slice(2)).slice(0,24);
+  state.content.schools.push({id,name:'',location:'',grades:'',description:'',website:''}); markDirty(); renderSchools(); document.getElementById(`school-${id}-name`).focus();
+});
 $('#people-list').addEventListener('click',event=>{const button=event.target.closest('[data-person-id]');if(!button)return;state.selectedPerson=button.dataset.personId;renderPeopleList();renderPersonEditor();});
 $('#person-editor').addEventListener('input',event=>{const key=event.target.dataset.personField;const person=currentPerson();if(!key||!person)return;person[key]=event.target.type==='checkbox'?event.target.checked:event.target.value;markDirty();renderPeopleList();renderPersonPreview();renderOverview();});
 $('#person-editor').addEventListener('change',event=>{if(event.target.id==='person-photo')adjustPhoto(event.target.files[0],state.selectedPerson);});

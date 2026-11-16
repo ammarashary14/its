@@ -21,7 +21,7 @@
   document.addEventListener('click', event => {
     if (!event.target.closest('.site-header')) closeMenu();
   });
-  window.addEventListener('resize', () => { if (window.innerWidth > 950) closeMenu(); });
+  window.addEventListener('resize', () => { if (window.innerWidth > 1230) closeMenu(); });
   document.querySelectorAll('[data-year]').forEach(item => { item.textContent = new Date().getFullYear(); });
 
   // Illustrative curriculum. Replace these examples with approved BTS lessons.

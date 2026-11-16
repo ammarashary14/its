@@ -1,0 +1,2 @@
+.owner-school-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:24px}.owner-school-heading h3{font:400 27px/1.2 Georgia,'Times New Roman',serif;letter-spacing:-.02em;margin:0}.owner-school-heading .owner-danger{flex-shrink:0;margin:0}.owner-school-empty{font-size:14px;line-height:1.8;color:var(--muted)}
+@media(max-width:650px){.owner-school-heading{gap:15px}.owner-school-heading h3{font-size:24px}}

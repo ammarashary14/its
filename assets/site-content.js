@@ -1,4 +1,4 @@
-import { validateSiteContent, SITE_DRAFT_KEY } from './content-schema.js?v=owner-8';
+import { validateSiteContent, SITE_DRAFT_KEY } from './content-schema.js?v=full-11';
 
 const page = document.body?.dataset.page;
 const preview = new URLSearchParams(window.location.search).get('preview') === '1';
@@ -97,6 +97,58 @@ function communityLinks(content) {
   email.append(icon('gmail'), emailText, arrow);
   holder.replaceChildren(discord, email);
 }
+function socialLinks(content) {
+  document.querySelectorAll('[data-social-links]').forEach(holder => {
+    const featured = holder.dataset.socialDisplay === 'community';
+    const items = [];
+    for (const [key, label] of [['instagram', 'Instagram'], ['facebook', 'Facebook']]) {
+      const href = content[key];
+      if (!href && !featured) continue;
+      const item = element(href ? 'a' : 'div', 'social-link' + (href ? '' : ' social-link-pending'));
+      if (href) {
+        item.href = href; item.target = '_blank'; item.rel = 'noopener noreferrer';
+        item.setAttribute('aria-label', `Breaking the Sky on ${label} (opens in a new tab)`);
+      }
+      const caption = element('span', 'social-link-caption');
+      caption.append(element('strong', '', label));
+      if (featured) caption.append(element('small', '', href ? 'Follow Breaking the Sky' : 'Coming soon'));
+      item.append(icon(key), caption);
+      if (href) { const arrow = element('span', 'social-link-arrow', '↗'); arrow.setAttribute('aria-hidden', 'true'); item.append(arrow); }
+      items.push(item);
+    }
+    holder.replaceChildren(...items);
+    holder.hidden = !items.length;
+  });
+}
+function schoolPartners(schools) {
+  document.querySelectorAll('[data-site-schools]').forEach(holder => {
+    if (!schools.length) { holder.replaceChildren(element('p', 'schools-empty', 'School partnerships will appear here.')); return; }
+    holder.replaceChildren(...schools.map(school => {
+      const card = element('article', 'school-card');
+      const copy = element('div', 'school-card-copy');
+      copy.append(element('h2', 'school-name', school.name));
+      const details = [school.location, school.grades].filter(Boolean).join(' · ');
+      if (details) copy.append(element('p', 'school-location', details));
+      if (school.description) copy.append(element('p', 'school-description', school.description));
+      if (school.website) {
+        const link = element('a', 'school-link', 'Visit school website ↗');
+        link.href = school.website; link.target = '_blank'; link.rel = 'noopener noreferrer';
+        link.setAttribute('aria-label', `Visit ${school.name}’s website (opens in a new tab)`);
+        copy.append(link);
+      }
+      card.append(copy);
+      return card;
+    }));
+  });
+}
+function donationLink(settings) {
+  document.querySelectorAll('[data-donation-link]').forEach(link => {
+    link.hidden = !settings.url;
+    if (settings.url) { link.href = settings.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; }
+    else { link.removeAttribute('href'); link.removeAttribute('target'); link.removeAttribute('rel'); }
+  });
+  document.querySelectorAll('[data-donation-empty]').forEach(message => { message.hidden = Boolean(settings.url); });
+}
 export function renderSiteContent(raw) {
   const content = validateSiteContent(raw);
   document.querySelectorAll('[data-site-field]').forEach(node => {
@@ -129,6 +181,9 @@ export function renderSiteContent(raw) {
     if (!cards.length) grid.append(element('p', 'team-empty', 'Meet the people behind BTS here soon.'));
   }
   communityLinks(content.community);
+  socialLinks(content.community);
+  schoolPartners(content.schools);
+  donationLink(content.donation);
   document.dispatchEvent(new CustomEvent('bts:content-updated', { detail: { preview } }));
 }
 function readDraft() {
@@ -181,7 +236,7 @@ async function initialize() {
   else if (publishedContent) renderSiteContent(publishedContent);
   if (preview) showPreviewBanner(Boolean(draft));
 }
-if (['home', 'team', 'curriculum', 'community', 'contact', 'tutoring'].includes(page)) {
+if (['home', 'team', 'curriculum', 'community', 'contact', 'tutoring', 'apply', 'sponsors', 'schools', 'donate'].includes(page)) {
   initialize().catch(() => { /* Keep the complete, server-served HTML if data is unavailable. */ });
   if (preview) window.addEventListener('storage', event => {
     if (event.key !== SITE_DRAFT_KEY) return;

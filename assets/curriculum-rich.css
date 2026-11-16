@@ -1,0 +1,54 @@
+/* The curriculum as an illustrated field guide, with the grade explorer first. */
+.curriculum-page .curriculum-section.section-space { padding-block: 42px 25px; }
+.curriculum-introduction { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(260px,.8fr); align-items: center; gap: 60px; margin-bottom: 30px; }
+.curriculum-page .curriculum-introduction .section-heading { display: block; text-align: left; margin: 0; }
+.curriculum-page .curriculum-introduction .section-heading .eyebrow { margin-bottom: 18px; }
+.curriculum-page .curriculum-introduction h1 { margin-bottom: 20px; font-size: clamp(42px,4.4vw,60px); line-height: 1.06; }
+.curriculum-page .curriculum-introduction .section-heading>p { max-width: 590px; margin: 0; font-size: 14px; line-height: 1.8; }
+.curriculum-notebook { position: relative; padding: 23px 24px 19px; background: var(--surface); border: 1px solid var(--line); border-radius: 5px; transform: rotate(2deg); color: var(--accent); box-shadow: 5px 6px 0 var(--surface-soft); }
+.curriculum-notebook:before { content: ''; position: absolute; width: 75px; height: 19px; left: calc(50% - 38px); top: -9px; background: var(--sand); opacity: .8; transform: rotate(-5deg); }
+.notebook-label { display: block; font-size: 8px; letter-spacing: .12em; }
+.curriculum-notebook svg { display: block; width: 100%; margin: 10px 0 0; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.curriculum-notebook .notebook-soft { stroke: none; fill: var(--surface-soft); opacity: .5; }
+.curriculum-notebook .notebook-dot { fill: currentColor; }
+.notebook-caption { display: block; text-align: right; font: italic 17px/1.3 Georgia,'Times New Roman',serif; }
+.curriculum-explorer-heading { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 17px; }
+.curriculum-explorer-heading>.eyebrow { margin: 0; font-size: 9px; }
+.curriculum-page .curriculum-explorer-heading .curriculum-subjects { justify-content: flex-end; gap: 0; margin: 0; }
+.curriculum-page .curriculum-explorer-heading .curriculum-subjects li { font-size: 10px; }
+.curriculum-page .grade-panel { padding: 37px; gap: 44px; }
+.curriculum-page .lesson-copy h3 { font-size: 34px; }
+.curriculum-page .lesson-copy>p:not(.sample-label) { font-size: 13px; }
+.curriculum-page .activity-card { padding: 26px; }
+.curriculum-page .activity-drawing { height: 130px; }
+.curriculum-page .activity-drawing svg { height: 130px; }
+.subject-atlas { padding-block: 58px 40px; }
+.atlas-heading { display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: 60px; margin-bottom: 30px; }
+.atlas-heading .eyebrow { margin-bottom: 17px; }
+.atlas-heading h2,.journey-intro h2 { font: 400 42px/1.12 Georgia,'Times New Roman',serif; letter-spacing: -.035em; margin: 0; }
+.atlas-heading h2 em,.journey-intro h2 em { font-weight: 400; }
+.atlas-heading>p { max-width: 470px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
+.atlas-column-labels,.atlas-row { display: grid; grid-template-columns: 1fr 1.15fr 1.2fr; gap: 35px; align-items: center; }
+.atlas-column-labels { font-size: 8px; letter-spacing: .13em; color: var(--muted); padding-block: 0 13px; border-bottom: 1px solid var(--line); }
+.atlas-row { padding-block: 20px; border-bottom: 1px solid var(--line); }
+.atlas-row h3 { display: flex; align-items: center; gap: 16px; font: 400 24px/1.25 Georgia,'Times New Roman',serif; letter-spacing: -.02em; margin: 0; }
+.atlas-symbol { display: inline-flex; flex: 0 0 38px; width: 38px; height: 38px; align-items: center; justify-content: center; color: var(--accent); font: 37px/1 Georgia,'Times New Roman',serif; }
+svg.atlas-symbol { stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.atlas-row p { margin: 0; font-size: 12px; line-height: 1.8; color: var(--muted); }
+.atlas-mobile-label { display: none; }
+.atlas-note { font-size: 10px; color: var(--muted); margin: 15px 0 0; }
+.lesson-journey { display: grid; grid-template-columns: .85fr 1.15fr; gap: 65px; padding: 35px 0; border-block: 1px solid var(--line); margin-block: 8px 0; }
+.journey-intro { padding-top: 4px; }
+.journey-intro .eyebrow { font-size: 8px; margin-bottom: 18px; }
+.journey-intro>p:not(.eyebrow) { max-width: 260px; color: var(--muted); font-size: 13px; margin: 20px 0; line-height: 1.8; }
+.journey-intro .text-link { font-size: 11px; }
+.journey-steps { list-style: none; margin: 0; padding: 0; }
+.journey-steps li { position: relative; display: grid; grid-template-columns: 36px 1fr; gap: 22px; padding-bottom: 26px; }
+.journey-steps li:last-child { padding-bottom: 0; }
+.journey-steps li:not(:last-child):before { content: ''; position: absolute; top: 36px; bottom: 0; left: 17px; border-left: 1px solid var(--line); }
+.journey-number { display: inline-flex; justify-content: center; align-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 50%; font: italic 15px/1 Georgia,'Times New Roman',serif; color: var(--accent); }
+.journey-steps h3 { font-size: 15px; line-height: 1.4; margin: 6px 0 7px; letter-spacing: -.02em; }
+.journey-steps p { font-size: 12px; line-height: 1.75; color: var(--muted); margin: 0; max-width: 430px; }
+.curriculum-page .topic-footer-note { padding-block: 30px 38px; }
+@media(max-width:950px) { .curriculum-introduction { gap: 32px; grid-template-columns: minmax(0,1.2fr) minmax(240px,.8fr); }.curriculum-page .curriculum-introduction h1 { font-size: 43px; }.curriculum-page .curriculum-introduction .section-heading>p { font-size: 12px; }.curriculum-notebook { padding: 21px 17px 16px; }.notebook-label { font-size: 6.5px; }.notebook-caption { font-size: 15px; }.curriculum-explorer-heading { align-items: flex-start; }.curriculum-page .grade-panel { padding: 28px; gap: 25px; }.curriculum-page .lesson-copy h3 { font-size: 30px; }.atlas-heading { gap: 30px; }.atlas-heading h2,.journey-intro h2 { font-size: 36px; }.atlas-column-labels,.atlas-row { grid-template-columns: .9fr 1.1fr 1.1fr; gap: 20px; }.atlas-row h3 { font-size: 21px; gap: 10px; }.atlas-row p { font-size: 11px; }.lesson-journey { gap: 35px; } }
+@media(max-width:650px) { .curriculum-page .curriculum-section.section-space { padding-block: 31px 20px; }.curriculum-introduction { grid-template-columns: 1fr; gap: 22px; margin-bottom: 24px; }.curriculum-page .curriculum-introduction h1 { font-size: 42px; }.curriculum-page .curriculum-introduction .section-heading>p { font-size: 13px; }.curriculum-notebook { max-width: 330px; width: 100%; margin: 0 auto; padding: 16px 18px 11px; }.curriculum-notebook svg { width: 75%; margin: 5px auto 0; }.notebook-label { font-size: 7px; }.notebook-caption { font-size: 13px; margin-top: -19px; }.curriculum-explorer-heading { display: block; }.curriculum-explorer-heading>.eyebrow { margin-bottom: 11px; }.curriculum-page .curriculum-explorer-heading .curriculum-subjects { justify-content: flex-start; }.curriculum-page .curriculum-explorer-heading .curriculum-subjects li { font-size: 9px; }.curriculum-page .grade-panel { padding: 25px 21px; gap: 26px; }.curriculum-page .lesson-copy h3 { font-size: 29px; }.curriculum-page .activity-card { padding: 22px; }.subject-atlas { padding-block: 35px 27px; }.atlas-heading { grid-template-columns: 1fr; gap: 17px; margin-bottom: 23px; }.atlas-heading h2,.journey-intro h2 { font-size: 34px; }.atlas-heading>p { font-size: 12px; }.atlas-column-labels { display: none; }.atlas-row { grid-template-columns: 1fr 1fr; gap: 13px 20px; padding-block: 19px; }.atlas-row:first-of-type { border-top: 1px solid var(--line); }.atlas-row h3 { grid-column: 1/-1; font-size: 25px; }.atlas-symbol { flex-basis: 30px; width: 30px; height: 30px; font-size: 30px; }.atlas-row p { font-size: 11px; }.atlas-mobile-label { display: block; text-transform: uppercase; letter-spacing: .08em; font-size: 7px; margin-bottom: 7px; color: var(--accent); }.atlas-note { font-size: 9px; line-height: 1.7; }.lesson-journey { grid-template-columns: 1fr; gap: 28px; padding-block: 27px; }.journey-intro>p:not(.eyebrow) { max-width: none; margin-block: 15px; }.journey-steps li { gap: 16px; }.journey-steps p { font-size: 11px; }.curriculum-page .topic-footer-note { padding-block: 24px 29px; } }

@@ -75,6 +75,12 @@
     "name": "Breaking the Sky community",
     "description": "Join our Discord community for updates, conversations, and ways to get involved.",
     "discordInvite": "",
-    "email": "ammarashary@gmail.com"
+    "email": "ammarashary@gmail.com",
+    "instagram": "",
+    "facebook": ""
+  },
+  "schools": [],
+  "donation": {
+    "url": ""
   }
 }

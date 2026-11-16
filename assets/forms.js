@@ -23,6 +23,22 @@
   let submitted = false;
   let reference = '';
   const isDraft = () => volunteer && form.dataset.draft === 'true';
+  // Resolve the delivery route before review; a failed POST never switches providers.
+  let deliveryMode = volunteer ? null : 'email';
+  const deliveryReady = volunteer ? (async () => {
+    const controller = new AbortController(); const timer = window.setTimeout(() => controller.abort(), 5000);
+    try {
+      const response = await fetch('api/applications', { credentials: 'same-origin', cache: 'no-store', signal: controller.signal });
+      const data = response.ok ? await response.json() : null;
+      deliveryMode = data?.enabled === true ? 'cloudflare' : 'formsubmit';
+    } catch { deliveryMode = 'formsubmit'; }
+    finally { window.clearTimeout(timer); }
+    if (deliveryMode === 'cloudflare') {
+      const notice = document.querySelector('#application-delivery-notice');
+      if (notice) notice.textContent = 'BTS stores your application for the team to review and contact you about the outcome. Your answers are not saved in this browser.';
+    }
+  })() : Promise.resolve();
+  let preparingReview = false;
 
   form.querySelectorAll('input, textarea, select').forEach(field => {
     field.addEventListener('input', () => field.setCustomValidity(''));
@@ -46,9 +62,23 @@
     }
   }
 
-  form.addEventListener('submit', event => {
+  form.addEventListener('submit', async event => {
     event.preventDefault();
-    if (sending || submitted) return;
+    if (sending || submitted || preparingReview) return;
+    if (volunteer && deliveryMode === null) {
+      preparingReview = true;
+      const reviewButton = form.querySelector('button[type="submit"]');
+      reviewButton.disabled = true;
+      await deliveryReady;
+      reviewButton.disabled = false;
+      preparingReview = false;
+      // The delivery notice is now accurate. Keep the form visible for review.
+      if (deliveryMode === 'cloudflare') {
+        const notice = document.querySelector('#application-delivery-notice');
+        if (notice) { notice.tabIndex = -1; notice.focus(); }
+        return;
+      }
+    }
     form.querySelectorAll('input:not([type="checkbox"]), textarea').forEach(field => {
       field.value = field.value.trim();
       field.setCustomValidity(field.required && !field.value ? 'Please enter a value, not just spaces.' : '');
@@ -116,19 +146,16 @@
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 25000);
     try {
-      const response = await fetch('https://formsubmit.co/ajax/ammarashary@gmail.com', {
-        method: 'POST', credentials: 'omit', signal: controller.signal,
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          _subject: subject,
-          _template: 'table',
-          _url: 'https://ammarashary14.github.io/its/apply.html',
-          _honey: '',
-          name: form.querySelector('[name="name"]').value.trim(),
-          email: form.querySelector('[name="email"]').value.trim(),
-          'Application reference': reference,
-          'Application details': message
-        })
+      const cloudflare = deliveryMode === 'cloudflare';
+      const name = form.querySelector('[name="name"]').value.trim();
+      const email = form.querySelector('[name="email"]').value.trim();
+      const payload = cloudflare ? { reference, name, email, message, honey: '' } : {
+        _subject: subject, _template: 'table', _url: 'https://ammarashary14.github.io/its/apply.html', _honey: '',
+        name, email, 'Application reference': reference, 'Application details': message
+      };
+      const response = await fetch(cloudflare ? 'api/applications' : 'https://formsubmit.co/ajax/ammarashary@gmail.com', {
+        method: 'POST', credentials: cloudflare ? 'same-origin' : 'omit', signal: controller.signal,
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload)
       });
       const result = await response.json();
       const accepted = result && (result.success === true || result.success === 'true');

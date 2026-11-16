@@ -1,0 +1,37 @@
+.donate-page { padding-block: 42px 57px; }
+.donate-hero { display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 70px; padding-bottom: 47px; }
+.donate-intro h1 { font-size: clamp(45px, 4.6vw, 64px); line-height: 1.08; margin-bottom: 25px; }
+.donate-intro h1 em { font-weight: 400; }
+.donate-lead { font-size: 15px; line-height: 1.85; color: var(--muted); max-width: 510px; margin-bottom: 25px; }
+.donate-actions { margin-bottom: 23px; }
+.donate-actions .button { font-size: 13px; }
+[data-donation-link][hidden], [data-donation-empty][hidden] { display: none!important; }
+.donate-pending { display: flex; align-items: flex-start; gap: 12px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 5px; max-width: 450px; background: var(--surface-soft); }
+.donate-pending strong { font-size: 12px; font-weight: 600; }
+.donate-pending p { font-size: 11px; color: var(--muted); line-height: 1.7; margin: 4px 0 0; }
+.donate-pending-dot { margin-top: 7px; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent); }
+.donate-intro>.text-link { font-size: 12px; }
+.donation-sketch { margin: 0; padding: 24px 28px; border: 1px solid var(--line); border-radius: 6px; color: var(--accent); background: var(--surface); box-shadow: 7px 8px 0 var(--surface-soft); transform: rotate(1deg); }
+.donation-sketch-top { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); padding-bottom: 13px; font-size: 8px; letter-spacing: .1em; }
+.donation-sketch svg { display: block; width: 100%; max-height: 300px; margin: 7px 0 0; }
+.sketch-wash { fill: var(--surface-soft); }.sketch-liquid { fill: var(--sand); }
+.donation-sketch figcaption { font: 25px/1.3 Georgia, 'Times New Roman', serif; letter-spacing: -.025em; color: var(--ink); margin-top: -6px; padding-bottom: 7px; }
+.donation-sketch figcaption em { color: var(--accent); }
+.donate-purpose { border-top: 1px solid var(--line); display: grid; grid-template-columns: .75fr 1.25fr; gap: 80px; padding-block: 42px; }
+.donate-purpose h2 { font-size: 40px; margin: 0; }
+.donate-purpose .eyebrow { margin-bottom: 16px; }
+.donate-purpose-copy>p { font-size: 13px; line-height: 1.85; color: var(--muted); margin-bottom: 16px; max-width: 620px; }
+.donate-purpose-copy .text-link { font-size: 12px; margin-top: 4px; }
+.donate-other { border-top: 1px solid var(--line); padding-top: 33px; }
+.donate-other-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 30px; margin-bottom: 24px; }
+.donate-other-heading h2 { font-size: 32px; margin: 0; }
+.donate-other-heading .eyebrow { margin: 0; }
+.donate-options { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.donate-options>a { position: relative; display: block; padding: 27px 32px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-soft); }
+.donate-options>a:hover { border-color: var(--accent); }
+.donate-option-number { display: block; font-size: 8px; letter-spacing: .12em; color: var(--muted); margin-bottom: 17px; }
+.donate-options h3 { font: 28px/1.15 Georgia, 'Times New Roman', serif; letter-spacing: -.025em; margin-bottom: 12px; }
+.donate-options p { font-size: 12px; line-height: 1.8; color: var(--muted); max-width: 340px; margin: 0 25px 0 0; }
+.donate-option-arrow { position: absolute; right: 25px; bottom: 21px; font-size: 25px; color: var(--accent); }
+@media (max-width: 950px) { .donate-hero { gap: 36px; }.donate-purpose { gap: 40px; }.donate-intro h1 { font-size: 48px; }.donation-sketch { padding: 22px; }.donation-sketch figcaption { font-size: 23px; }.donate-other-heading { align-items: flex-start; flex-direction: column; gap: 13px; }.donate-options>a { padding: 26px; } }
+@media (max-width: 650px) { .donate-page { padding-block: 30px 38px; }.donate-hero { grid-template-columns: 1fr; gap: 30px; padding-bottom: 32px; }.donate-intro h1 { font-size: 45px; margin-bottom: 20px; }.donate-lead { font-size: 13px; }.donate-pending { padding: 16px; }.donation-sketch { max-width: 460px; width: 100%; transform: none; padding: 21px 25px; }.donation-sketch svg { max-height: 245px; }.donation-sketch figcaption { font-size: 24px; }.donate-purpose { grid-template-columns: 1fr; gap: 22px; padding-block: 31px; }.donate-purpose h2 { font-size: 35px; }.donate-purpose-copy>p { font-size: 12px; }.donate-other { padding-top: 28px; }.donate-other-heading h2 { font-size: 31px; }.donate-options { grid-template-columns: 1fr; gap: 13px; }.donate-options h3 { font-size: 27px; }.donate-options>a { padding: 25px; } }

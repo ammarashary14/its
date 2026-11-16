@@ -10,40 +10,30 @@
     <script src="assets/theme.js?v=beige-6"></script>
   <link rel="stylesheet" href="assets/style.css?v=ivory-3">
   <link rel="stylesheet" href="assets/theme.css?v=photo-10">
-    <script src="assets/app.js?v=ivory-3" defer></script>
-    <script type="module" src="assets/site-content.js?v=pages-10"></script>
-  </head>
+    <script src="assets/app.js?v=full-11" defer></script>
+    <script type="module" src="assets/site-content.js?v=full-11"></script>
+    <link rel="stylesheet" href="assets/people-forms-rich.css?v=full-11">
+  <link rel="stylesheet" href="assets/social-links.css?v=full-11">
+  <link rel="stylesheet" href="assets/navigation.css?v=full-11">
+</head>
   <body data-page="team">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="index.html" aria-label="Breaking the Sky home"><span class="brand-mark" aria-hidden="true">bts<span class="brand-spark">✳</span></span><span class="brand-name">BREAKING<br>THE SKY</span></a>
-      <nav id="site-nav" class="site-nav" aria-label="Main navigation">
-        <a href="curriculum.html">Curriculum</a><a href="team.html" aria-current="page">Our people</a><a href="tutoring.html">1-on-1 tutoring</a><a href="community.html">Community</a><a href="contact.html">Contact us</a><a class="button button-small" href="apply.html">Apply to volunteer <span aria-hidden="true">↗</span></a>
-      </nav>
+      <nav id="site-nav" class="site-nav" aria-label="Main navigation"><a href="curriculum.html">Curriculum</a><a href="team.html" aria-current="page">Our people</a><a href="schools.html">Schools</a><a href="tutoring.html">1-on-1 tutoring</a><a href="community.html">Community</a><a href="sponsors.html">Sponsors</a><a href="contact.html">Contact us</a><a href="donate.html">Donate</a><a class="button button-small" href="apply.html">Apply to volunteer <span aria-hidden="true">↗</span></a></nav>
       <div class="header-actions"><button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Dark</span></button><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu <span aria-hidden="true">+</span></button></div>
     </div>
   </header>
 
     <main id="main-content">
       <section class="team-hero container" aria-labelledby="team-title">
-        <p class="eyebrow">THE PEOPLE BEHIND BTS</p>
-        <h1 id="team-title"><span data-site-field="team.title">Our people.</span><br data-site-break="team.titleAccent" hidden><span class="serif-accent" data-site-field="team.titleAccent" hidden></span></h1>
+        <div class="team-heading"><p class="eyebrow">THE PEOPLE BEHIND BTS</p><h1 id="team-title"><span data-site-field="team.title">Our people.</span><br data-site-break="team.titleAccent" hidden><span class="serif-accent" data-site-field="team.titleAccent" hidden></span></h1></div>
         <p class="lead" data-site-field="team.intro">A little curiosity goes further when we share it. Meet the people helping Breaking the Sky bring new ideas into the classroom.</p>
-        <svg class="team-star" width="125" height="125" viewBox="0 0 125 125" fill="none" aria-hidden="true">
-          <path d="M65 9 72 45 108 28 85 59 119 73 81 79 93 114 63 90 36 116 42 80 7 75 39 58 18 27 53 44Z" fill="#f5ce42" stroke="#212c3d" stroke-width="2.5" stroke-linejoin="round"/>
-        </svg>
       </section>
 
-      <section class="team-section container" aria-labelledby="meet-team-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">MANY PERSPECTIVES. ONE PURPOSE.</p>
-            <h2 id="meet-team-title">Meet our team.</h2>
-          </div>
-          <p data-site-field="team.sectionIntro">Our team profiles are coming soon. The cards below are placeholders, with suggested roles ready to personalize.</p>
-        </div>
-
+      <section class="team-section container" aria-labelledby="team-title">
+        <p class="team-roster-note" data-site-field="team.sectionIntro">Our team profiles are coming soon. The cards below are placeholders, with suggested roles ready to personalize.</p>
         <div class="team-grid" data-site-people>
           <article class="staff-card">
             <div class="staff-avatar avatar-one">
@@ -147,14 +137,9 @@
           </a>
           <p>Big ideas belong in every classroom.</p>
         </div>
-        <nav aria-label="Footer navigation">
-          <a href="index.html#approach">Our approach</a>
-          <a href="curriculum.html">Curriculum</a>
-          <a href="team.html" aria-current="page">Our people</a>
-          <a href="apply.html">Apply to volunteer</a><a href="tutoring.html">1-on-1 tutoring</a><a href="mailto:ammarashary@gmail.com">Contact BTS</a>
-        </nav>
+        <nav aria-label="Footer navigation"><a href="index.html">Home</a><a href="curriculum.html">Curriculum</a><a href="team.html">Our people</a><a href="schools.html">Schools</a><a href="tutoring.html">1-on-1 tutoring</a><a href="community.html">Community</a><a href="sponsors.html">Sponsors</a><a href="contact.html">Contact us</a><a href="donate.html">Donate</a><a href="apply.html">Apply to volunteer</a></nav>
       </div>
-      <div class="container footer-bottom">
+      <div data-social-links class="container social-links footer-socials"></div><div class="container footer-bottom">
         <p>© <span data-year>2026</span> Breaking the Sky</p>
         <p>Opening doors. Expanding horizons.</p>
       </div>

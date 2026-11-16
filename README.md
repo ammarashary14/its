@@ -27,22 +27,23 @@ Connect `ammarashary14/its` to Cloudflare Pages. Use no framework preset, `npm r
 
 ## Edit the website
 
-- `index.html`: a short homepage with the introduction, math sketches, page links, and volunteer call to action.
+- `index.html`: an illustrated homepage with a math notebook, subject overview, learning pathways, and volunteer call to action.
 - `curriculum.html`, `community.html`, and `contact.html`: dedicated destinations for the main navigation; the curriculum grade browser and contact routes are preserved.
 - `team.html`: four staff placeholders. Replace the suggested roles, names, bios, and SVG portraits with the actual team. Add/remove an entire `article.staff-card` to change the roster.
 - `apply.html`: volunteer application with interests, grade preferences, availability, experience, and motivation.
 - `tutoring.html`: tutoring request with contact information, grade, subjects, goals, format, and availability.
+- `schools.html`, `sponsors.html`, and `donate.html`: school partnerships, sponsorship information, and the donation destination. Schools and the donation link start empty until the owner adds them.
 - `assets/app.js`: illustrative grade-level lessons, accessible tab interactions, and mobile navigation.
 - `assets/style.css`: base typography and responsive layouts.
 - `assets/theme.css`: warm linen beige, charcoal typography, centered curriculum, neutral dark mode, and form layouts. Edit the theme variables at the top to change the palette.
 - `assets/theme.js`: starts in light mode; an explicitly chosen light/dark preference is saved in `localStorage` under `bts-theme` and shared across pages.
-- `assets/forms.js`: client-side validation, review/edit, direct volunteer application delivery through FormSubmit, and tutoring email drafts. Change `recipient` and the FormSubmit endpoint here, and the visible contact links in the HTML, to update the recipient. A new recipient or site origin requires FormSubmit activation.
+- `assets/forms.js`: client-side validation, review/edit, volunteer application delivery, and tutoring email drafts. It uses FormSubmit on the current preview; a configured Cloudflare intake can store new applications for owner review. A failed submission never switches providers automatically. A new FormSubmit recipient or site origin requires activation.
 - `owner.html` and `assets/owner.js`: owner dashboard for site content, community links, staff profiles, and future Cloudflare traffic stats.
 - `assets/site-content.json`, `assets/content-schema.js`, and `assets/site-content.js`: published content defaults, shared validation, and public rendering. Local drafts appear only with `?preview=1`.
 - `functions/api/` and `server/`: Cloudflare owner authentication, D1 publishing, and traffic analytics APIs. See `docs/cloudflare-owner-setup.md`.
 - `editor.html` and `assets/editor.js`: edit the volunteer application with a live preview, add/remove/reorder questions, and import/export draft configuration.
 - `assets/application-config.js`: the published volunteer application schema and validation. `assets/application.js` renders the questions and optionally previews a local draft.
-- `assets/`: local photos, fonts, and the favicon. All visual assets are included. The volunteer application sends a request to FormSubmit only after the applicant reviews and submits it.
+- `assets/`: local photos, fonts, and the favicon. All visual assets are included. Application answers are sent only after the applicant reviews and submits them.
 - `_headers`: Cloudflare security headers. Update the content security policy when adding a real form service, analytics, or other integrations.
 
 ## Content still to finalize
@@ -89,3 +90,19 @@ Follow [Cloudflare owner setup](docs/cloudflare-owner-setup.md) when connecting 
 In **Owner dashboard → Team profiles**, upload a JPG, PNG, or WebP photo, or choose **Crop / adjust photo** on an existing profile. Drag or use the position controls to frame it, zoom in, rotate, or reset. Apply the crop, then save the draft. Cancel leaves the previous photo unchanged. The editor creates a 640 × 800 portrait crop so the dashboard and public team page use the same 4:5 frame. Editing stays in the browser; no photo is uploaded to a third-party editing service.
 
 Only the applied crop is included in saved drafts and exports. To restore an area outside an earlier crop after reloading, upload the original photo again. The cropper lives in `assets/photo-cropper.js` and `assets/photo-cropper.css`; `npm run test:photos` verifies the crop geometry.
+
+## Schools, social profiles, and donations
+
+Use **Owner dashboard → Schools served** to add school names, locations, grade levels, a short partnership description, and optional school websites. Use **Site content → Social media** for Instagram and Facebook, and the donation-link field for a hosted donation page. These settings follow the same save, preview, export, and Cloudflare publication workflow as other website content. The new fields default to empty in older saved drafts.
+
+Blank social profiles show “Coming soon” on the Community page and stay out of the footer. Blank donation settings display the upcoming-donations message instead of a payment button. No school or sponsor endorsements are fabricated. `npm run test:content` checks the added data and URL validation.
+
+The new domain `breakingthesky.com` is registered at Cloudflare. Keep the domain disconnected from this preview until the owner explicitly approves launch.
+
+## Application review and decision emails
+
+**Owner dashboard → Applications** now includes an inbox area and separate acceptance/rejection message editors. Write a subject and message with `{{name}}`, `{{email}}`, and `{{reference}}`, preview them, and save or export the message draft. Templates are separate from website content and contain no applicant records. Saving a message never sends email.
+
+The current GitHub Pages and static private preview cannot receive applications into this inbox or send decision emails. Existing FormSubmit submissions remain in the email inbox. Once [application review setup](docs/application-review-setup.md) is completed, new submissions can go into private D1 storage. The authenticated owner can select a record, choose Accept or Reject, review the recipient and exact message, then send. Only an acknowledged email-provider response marks the decision sent; ambiguous delivery is locked for checking to prevent duplicate messages. No email account or new domain has been connected by this change.
+
+`npm run test:applications` verifies the private endpoints, real SQLite storage behavior, revisions, and duplicate-send protection with mocked email delivery.
