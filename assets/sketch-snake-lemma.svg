@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="245" viewBox="0 0 360 245" fill="none" aria-hidden="true" focusable="false">
+  <defs>
+    <marker id="snake-arrow" viewBox="0 0 8 8" refX="6.6" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="m1 1 5.5 3L1 7" fill="none" stroke="#607365" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g stroke="#607365" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Two exact rows and commuting vertical maps. -->
+    <g stroke-width="1.45" marker-end="url(#snake-arrow)">
+      <path d="M39 66c10-.7 17-.5 27 0"/><path d="M110 66c12-.4 24-.6 36 0"/><path d="M188 66c14-.5 26-.7 38 0"/><path d="M278 66c12-.6 23-.4 34 0"/>
+      <path d="M39 128c9-.4 18-.6 27 0"/><path d="M110 128c13-.6 25-.5 36 0"/><path d="M188 128c13-.5 25-.4 38 0"/><path d="M278 128c11-.5 23-.6 34 0"/>
+      <path d="M88 78c.7 9 .5 18 0 31"/><path d="M168 78c-.7 11-.5 20 0 31"/><path d="M251 78c.5 10 .6 21 0 31"/>
+    </g>
+    <path d="M107 33c33 3 91 3 145-1" stroke-width=".8" opacity=".4"/>
+    <!-- The connecting homomorphism is separate from the two-row diagram. -->
+    <path d="M130 198c20-30 62-34 89-14 6 5 10 10 13 15" stroke-width="1.55" marker-end="url(#snake-arrow)"/>
+    <path d="M138 202c18-24 49-29 70-18" stroke-width=".6" opacity=".3"/>
+    <path d="M45 225c80 8 185 5 264-2" stroke-width=".75" opacity=".35"/>
+    <path d="m309 173 2-7 2 7 7 2-7 2-2 7-2-7-7-2 7-2Z" stroke-width="1" opacity=".7"/>
+  </g>
+  <g fill="#607365" font-family="Georgia, 'Times New Roman', serif" text-anchor="middle">
+    <text x="180" y="26" font-size="21" font-style="italic">snake lemma</text>
+    <g font-size="23">
+      <text x="23" y="73">0</text><text x="88" y="73">A′</text><text x="168" y="73">A</text><text x="251" y="73">A″</text><text x="332" y="73">0</text>
+      <text x="23" y="135">0</text><text x="88" y="135">B′</text><text x="168" y="135">B</text><text x="251" y="135">B″</text><text x="332" y="135">0</text>
+    </g>
+    <g font-size="19" font-style="italic"><text x="75" y="100">α</text><text x="155" y="100">β</text><text x="238" y="100">γ</text><text x="179" y="170">δ</text></g>
+    <g font-size="22"><text x="91" y="208">ker γ</text><text x="272" y="208">coker α</text></g>
+  </g>
+</svg>

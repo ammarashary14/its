@@ -21,7 +21,7 @@
       button.querySelector('.theme-label').textContent = dark ? 'Light' : 'Dark';
     });
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = dark ? '#1e2421' : '#f7f5ef';
+    if (meta) meta.content = dark ? '#1e2421' : '#e9dfce';
   }
   apply(hasPreference ? saved : 'light');
   function setup() {

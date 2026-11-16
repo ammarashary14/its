@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f5ef">
+  <meta name="theme-color" content="#e9dfce">
   <meta name="description" content="Apply to volunteer with Breaking the Sky. Share your interests, experience, and availability to support classroom learning or tutoring.">
-  <title>Apply to be a volunteer · Breaking the Sky</title>
+  <title>Volunteer Application · Breaking the Sky</title>
   <link rel="icon" href="assets/favicon.svg?v=ivory-3" type="image/svg+xml">
-  <script src="assets/theme.js?v=ivory-3"></script>
+  <script src="assets/theme.js?v=beige-6"></script>
   <link rel="stylesheet" href="assets/style.css?v=ivory-3">
-  <link rel="stylesheet" href="assets/theme.css?v=sketch-4">
+  <link rel="stylesheet" href="assets/theme.css?v=beige-6">
   <link rel="stylesheet" href="assets/editor.css?v=ivory-3">
   <script src="assets/app.js?v=ivory-3" defer></script>
-  <script src="assets/application-config.js?v=ivory-3" defer></script>
+  <script src="assets/application-config.js?v=application-5" defer></script>
   <script src="assets/application.js?v=ivory-3" defer></script>
   <script src="assets/forms.js?v=ivory-3" defer></script>
 </head>
@@ -26,15 +26,24 @@
     </div>
   </header>
   <main id="main-content" class="form-page container">
-    <section class="form-page-intro" aria-labelledby="application-title"><p class="eyebrow">A LITTLE TIME. A WORLD OF POSSIBILITY.</p><h1 id="application-title">Apply to be<br><span class="serif-accent">a volunteer.</span></h1><p class="lead">Bring your perspective, patience, and curiosity. Tell us a little about yourself and how you’d like to help students learn.</p></section>
+    <section class="form-page-intro" aria-labelledby="application-title"><p class="eyebrow">A LITTLE TIME. A WORLD OF POSSIBILITY.</p><h1 id="application-title">Volunteer Application</h1><p class="lead">Please fill this to the best of your ability. You may be interviewed following review of your application.</p></section>
     <div class="form-layout">
       <aside class="form-sidebar" aria-label="Application information"><p class="eyebrow">START WITH A CONVERSATION</p><h2>There’s more than one<br>way to make a difference.</h2><p>Help bring curriculum into classrooms, support students through tutoring, or express interest in both.</p><ol class="form-process"><li>Tell us about your interests and availability.</li><li>Review your application.</li><li>Open your email app and send it to BTS.</li></ol><p class="form-help">This form prepares an email. Your application reaches us after you send it from your email app.</p><div class="form-contact"><h3>A question before you apply?</h3><a class="contact-email" href="mailto:ammarashary@gmail.com">ammarashary@gmail.com</a><p>We’re happy to hear what you have in mind.</p></div></aside>
       <div class="application-card">
         <form data-email-form data-kind="volunteer" action="mailto:ammarashary@gmail.com" method="post" enctype="text/plain">
           <p class="form-help">Fields marked with * are required.</p>
-          <fieldset><legend>A little about you</legend><div class="form-row"><label for="applicant-name">Full name *<input id="applicant-name" name="name" data-label="Full name" autocomplete="name" maxlength="100" required></label><label for="applicant-email">Email address *<input id="applicant-email" name="email" data-label="Email address" type="email" autocomplete="email" maxlength="254" required></label></div><label for="applicant-city">City or area <span>(optional)</span><input id="applicant-city" name="city" data-label="City or area" autocomplete="address-level2" maxlength="80" placeholder="Where you’re based"></label></fieldset>
-          <fieldset><legend>How you’d like to help</legend><div class="form-row"><label for="volunteer-area">I’m interested in *<select id="volunteer-area" name="area" data-label="Volunteer interest" required><option value="">Choose an area</option><option>Classroom volunteering</option><option>Tutoring</option><option>Both</option></select></label><label for="volunteer-grade">Preferred grade level *<select id="volunteer-grade" name="grade" data-label="Preferred grade level" required><option value="">Choose a grade band</option><option>Grades K–2</option><option>Grades 3–5</option><option>Grades 6–8</option><option>Grades 9–12</option><option>Open to different grade levels</option></select></label></div><label for="volunteer-experience">Relevant experience <span>(optional)</span><textarea id="volunteer-experience" name="experience" data-label="Relevant experience" rows="3" maxlength="300" placeholder="Teaching, tutoring, working with young people, or other experience you’d like to share."></textarea></label><label for="volunteer-availability">When are you usually available? *<input id="volunteer-availability" name="availability" data-label="Availability" maxlength="120" required placeholder="For example, weekday afternoons or Saturday mornings"></label><label for="volunteer-motivation">Why would you like to volunteer with BTS? *<textarea id="volunteer-motivation" name="motivation" data-label="Why I would like to volunteer" rows="4" maxlength="500" required placeholder="Tell us what interests you and what you hope to bring."></textarea></label></fieldset>
-          <label class="check-label" for="volunteer-consent"><input id="volunteer-consent" name="consent" data-label="Permission to contact" type="checkbox" value="I agree that BTS may contact me about this application." required><span>I agree that BTS may contact me about this application. *</span></label>
+          <div class="application-questions">
+            <label for="application-name"><span>Full name *</span><input id="application-name" name="name" data-label="Full name" required type="text" maxlength="100" placeholder="" autocomplete="name"></label>
+            <label for="application-email"><span>Email address *</span><input id="application-email" name="email" data-label="Email address" required type="email" maxlength="254" placeholder="" autocomplete="email"></label>
+            <label for="application-city"><span>City or area *</span><input id="application-city" name="city" data-label="City or area" required type="text" maxlength="80" placeholder="" autocomplete="address-level2"></label>
+            <label for="application-area"><span>I’m interested in *</span><select id="application-area" name="area" data-label="I’m interested in" required><option value="">Choose an option</option><option>Classroom volunteering</option><option>Tutoring</option><option>Both</option></select></label>
+            <label for="application-grade"><span>Preferred grade level *</span><select id="application-grade" name="grade" data-label="Preferred grade level" required><option value="">Choose an option</option><option>Grades 3–5</option><option>Grades 6–8</option><option>Grades 9–12</option><option>Open to different grade levels</option></select></label>
+            <label for="application-experience"><span>Relevant experience *</span><textarea id="application-experience" name="experience" data-label="Relevant experience" required rows="4" maxlength="300" placeholder=""></textarea></label>
+            <label for="application-availability"><span>When are you usually available? *</span><input id="application-availability" name="availability" data-label="When are you usually available?" required type="text" maxlength="120" placeholder="For example, weekday afternoons or Saturday mornings"></label>
+            <label for="application-motivation"><span>Why would you like to volunteer with BTS? *</span><textarea id="application-motivation" name="motivation" data-label="Why would you like to volunteer with BTS?" required rows="4" maxlength="500" placeholder=""></textarea></label>
+            <label for="application-question-1df326a2"><span>Awards or Honors *</span><input id="application-question-1df326a2" name="question-1df326a2" data-label="Awards or Honors" required type="text" maxlength="200" placeholder=""></label>
+            <label class="check-label" for="application-consent"><input id="application-consent" name="consent" data-label="I agree that BTS may contact me about this application." required type="checkbox" value="Yes"><span>I agree that BTS may contact me about this application. *</span></label>
+          </div>
           <p class="form-help">Your answers stay on this page until you choose to copy them or open an email. Nothing is sent automatically.</p>
           <button class="button" type="submit">Review application <span aria-hidden="true">→</span></button>
           <noscript><p>Please enable JavaScript to review your application here, or email your details directly to <a href="mailto:ammarashary@gmail.com">ammarashary@gmail.com</a>.</p></noscript>

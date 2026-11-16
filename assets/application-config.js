@@ -3,20 +3,96 @@
   const storageKey = 'bts-application-draft-v1';
   const types = ['text', 'email', 'textarea', 'select', 'checkbox'];
   const defaultConfig = {
-    version: 1,
-    title: 'Apply to be a volunteer.',
-    intro: 'Bring your perspective, patience, and curiosity. Tell us a little about yourself and how you’d like to help students learn.',
-    submitLabel: 'Review application',
-    fields: [
-      { id: 'name', label: 'Full name', type: 'text', required: true, placeholder: '', maxLength: 100 },
-      { id: 'email', label: 'Email address', type: 'email', required: true, placeholder: '', maxLength: 254 },
-      { id: 'city', label: 'City or area', type: 'text', required: false, placeholder: 'Where you’re based', maxLength: 80 },
-      { id: 'area', label: 'I’m interested in', type: 'select', required: true, options: ['Classroom volunteering', 'Tutoring', 'Both'] },
-      { id: 'grade', label: 'Preferred grade level', type: 'select', required: true, options: ['Grades K–2', 'Grades 3–5', 'Grades 6–8', 'Grades 9–12', 'Open to different grade levels'] },
-      { id: 'experience', label: 'Relevant experience', type: 'textarea', required: false, placeholder: 'Teaching, tutoring, working with young people, or other experience you’d like to share.', maxLength: 300 },
-      { id: 'availability', label: 'When are you usually available?', type: 'text', required: true, placeholder: 'For example, weekday afternoons or Saturday mornings', maxLength: 120 },
-      { id: 'motivation', label: 'Why would you like to volunteer with BTS?', type: 'textarea', required: true, placeholder: 'Tell us what interests you and what you hope to bring.', maxLength: 500 },
-      { id: 'consent', label: 'I agree that BTS may contact me about this application.', type: 'checkbox', required: true }
+    "version": 1,
+    "title": "Volunteer Application",
+    "intro": "Please fill this to the best of your ability. You may be interviewed following review of your application.",
+    "submitLabel": "Review application",
+    "fields": [
+      {
+        "id": "name",
+        "label": "Full name",
+        "type": "text",
+        "required": true,
+        "placeholder": "",
+        "maxLength": 100
+      },
+      {
+        "id": "email",
+        "label": "Email address",
+        "type": "email",
+        "required": true,
+        "placeholder": "",
+        "maxLength": 254
+      },
+      {
+        "id": "city",
+        "label": "City or area",
+        "type": "text",
+        "required": true,
+        "placeholder": "",
+        "maxLength": 80
+      },
+      {
+        "id": "area",
+        "label": "I’m interested in",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Classroom volunteering",
+          "Tutoring",
+          "Both"
+        ]
+      },
+      {
+        "id": "grade",
+        "label": "Preferred grade level",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Grades 3–5",
+          "Grades 6–8",
+          "Grades 9–12",
+          "Open to different grade levels"
+        ]
+      },
+      {
+        "id": "experience",
+        "label": "Relevant experience",
+        "type": "textarea",
+        "required": true,
+        "placeholder": "",
+        "maxLength": 300
+      },
+      {
+        "id": "availability",
+        "label": "When are you usually available?",
+        "type": "text",
+        "required": true,
+        "placeholder": "For example, weekday afternoons or Saturday mornings",
+        "maxLength": 120
+      },
+      {
+        "id": "motivation",
+        "label": "Why would you like to volunteer with BTS?",
+        "type": "textarea",
+        "required": true,
+        "placeholder": "",
+        "maxLength": 500
+      },
+      {
+        "id": "question-1df326a2",
+        "label": "Awards or Honors",
+        "type": "text",
+        "required": true,
+        "placeholder": "",
+        "maxLength": 200
+      },
+      {
+        "id": "consent",
+        "label": "I agree that BTS may contact me about this application.",
+        "type": "checkbox",
+        "required": true
+      }
     ]
   };
   const forbidden = new Set(['__proto__', 'prototype', 'constructor', 'submit', 'reset', 'action', 'elements']);
