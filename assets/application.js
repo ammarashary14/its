@@ -15,6 +15,7 @@
   const questions = document.createElement('div'); questions.className = 'application-questions';
   api.renderFields(questions, config);
   const privacy = document.createElement('p');
+  privacy.id = 'application-delivery-notice';
   privacy.className = 'form-help';
   privacy.append(document.createTextNode('When you submit, FormSubmit processes your answers and emails them to BTS. Your answers are not saved in this browser. '));
   const privacyLink = document.createElement('a'); privacyLink.href = 'https://formsubmit.co/privacy'; privacyLink.textContent = 'FormSubmit privacy policy';

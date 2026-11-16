@@ -11,9 +11,10 @@
   <link rel="stylesheet" href="assets/style.css?v=ivory-3">
   <link rel="stylesheet" href="assets/theme.css?v=photo-10">
   <link rel="stylesheet" href="assets/editor.css?v=ivory-3">
+  <link rel="stylesheet" href="assets/application-email-note.css?v=email-note-16">
   <script src="assets/app.js?v=calendar-14" defer></script>
   <script src="assets/application-config.js?v=application-5" defer></script>
-  <script src="assets/application.js?v=web-7" defer></script>
+  <script src="assets/application.js?v=email-note-16" defer></script>
   <script src="assets/forms.js?v=launch-12" defer></script>
   <link rel="stylesheet" href="assets/people-forms-rich.css?v=full-11">
   <link rel="stylesheet" href="assets/social-links.css?v=full-11">
@@ -37,6 +38,26 @@
     <div class="form-layout">
       <aside class="form-sidebar" aria-label="Application information"><p class="eyebrow">A LITTLE PREPARATION</p><h2>Tell us what<br>you’d like to bring.</h2><p>Your interests and availability help us understand where you could contribute.</p><div class="application-prompts"><h3>Before you begin</h3><ul><li>The subjects and grade levels you enjoy.</li><li>Relevant experience you’d like to share.</li><li>The days and times you’re usually available.</li></ul></div><ol class="request-steps"><li><strong>Introduce yourself.</strong><span>Complete the questions with your interests and experience.</span></li><li><strong>Take one last look.</strong><span>Review your details before submitting.</span></li><li><strong>Send your application.</strong><span>You’ll see a confirmation here when it is accepted.</span></li></ol><p class="form-help">BTS will review your application and may contact you about an interview. Submitting does not confirm a volunteer placement.</p><div class="form-contact"><h3>A question before you apply?</h3><a class="contact-email" href="mailto:breakingtheskyadmissions@gmail.com">breakingtheskyadmissions@gmail.com</a><p>We’re happy to hear what you have in mind.</p></div></aside>
       <div class="application-card">
+        <aside id="application-email-note" class="application-email-note" aria-labelledby="application-email-heading">
+          <h2 id="application-email-heading">Don’t miss an application update.</h2>
+          <p>Whitelist <a href="mailto:breakingtheskyadmissions@gmail.com">breakingtheskyadmissions@gmail.com</a> by adding us to your contacts or safe senders. This helps keep interview invitations, follow-ups, and application decisions out of Spam or Junk.</p>
+          <details>
+            <summary>How to whitelist our email</summary>
+            <div class="application-email-steps">
+              <h3>Gmail (on a computer)</h3>
+              <ol>
+                <li>Open <strong>Settings → See all settings → Filters and Blocked Addresses → Create a new filter</strong>.</li>
+                <li>Paste our email address above into <strong>From</strong>, then click <strong>Create filter</strong>.</li>
+                <li>Select <strong>Never send it to Spam</strong>, then click <strong>Create filter</strong> again.</li>
+              </ol>
+              <h3>Outlook (on the web)</h3>
+              <p>Open <strong>Settings → Mail → Junk email</strong>. Under <strong>Safe senders and domains</strong>, add our email address above and save your changes.</p>
+              <h3>Other email apps</h3>
+              <p>Add our email address to your contacts. If a message from us lands in Spam or Junk, open it and choose <strong>Not spam</strong> or <strong>Not junk</strong>.</p>
+              <p>Check your Spam or Junk folder while waiting for an update, too.</p>
+            </div>
+          </details>
+        </aside>
         <form data-email-form data-kind="volunteer" action="apply.html" method="post">
           <p class="form-help">Fields marked with * are required.</p>
           <div class="application-questions">
@@ -71,6 +92,7 @@
           <span class="submission-check" aria-hidden="true">✓</span><p class="eyebrow">THANK YOU FOR RAISING YOUR HAND</p>
           <h2 id="success-title" tabindex="-1">Application submitted.</h2>
           <p>Your application has been sent to BTS. We’ll review your answers and contact you using the email address you provided.</p>
+          <p class="form-help">Before you go, <a href="#application-email-note">whitelist our admissions email</a> so you’re less likely to miss an update.</p>
           <p class="form-help">Your reference: <strong id="submission-reference"></strong></p>
           <p class="form-help">Submitting an application does not confirm a volunteer placement.</p>
           <a class="text-link" href="index.html">Back to Breaking the Sky →</a>
