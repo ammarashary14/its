@@ -1,6 +1,6 @@
 # BTS · Breaking the Sky
 
-A first website draft for a nonprofit whose volunteers bring grade-level curriculum into schools. Built with static HTML, CSS, and JavaScript, with optional Cloudflare Pages Functions for owner publishing and analytics. No production framework or package installation is required.
+A first website draft for a nonprofit whose volunteers bring grade-level curriculum into schools. Built with static HTML, CSS, and JavaScript, with a Cloudflare Worker for owner publishing, application review, and analytics. No production framework or package installation is required.
 
 ## Preview locally
 
@@ -21,9 +21,13 @@ The build copies only website files into `dist/`; source tooling and work files 
 
 The site can be served directly from the repository root. In the repository's **Settings → Pages**, choose **Deploy from a branch**, select **main** and **/ (root)**, then save. The expected preview address is `https://ammarashary14.github.io/its/` once GitHub reports a successful deployment. `.nojekyll` keeps GitHub from processing this static site through Jekyll. All asset and page links are relative, so the `/its/` project path works without changes. The Cloudflare-only `_headers` file is not applied by GitHub Pages.
 
-## Cloudflare Pages — after content approval
+## Cloudflare deployment
 
-Connect `ammarashary14/its` to Cloudflare Pages. Use no framework preset, `npm run build` as the build command, and `dist` as the output directory. Set the production branch to `main`. Add the custom domain after deployment. No Cloudflare project or deployment has been created as part of this draft.
+The current Cloudflare **Workers** Git setup uses project name `its`, build command `npm run build`, and deploy command `npx wrangler deploy`. The committed `wrangler.jsonc` serves `dist/` through the ASSETS binding and routes `/api/*` to `server/worker.js`. It preserves dashboard variables with `keep_vars`. The first deployment has no database or email credentials and therefore leaves live owner actions disabled.
+
+Create the D1 database and add its real ID to the repository's Wrangler configuration as `BTS_DB` before enabling persistent editing. See [owner setup](docs/cloudflare-owner-setup.md) and [application review setup](docs/application-review-setup.md). Protect owner paths with Cloudflare Access after deployment; attach `breakingthesky.com` only when approved for public launch.
+
+The `functions/` adapters also remain available for a Cloudflare Pages deployment using build command `npm run build` and output `dist`.
 
 ## Edit the website
 

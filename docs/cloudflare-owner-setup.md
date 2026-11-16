@@ -1,11 +1,12 @@
 # Connect the BTS owner dashboard to Cloudflare
 
-The dashboard currently works as a local draft editor on GitHub Pages and the private static preview. This repository includes a real Cloudflare Pages Functions backend; GitHub Pages does not execute it. No Cloudflare account, database, access policy, or analytics connection is created by adding these files.
+The dashboard currently works as a local draft editor on GitHub Pages and the private static preview. This repository includes a Cloudflare Worker and Pages Functions adapters; GitHub Pages does not execute the backend. No Cloudflare account, database, access policy, or analytics connection is created by adding these files.
 
 ## Deploy the existing site
 
-1. Connect this repository to Cloudflare Pages. Use `npm run build` and output directory `dist`. Keep the `functions/` and `server/` directories in the repository: Pages builds Functions from the project root alongside the static output.
-2. Create a D1 database and bind it to the Pages project as **`BTS_DB`**, for the intended production environment. Apply the schema in `migrations/0001_owner_content.sql` before enabling publication. For example, after authenticating your own Wrangler CLI, run `npx wrangler d1 execute <database-name> --remote --file=migrations/0001_owner_content.sql`. Do not seed real profiles into migration files.
+1. In Cloudflare Workers, connect this repository as `its`. Use `npm run build` and `npx wrangler deploy`. `wrangler.jsonc` provides the static asset and API configuration. The Pages alternative uses `npm run build`, output `dist`, and the root `functions/` directory.
+2. Create a D1 database and bind it to the Worker as **`BTS_DB`**, for the intended production environment. Apply the schema in `migrations/0001_owner_content.sql` before enabling publication. For example, after authenticating your own Wrangler CLI, run `npx wrangler d1 execute <database-name> --remote --file=migrations/0001_owner_content.sql`. Do not seed real profiles into migration files.
+   For Workers, add a `d1_databases` entry in `wrangler.jsonc` with `binding: "BTS_DB"`, the real `database_name`, its actual `database_id`, and `migrations_dir: "migrations"`. Do not use a placeholder ID. Keep this in source so future Git deployments retain the binding.
 3. Configure owner identity before enabling the dashboard's publishing controls, as described below. Re-deploy after changing bindings or variables.
 4. On the first publication, the server saves the validated content at revision 1. Public pages fetch `/api/content`; the owner dashboard fetches `/api/owner/content`, which additionally includes hidden staff profiles. Local drafts remain on the current device until published or exported.
 
@@ -13,7 +14,7 @@ The dashboard currently works as a local draft editor on GitHub Pages and the pr
 
 Create a Cloudflare Zero Trust **Access self-hosted application** for the site. In the same application, cover both `/owner.html` and `/api/owner/*` on the production hostname. Add an Allow policy limited to **ammarashary@gmail.com**, using an identity provider or Cloudflare's email one-time PIN. Do not add a public bypass policy for these paths. Leave ordinary website pages and `/api/content` public.
 
-Use the application's audience value and your Access team domain in the Pages runtime environment:
+Use the application's audience value and your Access team domain in the Worker runtime environment:
 
 | Variable | Purpose |
 | --- | --- |
@@ -32,7 +33,7 @@ After the custom domain is a Cloudflare zone receiving proxied traffic, create a
 | Variable | Purpose |
 | --- | --- |
 | `CF_ZONE_ID` | The domain's 32-character zone ID. |
-| `CF_ANALYTICS_API_TOKEN` | The scoped token, saved as a **secret** in the Pages environment. |
+| `CF_ANALYTICS_API_TOKEN` | The scoped token, saved as a **secret** in the Worker environment. |
 
 The token is used only inside the server. Never put it in `owner.html`, browser JavaScript, exported content, `.openai/hosting.json`, or a repository file.
 
