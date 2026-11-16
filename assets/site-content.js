@@ -28,11 +28,11 @@ function heroHeadline(node, value) {
 }
 function avatar(person) {
   if (person.photo) {
-    const holder = element('div', 'staff-avatar');
+    const holder = element('div', 'staff-avatar has-photo');
     const image = element('img', 'staff-photo');
     image.src = person.photo;
     image.alt = person.photoAlt || `Portrait of ${person.name}`;
-    image.width = 640; image.height = 640; image.loading = 'lazy'; image.decoding = 'async';
+    image.width = 640; image.height = 800; image.loading = 'lazy'; image.decoding = 'async';
     holder.append(image);
     return holder;
   }
@@ -181,7 +181,7 @@ async function initialize() {
   else if (publishedContent) renderSiteContent(publishedContent);
   if (preview) showPreviewBanner(Boolean(draft));
 }
-if (['home', 'team'].includes(page)) {
+if (['home', 'team', 'curriculum', 'community', 'contact', 'tutoring'].includes(page)) {
   initialize().catch(() => { /* Keep the complete, server-served HTML if data is unavailable. */ });
   if (preview) window.addEventListener('storage', event => {
     if (event.key !== SITE_DRAFT_KEY) return;

@@ -27,7 +27,8 @@ Connect `ammarashary14/its` to Cloudflare Pages. Use no framework preset, `npm r
 
 ## Edit the website
 
-- `index.html`: homepage copy, central grade-level curriculum immediately below the introduction, classroom photo, approach, involvement paths, contact, and FAQs.
+- `index.html`: a short homepage with the introduction, math sketches, page links, and volunteer call to action.
+- `curriculum.html`, `community.html`, and `contact.html`: dedicated destinations for the main navigation; the curriculum grade browser and contact routes are preserved.
 - `team.html`: four staff placeholders. Replace the suggested roles, names, bios, and SVG portraits with the actual team. Add/remove an entire `article.staff-card` to change the roster.
 - `apply.html`: volunteer application with interests, grade preferences, availability, experience, and motivation.
 - `tutoring.html`: tutoring request with contact information, grade, subjects, goals, format, and availability.
@@ -82,3 +83,9 @@ Before Cloudflare is connected, **Publish changes** is disabled and traffic metr
 Dashboard exports include a content payload and draft revision metadata. Preserve that envelope when importing back into the dashboard. When importing a file here for manual publication, validate its content payload and exclude hidden profiles from any public JSON or HTML. Exports may include hidden profiles, so keep backup files in private storage. On the connected Cloudflare backend, hidden records stay in D1 and are omitted by the public content API; the authenticated owner API returns them for editing.
 
 Follow [Cloudflare owner setup](docs/cloudflare-owner-setup.md) when connecting hosting. The backend supports verified Cloudflare Access identity, same-origin publication, optimistic revision checks, and server-only analytics tokens. The live account connection and traffic queries have not been configured yet. Run `npm run test:owner` for the backend checks; browser UI verification requires an available browser environment.
+
+## Adjust profile photos
+
+In **Owner dashboard → Team profiles**, upload a JPG, PNG, or WebP photo, or choose **Crop / adjust photo** on an existing profile. Drag or use the position controls to frame it, zoom in, rotate, or reset. Apply the crop, then save the draft. Cancel leaves the previous photo unchanged. The editor creates a 640 × 800 portrait crop so the dashboard and public team page use the same 4:5 frame. Editing stays in the browser; no photo is uploaded to a third-party editing service.
+
+Only the applied crop is included in saved drafts and exports. To restore an area outside an earlier crop after reloading, upload the original photo again. The cropper lives in `assets/photo-cropper.js` and `assets/photo-cropper.css`; `npm run test:photos` verifies the crop geometry.

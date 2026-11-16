@@ -1,4 +1,5 @@
 import { validateSiteContent } from './content-schema.js?v=owner-8';
+import { editProfilePhoto } from './photo-cropper.js?v=photo-10';
 
 const DRAFT_KEY = 'bts-site-draft-v1';
 const $ = selector => document.querySelector(selector);
@@ -103,7 +104,8 @@ function renderPersonEditor() {
   const form=node('div','owner-person-form');
   [['name','Full name',100],['role','Role',120],['bio','Short bio',1500,true],['photoAlt','Photo description',200],['discord','Discord username (optional)',80],['email','Public email (optional)',254]].forEach(([key,label,max,multiline])=>{const field=node('label','owner-field',label);const input=node(multiline?'textarea':'input');input.id='person-'+key;input.dataset.personField=key;input.value=person[key]||'';input.maxLength=max;input.required=key==='name'||key==='role';if(multiline)input.rows=5;else input.type=key==='email'?'email':'text';field.htmlFor=input.id;field.append(input);if(key==='bio')field.append(node('small','','A few sentences about their background, interests, and work with BTS.'));if(key==='photoAlt')field.append(node('small','','Describe the photo for people using a screen reader.'));if(key==='email'||key==='discord')field.append(node('small','','Shown publicly when this profile is visible.'));form.append(field);});
   [['visible','Show this profile on the team page'],['placeholder','Mark this profile as a placeholder']].forEach(([key,label])=>{const field=node('label','owner-profile-check');const input=node('input');input.type='checkbox';input.dataset.personField=key;input.checked=person[key];field.append(input,node('span','',label));form.append(field);});
-  const photos=node('div','owner-photo-controls');photos.append(node('strong','','Profile photo'));const upload=node('input');upload.id='person-photo';upload.type='file';upload.accept='image/jpeg,image/png,image/webp';upload.setAttribute('aria-label','Upload a photo for '+person.name);photos.append(upload,node('p','','JPG, PNG, or WebP · Up to 10 MB. Photos are resized for the website.'));
+  const photos=node('div','owner-photo-controls');photos.append(node('strong','','Profile photo'));const upload=node('input');upload.id='person-photo';upload.type='file';upload.accept='image/jpeg,image/png,image/webp';upload.setAttribute('aria-label','Upload a photo for '+person.name);photos.append(upload,node('p','','JPG, PNG, or WebP · Up to 10 MB. Crop, zoom, and position your photo before applying it.'));
+  const cropPhoto=node('button','owner-secondary','Crop / adjust photo');cropPhoto.type='button';cropPhoto.dataset.personAction='crop-photo';cropPhoto.disabled=!person.photo;photos.append(cropPhoto);
   const removePhoto=node('button','owner-inline-button','Remove photo');removePhoto.type='button';removePhoto.dataset.personAction='remove-photo';removePhoto.disabled=!person.photo;photos.append(removePhoto);form.append(photos);container.append(form);renderPersonPreview();
 }
 function renderAll() { renderContentFields();renderOverview();renderPeopleList();renderPersonEditor();updateDraftState(); }
@@ -115,19 +117,32 @@ function exportDraft() {
   if(state.loading||state.photoBusy)return;
   try {const content=validateSiteContent(state.content);const blob=new Blob([JSON.stringify(draftEnvelope(content,new Date().toISOString()),null,2)+'\n'],{type:'application/json'});const url=URL.createObjectURL(blob);const link=node('a');link.href=url;link.download='bts-site-content.json';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Draft exported. Share the file in our chat to publish before Cloudflare is connected.');}catch(error){status(error.message,true);}
 }
-async function uploadPhoto(file, personId) {
-  if(!file)return;if(!['image/jpeg','image/png','image/webp'].includes(file.type)){status('Choose a JPG, PNG, or WebP photo. SVG files are not supported.',true);return;}if(file.size>10*1024*1024){status('Please choose a photo smaller than 10 MB.',true);return;}
-  if(state.loading||state.photoBusy)return;state.photoBusy=true;updateDraftState();lockEditors(true);status('Preparing your photo…');
+async function adjustPhoto(source, personId, existing = false) {
+  if (!source || state.loading || state.photoBusy) return;
+  const focusBefore = document.activeElement;
+  state.photoBusy = true; updateDraftState(); lockEditors(true);
+  status(existing ? 'Adjust the photo, then apply your crop.' : 'Preparing your photo editor…');
+  let applied = false;
   try {
-    const source=URL.createObjectURL(file);let img;
-    try {img=await new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error('That photo could not be opened. Try another image.'));image.src=source;});}
-    finally {URL.revokeObjectURL(source);}
-    if(!img.naturalWidth||!img.naturalHeight||img.naturalWidth*img.naturalHeight>50000000)throw new Error('Please choose a smaller photo.');
-    const scale=Math.min(1,640/img.naturalWidth,800/img.naturalHeight);const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Photo processing is unavailable in this browser.');ctx.fillStyle='#e9dfce';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);
-    let photo='';for(const quality of [.86,.74,.62,.5]){photo=canvas.toDataURL('image/jpeg',quality);if(photo.length<=340000)break;}if(photo.length>340000)throw new Error('This photo is still too large. Try a smaller image.');
-    const person=state.content.people.find(p=>p.id===personId);if(!person)return;const next=clone(state.content);next.people.find(p=>p.id===personId).photo=photo;validateSiteContent(next);person.photo=photo;if(!person.photoAlt)person.photoAlt='Portrait of '+person.name;markDirty();renderPeopleList();renderPersonEditor();renderOverview();status('Photo added to your draft. Save when you’re ready.');
-  }catch(error){status(error.message||'The photo could not be added.',true);}
-  finally{state.photoBusy=false;lockEditors(false);updateDraftState();}
+    const photo = await editProfilePhoto(source, { existing });
+    if (!photo) { status('Photo unchanged.'); return; }
+    const person = state.content.people.find(person => person.id === personId);
+    if (!person) return;
+    const next = clone(state.content);
+    const edited = next.people.find(person => person.id === personId);
+    edited.photo = photo;
+    if (!edited.photoAlt) edited.photoAlt = 'Portrait of ' + edited.name;
+    validateSiteContent(next);
+    person.photo = edited.photo; person.photoAlt = edited.photoAlt;
+    markDirty(); renderPeopleList(); renderPersonEditor(); renderOverview(); applied = true;
+    status('Photo crop applied to your draft. Save your draft when you’re ready.');
+  } catch (error) { status(error.message || 'The photo could not be adjusted. Your previous photo is unchanged.', true); }
+  finally {
+    state.photoBusy = false; lockEditors(false); updateDraftState();
+    const picker = $('#person-photo'); if (picker) picker.value = '';
+    if (applied) document.querySelector('[data-person-action="crop-photo"]')?.focus({ preventScroll: true });
+    else if (focusBefore?.isConnected) focusBefore.focus({ preventScroll: true });
+  }
 }
 function applyConnection(session, ownerContent, sessionError) {
   state.authenticated=Boolean(session?.owner);state.canPublish=Boolean(session?.owner&&ownerContent);state.analyticsConfigured=Boolean(session?.analyticsConfigured);
@@ -176,8 +191,8 @@ $('#site-content-form').addEventListener('submit',event=>event.preventDefault())
 $('#content-fields').addEventListener('input',event=>{const path=event.target.dataset.contentPath;if(path){setPath(path,event.target.value);markDirty();}});
 $('#people-list').addEventListener('click',event=>{const button=event.target.closest('[data-person-id]');if(!button)return;state.selectedPerson=button.dataset.personId;renderPeopleList();renderPersonEditor();});
 $('#person-editor').addEventListener('input',event=>{const key=event.target.dataset.personField;const person=currentPerson();if(!key||!person)return;person[key]=event.target.type==='checkbox'?event.target.checked:event.target.value;markDirty();renderPeopleList();renderPersonPreview();renderOverview();});
-$('#person-editor').addEventListener('change',event=>{if(event.target.id==='person-photo')uploadPhoto(event.target.files[0],state.selectedPerson);});
-$('#person-editor').addEventListener('click',event=>{const button=event.target.closest('[data-person-action]');const person=currentPerson();if(!button||!person)return;const action=button.dataset.personAction;const index=state.content.people.indexOf(person);if(action==='remove'){if(!confirm('Remove '+person.name+' from this draft?'))return;state.content.people.splice(index,1);state.selectedPerson=state.content.people[Math.min(index,state.content.people.length-1)]?.id||null;}else if(action==='remove-photo'){person.photo='';person.photoAlt='';}else {const target=index+(action==='up'?-1:1);if(target<0||target>=state.content.people.length)return;[state.content.people[index],state.content.people[target]]=[state.content.people[target],state.content.people[index]];}markDirty();renderOverview();renderPeopleList();renderPersonEditor();});
+$('#person-editor').addEventListener('change',event=>{if(event.target.id==='person-photo')adjustPhoto(event.target.files[0],state.selectedPerson);});
+$('#person-editor').addEventListener('click',event=>{const button=event.target.closest('[data-person-action]');const person=currentPerson();if(!button||!person)return;const action=button.dataset.personAction;if(action==='crop-photo'){adjustPhoto(person.photo,person.id,true);return;}const index=state.content.people.indexOf(person);if(action==='remove'){if(!confirm('Remove '+person.name+' from this draft?'))return;state.content.people.splice(index,1);state.selectedPerson=state.content.people[Math.min(index,state.content.people.length-1)]?.id||null;}else if(action==='remove-photo'){person.photo='';person.photoAlt='';}else {const target=index+(action==='up'?-1:1);if(target<0||target>=state.content.people.length)return;[state.content.people[index],state.content.people[target]]=[state.content.people[target],state.content.people[index]];}markDirty();renderOverview();renderPeopleList();renderPersonEditor();});
 $('#add-person').addEventListener('click',()=>{if(!state.content||state.content.people.length>=20)return;const id='person-'+(crypto.randomUUID?.()||Math.random().toString(36).slice(2)).slice(0,24);const person={id,name:'New team member',role:'Team member',bio:'A short introduction and background will go here.',photo:'',photoAlt:'',discord:'',email:'',visible:true,placeholder:false};state.content.people.push(person);state.selectedPerson=id;markDirty();renderOverview();renderPeopleList();renderPersonEditor();$('#person-name').focus();});
 $('#save-draft').addEventListener('click',()=>saveDraft());$('#export-content').addEventListener('click',exportDraft);$('#settings-export').addEventListener('click',exportDraft);$('#publish-content').addEventListener('click',publish);
 document.querySelectorAll('[data-preview]').forEach(link=>link.addEventListener('click',event=>{if(state.loading||state.photoBusy||!state.content||!saveDraft(false)){event.preventDefault();return;}status('Preview opened with your saved draft. Other visitors still see the published website.');}));

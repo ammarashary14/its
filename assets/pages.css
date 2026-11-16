@@ -1,0 +1,38 @@
+/* Focused public pages, each reached through the main navigation. */
+.home-routes { padding-block: 12px 58px; }
+.home-routes-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: 24px; }
+.home-routes-heading .eyebrow { margin-bottom: 0; }
+.home-routes-heading h2 { font-size: 32px; margin: 0; }
+.home-route-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.home-route-card { display: block; position: relative; border: 1px solid var(--line); border-radius: 7px; padding: 29px 29px 43px; background: var(--surface); transition: border-color .15s; }
+.home-route-card:hover { border-color: var(--accent); }
+.home-route-number { display: block; margin-bottom: 25px; font-size: 9px; letter-spacing: .1em; color: var(--muted); }
+.home-route-card h3 { font-family: Georgia, 'Times New Roman', serif; font-size: 29px; font-weight: 400; line-height: 1.2; margin-bottom: 14px; }
+.home-route-card p { font-size: 13px; line-height: 1.8; color: var(--muted); margin-bottom: 0; max-width: 290px; }
+.home-route-arrow { position: absolute; right: 23px; bottom: 13px; font-size: 24px; color: var(--accent); }
+.home-about { display: grid; grid-template-columns: 1fr 1fr; gap: 75px; align-items: center; padding-block: 49px 59px; border-top: 1px solid var(--line); }
+.home-about h2 { font-size: 39px; line-height: 1.15; margin-bottom: 0; }
+.home-about>div>p:not(.eyebrow) { color: var(--muted); font-size: 14px; line-height: 1.85; margin-bottom: 20px; }
+.home-about .text-link { font-size: 12px; }
+.home-invitation { display: flex; justify-content: space-between; align-items: center; gap: 40px; margin-bottom: 65px; padding: 35px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-soft); }
+.home-invitation .eyebrow { margin-bottom: 12px; }
+.home-invitation h2 { font-size: 34px; margin-bottom: 15px; }
+.home-invitation p:not(.eyebrow) { font-size: 13px; color: var(--muted); max-width: 470px; margin-bottom: 0; }
+.home-invitation .button { flex-shrink: 0; font-size: 12px; }
+.curriculum-page .curriculum-section.section-space { padding-block: 67px 27px; }
+.curriculum-page .curriculum-section h1 { font-size: clamp(42px, 4.4vw, 58px); margin-bottom: 24px; }
+.curriculum-page .curriculum-note { margin-bottom: 0; }
+.community-page .community-section { padding-top: 68px; }
+.community-page .community-panel { padding: 51px; min-height: 360px; }
+.community-page .community-intro h1 { font-size: clamp(43px, 4.3vw, 57px); margin-bottom: 23px; }
+.contact-page .contact-section { padding-top: 65px; }
+.contact-page .contact-panel { padding-top: 25px; border-top: 0; }
+.contact-page .contact-intro h1 { font-size: clamp(45px, 4.8vw, 62px); margin-bottom: 24px; }
+.contact-page .faq-section { padding-block: 61px 75px; }
+.contact-page .faq-section h2 { font-size: 36px; }
+.topic-footer-note { max-width: 1080px; display: flex; justify-content: center; align-items: center; gap: 23px; padding-block: 30px 65px; font-size: 13px; color: var(--muted); text-align: center; }
+.topic-footer-note p { margin: 0; }
+.topic-footer-note .text-link { color: var(--ink); font-size: 12px; }
+@media (max-width: 950px) { .home-route-card { padding: 23px 23px 42px; }.home-route-card h3 { font-size: 26px; }.home-about { gap: 35px; }.home-about h2 { font-size: 34px; }.home-invitation { gap: 25px; padding: 29px; }.community-page .community-panel { padding: 34px; } }
+@media (max-width: 650px) { .home-routes { padding-block: 4px 37px; }.home-routes-heading { display: block; margin-bottom: 20px; }.home-routes-heading .eyebrow { margin-bottom: 10px; }.home-routes-heading h2 { font-size: 30px; }.home-route-grid { grid-template-columns: 1fr; gap: 12px; }.home-route-card { padding: 24px 26px 26px; }.home-route-number { margin-bottom: 13px; }.home-route-card h3 { font-size: 29px; margin-bottom: 10px; }.home-route-card p { max-width: calc(100% - 20px); font-size: 12px; }.home-about { grid-template-columns: 1fr; gap: 23px; padding-block: 35px 39px; }.home-about h2 { font-size: 34px; }.home-about>div>p:not(.eyebrow) { font-size: 13px; }.home-invitation { flex-direction: column; align-items: flex-start; gap: 24px; padding: 26px; margin-bottom: 42px; }.home-invitation h2 { font-size: 32px; }.curriculum-page .curriculum-section.section-space { padding-block: 41px 16px; }.curriculum-page .curriculum-section h1 { font-size: 39px; }.community-page .community-section { padding-top: 35px; }.community-page .community-panel { min-height: 0; padding: 28px 24px; }.community-page .community-intro h1 { font-size: 43px; }.contact-page .contact-section { padding-top: 35px; }.contact-page .contact-panel { padding-top: 0; }.contact-page .contact-intro h1 { font-size: 45px; }.contact-page .faq-section { padding-block: 43px 50px; }.topic-footer-note { flex-direction: column; gap: 9px; padding-block: 23px 43px; font-size: 12px; } }
+@media (prefers-reduced-motion: reduce) { .home-route-card { transition: none; } }
