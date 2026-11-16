@@ -3,8 +3,8 @@
   const form = document.querySelector('[data-email-form]');
   if (!form) return;
 
-  const recipient = 'ammarashary@gmail.com';
   const volunteer = form.dataset.kind === 'volunteer';
+  const recipient = volunteer ? 'breakingtheskyadmissions@gmail.com' : 'ammarashary@gmail.com';
   const review = document.querySelector('#application-review');
   const summary = review.querySelector('.review-summary');
   const sendLink = document.querySelector('#send-email');
@@ -150,10 +150,10 @@
       const name = form.querySelector('[name="name"]').value.trim();
       const email = form.querySelector('[name="email"]').value.trim();
       const payload = cloudflare ? { reference, name, email, message, honey: '' } : {
-        _subject: subject, _template: 'table', _url: 'https://ammarashary14.github.io/its/apply.html', _honey: '',
+        _subject: subject, _template: 'table', _url: new URL('apply.html', document.baseURI).href, _honey: '',
         name, email, 'Application reference': reference, 'Application details': message
       };
-      const response = await fetch(cloudflare ? 'api/applications' : 'https://formsubmit.co/ajax/ammarashary@gmail.com', {
+      const response = await fetch(cloudflare ? 'api/applications' : `https://formsubmit.co/ajax/${recipient}`, {
         method: 'POST', credentials: cloudflare ? 'same-origin' : 'omit', signal: controller.signal,
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload)
       });

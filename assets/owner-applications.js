@@ -71,7 +71,7 @@ if (root) {
     $('#import-email-templates').disabled = state.busy || state.sending;
     root.querySelectorAll('[data-template-input]').forEach(input => { input.disabled = state.busy || state.sending; });
     $('#template-draft-state').textContent = state.dirty ? 'Unsaved message edits' : state.localDraft ? 'Message draft saved on this device' : state.settingsConnected ? 'Showing saved server messages' : 'Write your messages here; save a draft until email is connected.';
-    $('#application-connection').textContent = !state.connected ? 'Connect Cloudflare to review new applications here. Existing FormSubmit applications remain in your email inbox.' : state.canSend ? 'Application review and email sending are connected.' : 'Applications are connected. Configure the sending email service to enable decisions.';
+    $('#application-connection').textContent = !state.connected ? 'Connect Cloudflare to review new applications here. Earlier applications remain in the mailbox that originally received them.' : state.canSend ? 'Applications are connected and Gmail sending is configured.' : 'Applications are connected. Connect breakingtheskyadmissions@gmail.com to enable decision emails.';
   }
   function saveLocal() {
     const templates = readInputs();
@@ -87,6 +87,8 @@ if (root) {
     const meta = element('div', 'applicant-meta');
     const email = element('a', '', application.email); email.href = `mailto:${encodeURIComponent(application.email)}`;
     meta.append(email, element('span', '', application.reference), element('span', 'application-badge', label(application.status))); holder.append(meta);
+    const notifications = {pending:'Admissions email queued; Gmail may still need connecting.',sending:'Sending the admissions notification.',sent:'Admissions notification sent to breakingtheskyadmissions@gmail.com.',failed:'Admissions notification was not sent. Check Gmail settings; the application is saved.',delivery_uncertain:'Check Gmail before retrying the admissions notification.'};
+    if (notifications[application.notificationStatus]) holder.append(element('p', 'owner-card-footnote', notifications[application.notificationStatus]));
     const answers = element('pre', 'applicant-answers', application.message); answers.tabIndex = 0; holder.append(answers);
     const actions = element('div', 'application-decision-actions');
     for (const decision of DECISIONS) {
@@ -144,7 +146,7 @@ if (root) {
     dialog = element('dialog', 'application-decision-dialog'); dialog.setAttribute('aria-labelledby', 'decision-dialog-title'); dialog._previous = document.activeElement;
     dialog.append(element('p', 'eyebrow', 'REVIEW BEFORE SENDING'));
     const title = element('h2', '', decision === 'accepted' ? 'Accept this application?' : 'Reject this application?'); title.id = 'decision-dialog-title'; dialog.append(title);
-    dialog.append(element('p', 'decision-recipient', `To: ${application.email}`), element('p', 'decision-subject', `Subject: ${subject}`), element('pre', 'decision-body', body));
+    dialog.append(element('p', 'decision-recipient', 'From: breakingtheskyadmissions@gmail.com'), element('p', 'decision-recipient', `To: ${application.email}`), element('p', 'decision-subject', `Subject: ${subject}`), element('pre', 'decision-body', body));
     dialog.append(element('p', 'owner-card-footnote', 'This sends one email to the address on the application and records your decision.'));
     const message = element('p', 'decision-status'); message.setAttribute('role', 'status'); dialog.append(message);
     const actions = element('div', 'application-decision-actions'); const cancel = element('button', 'owner-secondary', 'Back'); cancel.type = 'button'; cancel.addEventListener('click', closeDialog);

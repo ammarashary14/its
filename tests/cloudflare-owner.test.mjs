@@ -81,6 +81,52 @@ test('a signed token for another email is denied', async () => {
   const response = await ownerSession({ request: await request('/api/owner/session', { claims: { email: 'other@example.org' } }), env: envBase });
   assert.equal(response.status, 403); assert.equal((await response.json()).code, 'owner_required');
 });
+test('the owner allowlist admits both configured owners and reports the signed-in email', async () => {
+  const env = { ...envBase, OWNER_EMAILS: ' AMMARASHARY@gmail.com, BreakingTheSkyAdmissions@Gmail.com ' };
+  for (const email of ['ammarashary@gmail.com', 'breakingtheskyadmissions@gmail.com']) {
+    const response = await ownerSession({ request: await request('/api/owner/session', { claims: { email: email.toUpperCase() } }), env });
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { owner: true, email, analyticsConfigured: false });
+  }
+  for (const email of ['other@example.org', 'breakingtheskyadmissions+other@gmail.com', 'breakingtheskyadmissions@gmail.com.evil.example']) {
+    const response = await ownerSession({ request: await request('/api/owner/session', { claims: { email } }), env });
+    assert.equal(response.status, 403); assert.equal((await response.json()).code, 'owner_required');
+  }
+});
+test('an explicit allowlist replaces the legacy owner instead of extending it', async () => {
+  const env = { ...envBase, OWNER_EMAILS: 'breakingtheskyadmissions@gmail.com' };
+  assert.equal((await ownerSession({ request: await request('/api/owner/session'), env })).status, 403);
+  const allowed = await authorizeOwner(await request('/api/owner/session', { claims: { email: 'breakingtheskyadmissions@gmail.com' } }), env);
+  assert.equal(allowed.email, 'breakingtheskyadmissions@gmail.com');
+});
+test('malformed owner allowlists fail closed even when the legacy owner is valid', async () => {
+  const invalidLists = [
+    '', '   ', ',ammarashary@gmail.com', 'ammarashary@gmail.com,', 'ammarashary@gmail.com,,breakingtheskyadmissions@gmail.com',
+    'ammarashary@gmail.com,not-an-email', '*@gmail.com', 'ammara?@gmail.com', 'owner@*.example.org',
+    '.owner@example.org', 'owner..name@example.org', 'owner.@example.org', 'Owner <owner@example.org>',
+    `${'a'.repeat(65)}@example.org`, `owner@${'a'.repeat(64)}.org`, 'owner@exa\nmple.org',
+    Array.from({ length: 11 }, (_, index) => `owner${index}@example.org`).join(','), 'x'.repeat(4097),
+    null, 42, ['ammarashary@gmail.com']
+  ];
+  const signedRequest = await request('/api/owner/session');
+  for (const OWNER_EMAILS of invalidLists) {
+    const response = await ownerSession({ request: signedRequest, env: { ...envBase, OWNER_EMAILS } });
+    assert.equal(response.status, 503, `Invalid owner list must fail closed: ${JSON.stringify(OWNER_EMAILS)}`);
+    assert.equal((await response.json()).code, 'owner_auth_not_configured');
+  }
+});
+test('owner allowlists support at most ten exact email addresses', async () => {
+  const owners = Array.from({ length: 10 }, (_, index) => `owner${index}@example.org`);
+  const env = { ...envBase, OWNER_EMAILS: owners.join(',') };
+  assert.equal((await authorizeOwner(await request('/api/owner/session', { claims: { email: owners[9] } }), env)).email, owners[9]);
+});
+test('legacy OWNER_EMAIL remains normalized and limited to one valid address', async () => {
+  assert.equal((await authorizeOwner(await request('/api/owner/session'), { ...envBase, OWNER_EMAIL: ' AMMARASHARY@GMAIL.COM ' })).email, 'ammarashary@gmail.com');
+  for (const OWNER_EMAIL of ['', '*@gmail.com', 'not-an-email', 'ammarashary@gmail.com,breakingtheskyadmissions@gmail.com']) {
+    const response = await ownerSession({ request: await request('/api/owner/session'), env: { ...envBase, OWNER_EMAIL } });
+    assert.equal(response.status, 503); assert.equal((await response.json()).code, 'owner_auth_not_configured');
+  }
+});
 test('owner session exposes no API token and accurately reports absent analytics', async () => {
   const response = await ownerSession({ request: await request('/api/owner/session'), env: { ...envBase, CF_ANALYTICS_API_TOKEN: 'test-server-secret' } });
   assert.equal(response.status, 200); assert.equal(response.headers.get('Cache-Control'), 'no-store');

@@ -9,4 +9,4 @@ await mkdir(output, { recursive: true });
 for (const file of ['index.html', 'curriculum.html', 'community.html', 'contact.html', 'schools.html', 'sponsors.html', 'donate.html', 'team.html', 'apply.html', 'tutoring.html', 'editor.html', 'owner.html', 'assets', '_headers', '.nojekyll']) {
   await cp(path.join(root, file), path.join(output, file), { recursive: true });
 }
-console.log('Static website built in dist/. Ready for Cloudflare Pages when approved.');
+console.log('Static website built in dist/. Ready for the Cloudflare Worker assets binding.');

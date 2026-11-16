@@ -4,12 +4,14 @@ import { readFile } from 'node:fs/promises';
 import { DatabaseSync } from 'node:sqlite';
 import { clearCertificateCache } from '../server/auth.js';
 import { publicApplications, ownerApplications, ownerApplicationSettings, ownerApplicationDecision } from '../server/applications-api.js';
-import { validateApplication, validateTemplates, validateDecision, decideApplication } from '../server/applications-store.js';
+import { ADMISSIONS_MAILBOX, GmailSendError } from '../server/gmail-mailer.js';
+import { validateApplication, validateTemplates, validateDecision, decideApplication, saveApplication, listApplications, emailConfigured } from '../server/applications-store.js';
 
 const origin = 'https://bts.example.org';
 const issuer = 'https://applications-test.cloudflareaccess.com';
 const auth = { CF_ACCESS_TEAM_DOMAIN: 'applications-test.cloudflareaccess.com', CF_ACCESS_AUD: 'owner-app', OWNER_EMAIL: 'owner@example.org' };
 const schema = await readFile(new URL('../migrations/0002_applications.sql', import.meta.url), 'utf8');
+const notificationsSchema = await readFile(new URL('../migrations/0003_application_notifications.sql', import.meta.url), 'utf8');
 const originalFetch = globalThis.fetch;
 const baseApplication = { reference: 'BTS-11111111-2222-4333-8444-555555555555', name: 'Sample Applicant', email: 'applicant@example.org', message: 'Math interest: algebra\nAvailability: weekends', honey: '' };
 let privateKey, jwk, provider;
@@ -20,17 +22,22 @@ async function token(email = auth.OWNER_EMAIL) {
   return data + '.' + b64(await crypto.subtle.sign('RSASSA-PKCS1-v1_5', privateKey, new TextEncoder().encode(data)));
 }
 function database() {
-  const connection = new DatabaseSync(':memory:'); connection.exec(schema);
-  return { connection, prepare(sql) {
+  const connection = new DatabaseSync(':memory:'); connection.exec(schema); connection.exec(notificationsSchema);
+  return { connection, async batch(statements) {
+    connection.exec('BEGIN');
+    try { const results = statements.map(statement => statement.runSync()); connection.exec('COMMIT'); return results; }
+    catch (error) { connection.exec('ROLLBACK'); throw error; }
+  }, prepare(sql) {
     const statement = connection.prepare(sql); let args = [];
+    const run = () => { const result = statement.run(...args); return { success: true, meta: { changes: Number(result.changes) } }; };
     return { bind(...values) { args = values; return this; },
       async first() { return statement.get(...args) || null; },
       async all() { return { success: true, results: statement.all(...args) }; },
-      async run() { const result = statement.run(...args); return { success: true, meta: { changes: Number(result.changes) } }; }
+      runSync: run, async run() { return run(); }
     };
   } };
 }
-function environment(db = database()) { return { ...auth, BTS_DB: db, BTS_APPLICATIONS_ENABLED: 'true', RESEND_API_KEY: 'secret-test-only', APPLICATION_FROM_EMAIL: 'applications@example.org' }; }
+function environment(db = database()) { return { ...auth, BTS_DB: db, BTS_APPLICATIONS_ENABLED: 'true', APPLICATION_EMAIL_PROVIDER: 'resend', RESEND_API_KEY: 'secret-test-only', APPLICATION_FROM_EMAIL: 'applications@example.org' }; }
 async function request(path, { method = 'GET', body, signed = true, originHeader = origin, email } = {}) {
   const headers = {};
   if (signed) headers['Cf-Access-Jwt-Assertion'] = await token(email);
@@ -156,4 +163,89 @@ test('network failure, timeout, provider 5xx and invalid ACK block automatic res
 test('new schema limits reject unsupported controls and invalid decisions', () => {
   assert.throws(() => validateApplication({ ...baseApplication, name: 'A\0B' }));
   assert.throws(() => validateDecision({ id: 'invalid', decision: 'accepted', subject: 's', body: 'b' }));
+});
+
+function gmailEnvironment(db = database()) {
+  return { ...environment(db), ADMISSIONS_EMAIL: ADMISSIONS_MAILBOX, GMAIL_APP_PASSWORD: 'abcdefghijklmnop' };
+}
+async function notification(env) { return env.BTS_DB.prepare('SELECT * FROM application_notifications').first(); }
+
+test('admissions Gmail always takes precedence and cannot silently fall back to Resend', () => {
+  assert.equal(emailConfigured(gmailEnvironment()), true);
+  assert.equal(emailConfigured({ ...gmailEnvironment(), GMAIL_APP_PASSWORD: '' }), false);
+  assert.equal(emailConfigured({ ...gmailEnvironment(), ADMISSIONS_EMAIL: 'different@gmail.com' }), false);
+  assert.equal(emailConfigured({ ...environment(), APPLICATION_EMAIL_PROVIDER: undefined }), false);
+  assert.equal(emailConfigured({ ...environment(), APPLICATION_FROM_EMAIL: ADMISSIONS_MAILBOX }), false);
+});
+test('notifications use the admissions recipient, applicant Reply-To, and a stable tracking ID once per reference', async () => {
+  const env = gmailEnvironment(); let calls = 0, sent;
+  const gmailMailer = async (_env, message) => { calls++; sent = message; return { accepted: true, messageId: message.messageId }; };
+  for (let index = 0; index < 2; index++) assert.deepEqual(await saveApplication(env, baseApplication, { gmailMailer }), { success: true, reference: baseApplication.reference });
+  assert.equal(calls, 1); assert.equal(sent.to, ADMISSIONS_MAILBOX); assert.equal(sent.replyTo, baseApplication.email);
+  assert(sent.body.includes(baseApplication.message)); assert.match(sent.messageId, /^<bts-notification-[a-f0-9-]+@breakingthesky\.local>$/);
+  const notice = await notification(env); assert.equal(notice.status, 'sent'); assert.equal(notice.message_id, sent.messageId); assert(notice.sent_at);
+  const ownerList = await listApplications(env); assert.equal(ownerList[0].notificationStatus, 'sent');
+  const publicStatus = await publicApplications({ env, request: await request('/api/applications', { signed: false }) });
+  assert.deepEqual(await publicStatus.json(), { enabled: true });
+});
+test('concurrent identical applications create one admissions notification', async () => {
+  const env = gmailEnvironment(); let calls = 0, release;
+  const gmailMailer = async (_env, message) => { calls++; await new Promise(resolve => { release = resolve; }); return { accepted: true, messageId: message.messageId }; };
+  const first = saveApplication(env, baseApplication, { gmailMailer });
+  while (!release) await new Promise(resolve => setImmediate(resolve));
+  assert.equal((await saveApplication(env, baseApplication, { gmailMailer })).success, true);
+  release(); await first;
+  assert.equal(calls, 1); assert.equal((await notification(env)).status, 'sent');
+});
+test('background notification failure cannot undo an accepted application or trigger a duplicate email', async () => {
+  for (const uncertain of [false, true]) {
+    const env = gmailEnvironment(); const tasks = []; let calls = 0;
+    const gmailMailer = async () => { calls++; throw new GmailSendError('Mock Gmail failure', { uncertain }); };
+    const result = await saveApplication(env, baseApplication, { gmailMailer, waitUntil(promise) { tasks.push(promise); } });
+    assert.deepEqual(result, { success: true, reference: baseApplication.reference });
+    await Promise.all(tasks);
+    assert.equal((await saved(env)).status, 'pending'); assert.equal((await notification(env)).status, uncertain ? 'delivery_uncertain' : 'failed');
+    await saveApplication(env, baseApplication, { gmailMailer }); assert.equal(calls, 1);
+  }
+});
+test('without Gmail setup notifications remain pending while the dashboard keeps the application', async () => {
+  const env = { ...gmailEnvironment(), GMAIL_APP_PASSWORD: '' };
+  let called = false;
+  const result = await saveApplication(env, baseApplication, { gmailMailer() { called = true; throw new Error('Must not send'); } });
+  assert.equal(result.success, true); assert.equal(called, false); assert.equal((await notification(env)).status, 'pending');
+  assert.equal((await saved(env)).status, 'pending');
+});
+test('a notification storage failure rolls back intake instead of losing the durable notification', async () => {
+  const env = gmailEnvironment();
+  env.BTS_DB.connection.exec("CREATE TRIGGER reject_notification BEFORE INSERT ON application_notifications BEGIN SELECT RAISE(FAIL, 'mock storage failure'); END;");
+  await assert.rejects(saveApplication(env, baseApplication), error => error.code === 'applications_unavailable');
+  assert.equal(env.BTS_DB.connection.prepare('SELECT count(*) AS n FROM applications').get().n, 0);
+  assert.equal(env.BTS_DB.connection.prepare('SELECT count(*) AS n FROM application_notifications').get().n, 0);
+});
+test('the pending notification is durable before background delivery starts', async () => {
+  const env = { ...gmailEnvironment(), GMAIL_APP_PASSWORD: '' }; const tasks = [];
+  await saveApplication(env, baseApplication, { waitUntil(task) { tasks.push(task); } });
+  assert.equal((await notification(env)).status, 'pending');
+  assert.equal((await saved(env)).reference, baseApplication.reference);
+  await Promise.all(tasks);
+});
+test('Gmail decisions use the stored recipient and admissions Reply-To, with confirmed acceptance required', async () => {
+  const env = gmailEnvironment(); await saveApplication(env, baseApplication, { gmailMailer: async () => ({ accepted: true }) });
+  const row = await saved(env); let sent;
+  const result = await decideApplication(env, { id: row.id, decision: 'accepted', subject: 'Your application', body: 'We would like to welcome you.', email: 'not-used@example.org' }, auth.OWNER_EMAIL, undefined, {
+    gmailMailer: async (_env, message) => { sent = message; return { accepted: true, messageId: message.messageId }; }
+  });
+  assert.equal(sent.to, baseApplication.email); assert.equal(sent.replyTo, ADMISSIONS_MAILBOX);
+  assert.equal(sent.messageId, `<bts-decision-${row.id}-accepted@breakingthesky.local>`);
+  assert.equal(result.emailAccepted, true); assert.equal((await saved(env)).status, 'accepted');
+});
+test('Gmail pre-DATA failures are retryable; uncertain sends remain locked and never claim success', async () => {
+  for (const uncertain of [false, true]) {
+    const env = gmailEnvironment(); await saveApplication(env, baseApplication, { gmailMailer: async () => ({ accepted: true }) });
+    const row = await saved(env); const payload = { id: row.id, decision: 'rejected', subject: 'Application update', body: 'Thank you for your interest.' };
+    const gmailMailer = async () => { throw new GmailSendError('Mock network failure', { uncertain }); };
+    await assert.rejects(decideApplication(env, payload, auth.OWNER_EMAIL, undefined, { gmailMailer }), error => error.code === (uncertain ? 'delivery_uncertain' : 'email_rejected'));
+    assert.equal((await saved(env)).status, uncertain ? 'delivery_uncertain' : 'pending');
+    if (uncertain) await assert.rejects(decideApplication(env, payload, auth.OWNER_EMAIL, undefined, { gmailMailer }), error => error.code === 'decision_already_started');
+  }
 });

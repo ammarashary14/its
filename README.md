@@ -1,6 +1,6 @@
 # BTS · Breaking the Sky
 
-A first website draft for a nonprofit whose volunteers bring grade-level curriculum into schools. Built with static HTML, CSS, and JavaScript, with a Cloudflare Worker for owner publishing, application review, and analytics. No production framework or package installation is required.
+A first website draft for a nonprofit whose volunteers bring grade-level curriculum into schools. Built with static HTML, CSS, and JavaScript, with a Cloudflare Worker for owner publishing, application review, and analytics. Static previews need no package installation; Cloudflare deployment uses the pinned Wrangler development dependency.
 
 ## Preview locally
 
@@ -8,7 +8,7 @@ Run `npm run dev`, then open `http://localhost:3000`. Python 3 is needed for thi
 
 ## Check and build
 
-Requires Node.js 20 or later:
+Requires Node.js 22 or later:
 
 ```sh
 npm run check
@@ -23,9 +23,9 @@ The site can be served directly from the repository root. In the repository's **
 
 ## Cloudflare deployment
 
-The current Cloudflare **Workers** Git setup uses project name `its`, build command `npm run build`, and deploy command `npx wrangler deploy`. The committed `wrangler.jsonc` serves `dist/` through the ASSETS binding and routes `/api/*` to `server/worker.js`. It preserves dashboard variables with `keep_vars`. The first deployment has no database or email credentials and therefore leaves live owner actions disabled.
+The Cloudflare **Workers** Git setup uses project name `its` and build command `npm run build`. Use deploy command `npm run deploy` to configure the database and owner access automatically after granting the documented build-token permissions. See [automatic setup](docs/cloudflare-automatic-setup.md). The committed `wrangler.jsonc` serves `dist/` through the ASSETS binding and routes `/api/*` to `server/worker.js`. It preserves dashboard variables with `keep_vars`. Live owner actions remain disabled until database and sign-in setup succeeds; email sending also requires the admissions mailbox’s App Password.
 
-Create the D1 database and add its real ID to the repository's Wrangler configuration as `BTS_DB` before enabling persistent editing. See [owner setup](docs/cloudflare-owner-setup.md) and [application review setup](docs/application-review-setup.md). Protect owner paths with Cloudflare Access after deployment; attach `breakingthesky.com` only when approved for public launch.
+The setup command creates or reuses the dedicated D1 database and configures Cloudflare Access for both authorized owners before enabling persistent editing. Manual setup is documented in [owner setup](docs/cloudflare-owner-setup.md); Gmail configuration is documented in [application review setup](docs/application-review-setup.md). The owner has attached and approved `breakingthesky.com` for launch.
 
 The `functions/` adapters also remain available for a Cloudflare Pages deployment using build command `npm run build` and output `dist`.
 
@@ -54,7 +54,7 @@ The `functions/` adapters also remain available for a Cloudflare Pages deploymen
 
 The organization name and volunteer-school model come from the project brief. Grade bands, lesson content and timings, staff roles, and visual branding are proposals. Curriculum examples and staff profiles are labeled as placeholders. There are no invented impact statistics, endorsements, staff identities, or donation links.
 
-Volunteer applications are reviewed and submitted directly from the website to **ammarashary@gmail.com** through [FormSubmit](https://formsubmit.co/). The page shows success only after the service acknowledges the submission; it does not promise inbox placement. Sending disables repeat clicks, errors retain answers, and a timeout explains that receipt is uncertain. A copy/contact fallback remains available. FormSubmit processes submission data under its [privacy policy](https://formsubmit.co/privacy). Its recipient activation must be completed for each hosting origin before accepting applications; repeat a clearly labeled setup test and confirm inbox delivery when changing the endpoint or domain. The browser does not store applicant responses in localStorage or sessionStorage. Theme preferences and draft question settings are the only local persistence. Local editor previews cannot send real applications; the published application remains available through `apply.html?published=1`.
+The static fallback submits volunteer applications to **breakingtheskyadmissions@gmail.com** through [FormSubmit](https://formsubmit.co/). The page shows success only after the service acknowledges the submission; it does not promise inbox placement. Sending disables repeat clicks, errors retain answers, and a timeout explains that receipt is uncertain. A copy/contact fallback remains available. FormSubmit processes submission data under its [privacy policy](https://formsubmit.co/privacy). Its recipient activation must be completed for each hosting origin before accepting applications; repeat a clearly labeled setup test and confirm inbox delivery when changing the endpoint or domain. The browser does not store applicant responses in localStorage or sessionStorage. Theme preferences and draft question settings are the only local persistence. Local editor previews cannot send real applications; the published application remains available through `apply.html?published=1`.
 
 Tutoring requests continue to prepare a prefilled email that visitors send in their email app. A submitted application does not confirm volunteer placement or book a tutoring session. Confirm the volunteer process and grade coverage before final launch.
 
@@ -101,12 +101,12 @@ Use **Owner dashboard → Schools served** to add school names, locations, grade
 
 Blank social profiles show “Coming soon” on the Community page and stay out of the footer. Blank donation settings display the upcoming-donations message instead of a payment button. No school or sponsor endorsements are fabricated. `npm run test:content` checks the added data and URL validation.
 
-The new domain `breakingthesky.com` is registered at Cloudflare. Keep the domain disconnected from this preview until the owner explicitly approves launch.
+The owner has registered and attached `breakingthesky.com` at Cloudflare and approved launch. The source configuration now preserves that custom domain. Backend features must still pass their connection checks before being described as live.
 
 ## Application review and decision emails
 
 **Owner dashboard → Applications** now includes an inbox area and separate acceptance/rejection message editors. Write a subject and message with `{{name}}`, `{{email}}`, and `{{reference}}`, preview them, and save or export the message draft. Templates are separate from website content and contain no applicant records. Saving a message never sends email.
 
-The current GitHub Pages and static private preview cannot receive applications into this inbox or send decision emails. Existing FormSubmit submissions remain in the email inbox. Once [application review setup](docs/application-review-setup.md) is completed, new submissions can go into private D1 storage. The authenticated owner can select a record, choose Accept or Reject, review the recipient and exact message, then send. Only an acknowledged email-provider response marks the decision sent; ambiguous delivery is locked for checking to prevent duplicate messages. No email account or new domain has been connected by this change.
+GitHub Pages and the static private preview cannot receive applications into this inbox or send decision emails. Existing FormSubmit submissions remain in the email inbox. Once [application review setup](docs/application-review-setup.md) is completed, new submissions can go into private D1 storage. The authenticated owner can select a record, choose Accept or Reject, review the recipient and exact message, then send. Only an acknowledged email-provider response marks the decision sent; ambiguous delivery is locked for checking to prevent duplicate messages. The domain is attached by the owner. Gmail and live owner access require the documented account setup; code and local tests alone do not verify those connections.
 
 `npm run test:applications` verifies the private endpoints, real SQLite storage behavior, revisions, and duplicate-send protection with mocked email delivery.

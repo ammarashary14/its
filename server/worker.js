@@ -17,10 +17,10 @@ const routes = new Map([
 ]);
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, context) {
     const path = new URL(request.url).pathname;
     const handler = routes.get(path);
-    if (handler) return handler({ request, env });
+    if (handler) return handler({ request, env, waitUntil: context?.waitUntil?.bind(context) });
     if (path === '/api' || path.startsWith('/api/')) {
       return json({ error: 'This API endpoint does not exist.', code: 'not_found' }, 404);
     }

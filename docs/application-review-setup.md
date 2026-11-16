@@ -1,34 +1,39 @@
-# Volunteer application review and email decisions
+# Volunteer applications and admissions emails
 
-The owner dashboard has editable acceptance/rejection messages and an application inbox. GitHub Pages still uses the activated FormSubmit delivery to the existing Gmail inbox. Automatic decisions are unavailable until the Cloudflare backend and email sender below are configured. Existing FormSubmit email history is not imported automatically.
+The owner dashboard stores editable acceptance/rejection templates separately from public website content. It supports `{{name}}`, `{{email}}`, and `{{reference}}`. Writing or saving a template never sends email; an owner selects an application, previews the exact recipient and message, and confirms the decision.
 
-## Connect the private inbox
+## Connect the backend
 
-1. Complete [Cloudflare owner setup](cloudflare-owner-setup.md), including Cloudflare Access on `/owner.html` and `/api/owner/*` and the `BTS_DB` D1 binding. The server independently verifies the signed Access token and owner email on every private endpoint.
-2. Apply `migrations/0002_applications.sql` to the same D1 database. It creates separate `applications` and `application_settings` tables. These records and email templates are never part of the public site-content export.
-3. Deploy the Pages Functions from this repository with the site. Set `BTS_APPLICATIONS_ENABLED=true` only when the application inbox is ready. `GET /api/applications` advertises enabled intake only when this flag, D1, and the migration are available.
-4. Submit a clearly labeled test application from the new website origin and verify that it appears in the owner inbox. Public submissions are stored in D1; they do not send an owner notification email. The owner list shows the latest 100 records. Applications submitted through the earlier FormSubmit workflow remain in Gmail.
+Use [automatic Cloudflare setup](cloudflare-automatic-setup.md), or configure D1 and Cloudflare Access manually using [owner setup](cloudflare-owner-setup.md). Apply all migrations, including `0003_application_notifications.sql`. The intake endpoint enables only when the database schema and `BTS_APPLICATIONS_ENABLED=true` are present. Private endpoints independently validate signed owner identity.
 
-Protect the public POST endpoint with Cloudflare rate limits appropriate to expected applications before opening intake. Request validation, a honeypot, size limits, same-origin JSON requests, and unique application references are included; these are not a substitute for edge rate limits against automated storage abuse. Set a retention policy for applicants' personal details and restrict D1/account access to the people who need it.
+The allowed owners are `ammarashary@gmail.com` and `breakingtheskyadmissions@gmail.com`. Configure `OWNER_EMAILS` with both comma-separated addresses. A legacy `OWNER_EMAIL` is used only when the list is absent.
 
-## Connect decision emails
+## Connect the admissions mailbox
 
-Create a Resend account and verify a sending domain. Configure these **server-only** Pages runtime secrets/settings:
+The production sender is **breakingtheskyadmissions@gmail.com**. This uses authenticated Gmail SMTP over implicit TLS on port 465, with a Google App Password stored only in the Worker secret `GMAIL_APP_PASSWORD`. The regular Google password cannot be used. The account must have 2-Step Verification and permit App Passwords.
+
+Runtime settings:
 
 | Name | Value |
 | --- | --- |
-| `RESEND_API_KEY` | A Resend key authorized to send from the verified domain. |
-| `APPLICATION_FROM_EMAIL` | A bare sender email at that verified domain, for example `applications@your-domain.org`. |
-| `OWNER_EMAIL` | The existing dashboard owner email; it is also the decision email reply-to address. |
+| `ADMISSIONS_EMAIL` | `breakingtheskyadmissions@gmail.com` |
+| `APPLICATION_EMAIL_PROVIDER` | `gmail` |
+| `GMAIL_APP_PASSWORD` | A Google-generated App Password, stored as a secret |
 
-Do not put API keys in public assets, GitHub, the content JSON, or a dashboard text field. No key is included in this project.
+New application notifications go to the admissions mailbox with the applicant's address as Reply-To. Acceptances and rejections use the admissions mailbox as both From and Reply-To. The recipient for a decision always comes from the stored application, not from the submitted decision request.
 
-In **Owner dashboard → Applications**, write and save the acceptance and rejection messages. Templates support `{{name}}`, `{{email}}`, and `{{reference}}`. Subject lines allow up to 200 characters; template bodies allow up to 10,000. The initial body is blank. Choose an application, review the rendered recipient/subject/body, and confirm **Accept & send** or **Reject & send**. Only that explicit action sends an email, always to the address stored on the application. Emails are plain text.
+Applications remain saved in the owner inbox if a notification fails. Notification state is separate from acceptance/rejection state and is visible only to owners. Existing FormSubmit applications remain in the mailbox that originally received them; no historical email is forwarded automatically.
 
-## Sending and recovery
+The legacy static-site FormSubmit fallback now targets the admissions address and requires that mailbox's FormSubmit activation for the new origin before it can deliver. Its response is checked for setup/activation failures; answers remain available on errors. No failed backend POST automatically switches to a different provider.
 
-The server atomically claims a pending application before contacting Resend. A stable provider idempotency key and a stored sending state prevent concurrent clicks from sending separate decisions. A confirmed provider acceptance records `accepted` or `rejected`; it means the provider accepted the email, not that the recipient read it or that inbox delivery is guaranteed.
+## Templates and delivery
 
-A definite provider rejection leaves the application pending with an error so the configuration or message can be corrected. A network timeout, ambiguous provider result, or failed final database update leaves `delivery_uncertain` or `sending`. These states cannot be retried from the dashboard. Check the Resend email log and database record before any manual recovery; do not reset and resend merely because the browser timed out. If the provider confirms receipt, reconcile the decision and provider ID. If it confirms no send occurred, an authorized operator can return the record to pending after reviewing the saved subject/body. Provider idempotency retention is limited, so it does not authorize an automatic resend later.
+Write acceptance and rejection messages in **Owner dashboard → Applications**. Example: `Hi {{name}}, thank you for applying to Breaking the Sky.` Subject templates allow 200 characters, body templates 10,000, and the initial message body is blank. The preview replaces placeholders before sending. Emails are plain text.
 
-`npm run test:applications` (when added to package scripts) or `node --test tests/applications-api.test.mjs` runs SQLite-backed storage, identity, validation, concurrent decision, provider rejection, and uncertain delivery tests. Tests mock all email requests; they do not send messages.
+The server atomically claims each decision and notification before sending. A final SMTP acceptance response is required before marking an email accepted. An ambiguous disconnect or timeout after message transmission remains locked for checking, preventing an automatic duplicate. SMTP acceptance does not guarantee inbox placement or that the recipient read the message.
+
+For uncertain sends, inspect Gmail's sent mail and the stored record before any manual recovery. Never reset and resend solely because a browser timed out. A tracking Message-ID helps identify the message but is not provider-level idempotency.
+
+An explicitly selected legacy Resend sender remains available for verified non-Gmail domains; it is never used to impersonate the admissions Gmail address.
+
+Run `npm run test:applications` and `npm run test:gmail` for mocked storage/protocol tests. They do not send email. Complete a controlled live test after configuring Gmail, Access, and D1.

@@ -2,12 +2,12 @@ import { authorizeOwner } from './auth.js';
 import { HttpError, json, failure, requireMethod, requireSameOrigin, readJson } from './http.js';
 import { applicationIntakeEnabled, saveApplication, listApplications, emailConfigured, readApplicationSettings, saveApplicationSettings, decideApplication } from './applications-store.js';
 
-export async function publicApplications({ request, env }) {
+export async function publicApplications({ request, env, waitUntil }) {
   try {
     if (request.method === 'GET') return json({ enabled: await applicationIntakeEnabled(env) });
     requireMethod(request, 'POST');
     requireSameOrigin(request);
-    return json(await saveApplication(env, await readJson(request, 256 * 1024)));
+    return json(await saveApplication(env, await readJson(request, 256 * 1024), { waitUntil }));
   } catch (error) { return failure(error); }
 }
 export async function ownerApplications({ request, env }) {

@@ -84,5 +84,10 @@ test('Workers configuration matches Git build output and keeps all API paths wor
   assert.equal(config.main, 'server/worker.js');
   assert.equal(config.keep_vars, true);
   assert.deepEqual(config.assets, { directory: './dist', binding: 'ASSETS', run_worker_first: ['/api', '/api/*'] });
-  for (const setting of ['account_id', 'routes', 'route', 'd1_databases', 'vars']) assert.equal(config[setting], undefined);
+  assert.equal(config.account_id, '76e1181b5afd1df4b6b15e2864218e21');
+  assert.equal(config.workers_dev, true);
+  assert.equal(config.vars.ADMISSIONS_EMAIL, 'breakingtheskyadmissions@gmail.com');
+  assert.equal(config.vars.OWNER_EMAILS, 'ammarashary@gmail.com,breakingtheskyadmissions@gmail.com');
+  assert.deepEqual(config.routes, [{ pattern: 'breakingthesky.com', custom_domain: true }]);
+  for (const setting of ['route', 'd1_databases']) assert.equal(config[setting], undefined);
 });

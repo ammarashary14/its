@@ -7,6 +7,23 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
-    "run_worker_first": ["/api", "/api/*"]
+    "run_worker_first": [
+      "/api",
+      "/api/*"
+    ]
+  },
+  "account_id": "76e1181b5afd1df4b6b15e2864218e21",
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "breakingthesky.com",
+      "custom_domain": true
+    }
+  ],
+  "vars": {
+    "OWNER_EMAIL": "ammarashary@gmail.com",
+    "OWNER_EMAILS": "ammarashary@gmail.com,breakingtheskyadmissions@gmail.com",
+    "ADMISSIONS_EMAIL": "breakingtheskyadmissions@gmail.com",
+    "APPLICATION_EMAIL_PROVIDER": "gmail"
   }
 }

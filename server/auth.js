@@ -2,15 +2,25 @@ import { HttpError } from './http.js';
 
 const encoder = new TextEncoder();
 const certificates = new Map();
+const OWNER_EMAIL_PATTERN = /^[a-z0-9.!#$%&'+/=^_{}|~-]+@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/i;
+function validOwnerEmail(value) {
+  if (!value || value.length > 254 || !OWNER_EMAIL_PATTERN.test(value)) return false;
+  const [local, domain] = value.split('@');
+  return local.length <= 64 && !local.startsWith('.') && !local.endsWith('.') && !local.includes('..') && domain.split('.').every(label => label.length <= 63);
+}
 function configuration(env) {
   const raw = String(env.CF_ACCESS_TEAM_DOMAIN || '').trim().replace(/\/$/, '');
   const domain = raw.replace(/^https:\/\//, '');
   const audience = String(env.CF_ACCESS_AUD || '').trim();
-  const owner = String(env.OWNER_EMAIL || '').trim().toLowerCase();
-  if (!/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.cloudflareaccess\.com$/i.test(domain) || !audience || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(owner)) {
+  // An explicitly supplied list is authoritative, including when it is invalid.
+  const hasOwnerList = env.OWNER_EMAILS !== undefined;
+  const configuredOwners = hasOwnerList ? env.OWNER_EMAILS : env.OWNER_EMAIL;
+  const owners = typeof configuredOwners === 'string' && configuredOwners.length <= 4096
+    ? (hasOwnerList ? configuredOwners.split(',') : [configuredOwners]).map(email => email.trim().toLowerCase()) : [];
+  if (!/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.cloudflareaccess\.com$/i.test(domain) || !audience || !owners.length || owners.length > 10 || !owners.every(validOwnerEmail)) {
     throw new HttpError(503, 'owner_auth_not_configured', 'Owner sign-in will be available after Cloudflare is connected.');
   }
-  return { issuer: `https://${domain.toLowerCase()}`, audience, owner };
+  return { issuer: `https://${domain.toLowerCase()}`, audience, owners };
 }
 function decodeSegment(value) {
   if (!/^[A-Za-z0-9_-]+$/.test(value)) throw new Error('Invalid token encoding');
@@ -72,7 +82,8 @@ export async function authorizeOwner(request, env, fetcher = fetch) {
     if (claims.iat !== undefined && (!Number.isFinite(claims.iat) || claims.iat > now + 60)) throw new Error('Invalid issued time');
     if (typeof claims.email !== 'string') throw new Error('Missing email');
   } catch { throw new HttpError(401, 'invalid_identity', 'Your sign-in could not be verified.'); }
-  if (claims.email.trim().toLowerCase() !== config.owner) throw new HttpError(403, 'owner_required', 'This account does not have permission to manage this website.');
-  return { email: claims.email.trim().toLowerCase() };
+  const email = claims.email.trim().toLowerCase();
+  if (!config.owners.includes(email)) throw new HttpError(403, 'owner_required', 'This account does not have permission to manage this website.');
+  return { email };
 }
 export function clearCertificateCache() { certificates.clear(); }
