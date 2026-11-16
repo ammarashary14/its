@@ -1,22 +1,22 @@
-/* BTS: warm linen in daylight, soft espresso after dark. */
+/* BTS: pale ivory, quiet charcoal, and restrained editorial typography. */
 :root {
   color-scheme: light;
-  --paper: #f6f1e9;
-  --ink: #34302b;
-  --muted: #70665b;
-  --accent: #78664e;
-  --accent-hover: #5f4e39;
-  --on-accent: #fffaf2;
-  --surface: #fffbf5;
-  --surface-soft: #eee7db;
-  --surface-raised: #f3ebdd;
-  --sand: #e3d5bd;
-  --sage: #dce0d2;
-  --clay: #e5d2c1;
-  --line: #d8cebf;
-  --closing: #6b5c49;
-  --closing-text: #fff8eb;
-  --shadow: #3c302012;
+  --paper: #f7f5ef;
+  --ink: #2d332f;
+  --muted: #666d66;
+  --accent: #3c5045;
+  --accent-hover: #2d4035;
+  --on-accent: #fffefa;
+  --surface: #fffefa;
+  --surface-soft: #efede6;
+  --surface-raised: #f5f3ec;
+  --sand: #e7e3d8;
+  --sage: #e3e8e1;
+  --clay: #e8e4de;
+  --line: #dcded5;
+  --closing: #eeece4;
+  --closing-text: #303b33;
+  --shadow: #2330290a;
   --blue: var(--accent);
   --blue-dark: var(--accent-hover);
   --sky: var(--surface-soft);
@@ -26,22 +26,22 @@
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --paper: #211f1b;
-  --ink: #efe8dc;
-  --muted: #bfb3a2;
-  --accent: #d2b58a;
-  --accent-hover: #e5cba5;
-  --on-accent: #29231c;
-  --surface: #2b2822;
-  --surface-soft: #27241f;
-  --surface-raised: #343027;
-  --sand: #514432;
-  --sage: #3b4135;
-  --clay: #4b3c31;
-  --line: #4a4237;
-  --closing: #393127;
-  --closing-text: #f4eadb;
-  --shadow: #00000026;
+  --paper: #1e2421;
+  --ink: #f0f1e9;
+  --muted: #b7c0b8;
+  --accent: #d5dfd4;
+  --accent-hover: #e5ece1;
+  --on-accent: #243329;
+  --surface: #252d28;
+  --surface-soft: #222a25;
+  --surface-raised: #2b342d;
+  --sand: #3b463d;
+  --sage: #35463a;
+  --clay: #3b413b;
+  --line: #445047;
+  --closing: #252f28;
+  --closing-text: #e8eee4;
+  --shadow: #00000018;
 }
 body { background: var(--paper); color: var(--ink); }
 ::selection { background: var(--sand); color: var(--ink); }
@@ -180,3 +180,25 @@ body { background: var(--paper); color: var(--ink); }
 @media(max-width:850px) { .site-nav { top: 84px; left: 24px; right: 24px; } .hero { padding-top: 52px; gap: 39px; } .hero h1 { font-size: 57px; } .hero .eyebrow { font-size: 9px; } .hero-description { font-size: 15px; max-width: 520px; } .photo-frame { height: 380px; border-radius: 20px; } .contact-inner { align-items: flex-start; flex-direction: column; gap: 24px; } }
 @media(max-width:650px) { .header-inner { gap: 10px; } .site-nav { top: 79px; left: 20px; right: 20px; } .brand { gap: 12px; } .brand-name { padding-left: 11px; font-size: 7px; } .header-actions { gap: 7px; } .theme-toggle { min-width: 38px; padding: 7px; } .theme-label { display: none; } .menu-toggle { padding: 8px 10px; gap: 8px; } .hero { padding-block: 38px 44px; gap: 35px; } .hero h1 { font-size: clamp(38px, 8.7vw, 55px); line-height: 1.12; } .hero .eyebrow { font-size: 8px; } .hero-description { font-size: 14px; } .hero-actions { flex-direction: column; gap: 14px; } .hero-actions .button { font-size: 12px; min-height: 51px; } .hero-actions .text-link { font-size: 12px; } .hero-footnote { margin-top: 21px; } .hero-footnote p { font-size: 10px; } .photo-frame { height: 310px; border-radius: 15px; } .photo-frame img { object-position: 50% 50%; } .photo-message { left: 23px; bottom: 35px; font-size: 25px; } .photo-message em { font-size: 28px; } .photo-credit { font-size: 7px; } .sun-sticker { width: 97px; height: 97px; right: 12px; top: -19px; } .sun-sticker>span { font-size: 7px; } .sun-sticker b { font-size: 19px; } .ribbon-inner { font-size: 11px; } .grade-tab { background: var(--surface-raised); } .grade-panel { border-color: var(--line); } .school-contact { flex-direction: column; align-items: flex-start; gap: 15px; } .contact-section { padding-bottom: 55px; } .contact-inner { padding: 26px; gap: 21px; } .contact-inner h2 { font-size: 29px; } .contact-inner>.contact-email { font-size: 16px; } .form-page { padding-block: 42px 65px; } .form-page-intro { margin-bottom: 30px; } .form-page-intro h1 { font-size: 42px; } .form-page-intro .lead { font-size: 14px; } .form-sidebar { display: block; } .form-sidebar ol { display: block; } .form-sidebar h3 { margin-top: 23px; } .application-card { padding: 24px 20px; border-radius: 12px; } .application-card .form-row { grid-template-columns: 1fr; gap: 0; } .application-card input:not([type="checkbox"]):not([type="radio"]),.application-card select,.application-card textarea { font-size: 16px; } .application-card legend { font-size: 19px; } .application-card .check-label { font-size: 12px; } .application-review h2 { font-size: 26px; } .review-summary { padding: 16px; font-size: 12px; } .review-actions { align-items: stretch; flex-direction: column; } .review-actions .button { width: 100%; } }
 @media(max-width:370px) { .brand-name { display: none; } .hero h1 { font-size: 37px; } .hero .eyebrow { font-size: 7px; } .photo-frame { height: 280px; } .form-page-intro h1 { font-size: 36px; } }
+/* Editorial refinement: the curriculum is the visual center of the homepage. */
+h1,h2,.form-page-intro h1,.team-hero h1{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:-.045em;line-height:1.1}
+h3,h4{font-weight:600;letter-spacing:-.035em}
+.serif-accent{font-weight:400;letter-spacing:-.045em}
+.brand-mark{font-size:49px;color:var(--ink)}.brand-spark{display:none}.brand-name{color:var(--muted);font-size:8px}
+.header-inner{height:95px}.site-nav{gap:27px;font-size:12px;font-weight:600}.site-nav .button{border-radius:4px}.theme-toggle{background:transparent;border-color:var(--line);border-radius:4px}
+.button{border-radius:4px;font-weight:600;box-shadow:none}.button:hover{transform:none}.text-link{font-weight:600}.eyebrow{font-size:10px;font-weight:600;letter-spacing:.17em;color:var(--muted)}
+.hero{padding:64px 0 53px;gap:0}.hero-copy{max-width:980px}.hero h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(48px,5.1vw,73px);font-weight:400;letter-spacing:-.05em;line-height:1.08;margin-bottom:24px}.hero .eyebrow{font-size:9px;color:var(--muted);margin-bottom:25px}.little-sun{display:none}.highlight-word svg{display:none}.hero-description{font-size:15px;line-height:1.85;max-width:570px;margin-bottom:24px}.hero-actions{gap:28px}.hero-actions .button{font-size:12px;min-height:49px;padding:14px 21px}.hero-actions .text-link{font-size:12px}
+.curriculum-section{background:var(--paper);padding:58px 0 73px}.curriculum-section>.container{max-width:1080px}.curriculum-section .section-heading{display:block;text-align:center;max-width:720px;margin:0 auto 23px}.curriculum-section .section-heading .eyebrow{margin-bottom:16px}.curriculum-section h2{font-size:49px;margin-bottom:22px}.curriculum-section .section-heading>p{max-width:620px;margin:0 auto;font-size:14px;line-height:1.85}.curriculum-subjects{justify-content:center;margin:0 0 32px;gap:10px}.curriculum-subjects li{background:transparent;border:0;border-radius:0;padding:0 13px;font-size:11px;font-weight:500;line-height:1.5;position:relative}.curriculum-subjects li+li:before{content:'·';position:absolute;left:-6px;color:var(--muted)}
+.curriculum-browser{max-width:1040px;margin-inline:auto}.grade-tabs{max-width:850px;margin:0 auto 22px;padding:7px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;background:var(--surface-soft);border:1px solid var(--line);border-radius:7px}.grade-tab{text-align:center;background:transparent;color:var(--muted);border-radius:4px;padding:15px 9px;font-size:18px;font-weight:600;line-height:1.35;letter-spacing:-.025em;min-height:73px}.grade-tab span{font-size:8px;font-weight:500;letter-spacing:.055em;margin-bottom:6px;min-height:0}.grade-tab b{display:none}.grade-tab:hover{background:var(--surface);color:var(--ink)}.grade-tab[aria-selected=true]{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px var(--shadow)}
+.grade-panel{border:1px solid var(--line);border-radius:9px;padding:43px;grid-template-columns:1fr .95fr;gap:58px;background:var(--surface);box-shadow:0 8px 35px var(--shadow)}.lesson-copy h3{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:35px;line-height:1.12;letter-spacing:-.035em}.sample-label{font-size:9px;letter-spacing:.12em;color:var(--muted);margin-bottom:20px}.sample-label>span{display:none}.lesson-copy>p:not(.sample-label){font-size:13px;line-height:1.85}.skill-tags>span{background:var(--surface-soft);font-size:10px;font-weight:500;padding:5px 11px}.lesson-copy .text-link{font-size:11px}
+.activity-card{background:var(--surface-raised);border:1px solid var(--line);box-shadow:none;border-radius:7px;transform:none;padding:24px}.activity-topline{font-size:8px;font-weight:600;color:var(--muted);letter-spacing:.1em}.activity-drawing{height:110px;width:165px;margin-block:15px 12px}.drawing-star{display:none}.activity-drawing svg{stroke-width:1.8;stroke:var(--muted)}.activity-drawing .drawing-fill{fill:var(--sand)}.activity-card h4{font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;letter-spacing:-.025em;line-height:1.2}.activity-card p{font-size:12px;line-height:1.8}.activity-card .text-link{font-size:11px}.curriculum-note{justify-content:center;text-align:center;font-size:10px;margin-top:23px;color:var(--muted)}
+.photo-interlude{max-width:1080px;padding-block:12px 50px}.photo-interlude .hero-visual{max-width:none}.photo-frame{height:330px;border-radius:7px}.photo-frame img{object-position:50% 37%;filter:saturate(.7)}.photo-message{font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:400;letter-spacing:-.02em;left:32px;bottom:38px}.photo-message em{font-size:33px}.photo-credit{left:18px}.photo-gradient{background:linear-gradient(transparent,#17251eb8)}
+.section-space{padding-block:83px}.curriculum-section.section-space{padding:58px 0 73px}.approach{padding-top:45px}.approach h2{font-size:42px}.approach-icon{transform:none;border-radius:50%;background:var(--surface-soft);width:55px;height:55px}.approach-icon svg{transform:none;width:36px;height:36px;stroke-width:1.7}.approach-item h3{font-weight:600;font-size:20px}.step-number{font-weight:500;color:var(--muted)}
+.belief-photo{transform:none}.belief-photo:before,.photo-tab,.involved-star,.team-star{display:none}.belief-photo>img{border-radius:7px;filter:saturate(.7)}.belief-copy h2{font-size:49px}.tutoring-focus h2{font-size:43px}.involved-heading h2{font-size:44px}.involvement-card{border-radius:7px;padding:34px;background:var(--surface)}.involvement-card h3{font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:400}.involvement-icon{background:transparent!important;color:var(--muted);font-size:26px;transform:none}.involvement-card .eyebrow{font-weight:500}
+.contact-section{padding-top:85px;padding-bottom:0;max-width:1080px}.contact-panel{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:57px 0;display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:center}.contact-intro .eyebrow{margin-bottom:16px}.contact-intro h2{font-size:51px;margin-bottom:21px}.contact-intro>p:not(.eyebrow){font-size:14px;max-width:390px;color:var(--muted);line-height:1.85;margin-bottom:25px}.contact-intro>.contact-email{font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:400;line-height:1.5;text-decoration-thickness:1px;text-underline-offset:7px;overflow-wrap:anywhere}.contact-intro>.contact-email span{font-family:Manrope,Arial,sans-serif;font-size:21px;margin-left:9px}.contact-routes{border-top:1px solid var(--line)}.contact-routes>a{display:flex;justify-content:space-between;align-items:center;gap:22px;padding:22px 0;border-bottom:1px solid var(--line)}.contact-routes strong{font-size:13px;font-weight:600}.contact-routes small{display:block;font-size:12px;color:var(--muted);line-height:1.6;margin-top:4px}.contact-routes>a>span:last-child{font-size:23px;color:var(--accent)}.contact-routes>a:hover strong{text-decoration:underline;text-underline-offset:4px}
+.closing-inner{justify-content:center;text-align:center}.closing-star{display:none}.closing-inner h2{font-family:Georgia,'Times New Roman',serif;font-size:41px;font-weight:400;letter-spacing:-.025em;flex:0 1 auto}.circle-link{width:62px;height:62px;font-size:30px}.closing-section{padding-block:53px}.staff-avatar svg{filter:grayscale(.8) saturate(.5)}.team-callout,.application-card{border-radius:7px}.team-hero h1{font-size:67px}.form-page-intro h1{font-size:57px}.application-card legend{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:23px}.application-card label{font-weight:500}.form-sidebar h2{font-family:Georgia,'Times New Roman',serif;font-weight:400}
+@media(max-width:1120px){.header-inner{gap:18px}.site-nav{gap:21px;font-size:11px}.grade-panel{gap:35px;padding:35px}.contact-panel{gap:50px}}
+@media(max-width:950px){.site-nav{top:94px;gap:0;font-size:14px}.site-nav>a:not(.button){padding-block:13px}.contact-panel{gap:35px}.contact-intro>.contact-email{font-size:21px}}
+@media(max-width:850px){.hero h1{font-size:61px}.hero{padding-top:49px}.curriculum-section h2{font-size:43px}.grade-panel{padding:29px;gap:28px}.lesson-copy h3{font-size:31px}.grade-tab{font-size:17px;padding:15px 7px}.grade-tab span{font-size:7px}.activity-card{padding:21px}.contact-panel{grid-template-columns:1fr 1fr;gap:35px}.contact-intro h2{font-size:43px}.contact-intro>.contact-email{font-size:20px}.photo-frame{height:300px}.team-hero h1{font-size:57px}}
+@media(max-width:650px){.header-inner{height:80px}.site-nav{top:79px}.brand-mark{font-size:43px}.brand-name{font-size:7px}.hero{padding:38px 0 38px}.hero h1{font-size:clamp(40px,9.8vw,56px);line-height:1.1;letter-spacing:-.045em}.hero .eyebrow{font-size:7px;letter-spacing:.1em;max-width:310px;margin:0 auto 22px}.hero-description{font-size:14px;max-width:410px}.hero-actions{gap:14px}.hero-actions .button,.hero-actions .text-link{font-size:12px}.curriculum-section.section-space{padding:34px 0 49px}.curriculum-section h2{font-size:38px}.curriculum-section .section-heading>p{font-size:13px}.curriculum-subjects{gap:9px 6px;max-width:320px;margin:0 auto 25px}.curriculum-subjects li{font-size:10px;padding:0 8px}.curriculum-subjects li+li:before{left:-3px}.grade-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:6px;margin-bottom:16px;max-width:430px}.grade-tab{min-height:51px;font-size:16px;padding:13px 8px}.grade-tab span{display:none}.grade-panel{padding:27px 21px;gap:27px;border-radius:7px}.lesson-copy{text-align:center}.lesson-copy h3{font-size:32px;max-width:100%}.sample-label,.skill-tags{justify-content:center}.lesson-copy>p:not(.sample-label){font-size:13px}.activity-card{text-align:left;padding:22px}.activity-card h4{font-size:24px}.activity-drawing{height:110px}.curriculum-note{font-size:9px;line-height:1.75;text-align:left;align-items:start}.curriculum-note>span{margin-top:3px;flex-shrink:0}.photo-interlude{padding-block:5px 15px}.photo-frame{height:270px;border-radius:6px}.photo-message{font-size:25px;left:23px}.photo-message em{font-size:28px}.section-space{padding-block:60px}.approach{padding-top:40px}.approach h2{font-size:35px}.approach-icon{width:48px;height:48px}.approach-item{padding-left:70px}.belief-copy h2{font-size:42px}.tutoring-focus h2{font-size:37px}.involved-heading h2{font-size:36px}.involvement-card{padding:28px}.involvement-card h3{font-size:31px}.contact-section{padding:57px 0 0}.contact-panel{grid-template-columns:1fr;padding:36px 0;gap:32px}.contact-intro h2{font-size:43px}.contact-intro>p:not(.eyebrow){font-size:13px}.contact-intro>.contact-email{font-size:22px}.contact-routes>a{padding:19px 0}.closing-inner{flex-wrap:nowrap;gap:22px;justify-content:space-between;text-align:left}.closing-inner h2{font-size:30px;flex-basis:auto;padding:0}.circle-link{position:static;width:48px;height:48px;font-size:25px}.closing-section{padding-block:38px}.form-page-intro h1{font-size:43px}.team-hero h1{font-size:45px}.staff-info h3{font-weight:600}.form-sidebar h2{font-size:28px}}
+@media(max-width:370px){.hero h1{font-size:39px}.hero .eyebrow{font-size:6.5px}.contact-intro>.contact-email{font-size:20px}.grade-panel{padding:25px 18px}.activity-card{padding:19px}.closing-inner h2{font-size:28px}}

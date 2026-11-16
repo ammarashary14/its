@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f5ef">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Application editor · Breaking the Sky</title>
+  <meta name="description" content="Customize a local draft of the Breaking the Sky volunteer application, preview questions, and export changes for publishing.">
+  <link rel="icon" href="assets/favicon.svg?v=ivory-3" type="image/svg+xml">
+  <script src="assets/theme.js?v=ivory-3"></script>
+  <link rel="stylesheet" href="assets/style.css?v=ivory-3">
+  <link rel="stylesheet" href="assets/theme.css?v=ivory-3">
+  <link rel="stylesheet" href="assets/editor.css?v=ivory-3">
+  <script src="assets/application-config.js?v=ivory-3" defer></script>
+  <script src="assets/editor.js?v=ivory-3" defer></script>
+</head>
+<body data-page="editor">
+  <a class="skip-link" href="#main-content">Skip to editor</a>
+  <header class="site-header editor-site-header"><div class="container header-inner"><a class="brand" href="index.html" aria-label="Breaking the Sky home"><span class="brand-mark" aria-hidden="true">bts</span><span class="brand-name">BREAKING<br>THE SKY</span></a><a class="editor-header-link" href="apply.html">View application ↗</a><div class="header-actions"><button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Dark</span></button></div></div></header>
+  <main id="main-content" class="editor-page container">
+    <div class="editor-intro"><p class="eyebrow">MAKE IT YOUR OWN</p><h1>Application editor.</h1><p>Choose what you’d like to ask your volunteers. Edit the questions, put them in order, and see your application take shape.</p></div>
+    <aside class="editor-note" aria-label="How drafts and publishing work"><strong>This is a draft on your device.</strong><p>Your edits appear in the application preview in this browser. Other visitors still see the published application. When you’re ready, export the application and share the file in our chat to publish it.</p></aside>
+    <div class="editor-toolbar"><div class="editor-toolbar-actions"><a class="button button-secondary" href="apply.html">Preview application <span aria-hidden="true">↗</span></a><button id="export-draft" class="button" type="button">Export application <span aria-hidden="true">↓</span></button></div><div class="editor-toolbar-actions"><button id="import-draft" class="editor-small-button" type="button">Import draft</button><button id="reset-draft" class="editor-text-button" type="button">Reset to published form</button></div></div>
+    <input id="import-file" class="editor-import-input" type="file" accept="application/json,.json" aria-label="Choose a saved application draft">
+    <p id="editor-status" class="editor-status" role="status" aria-live="polite"></p>
+    <noscript><p class="editor-note">Please enable JavaScript to edit questions. You can still <a href="apply.html?published=1">view the published application</a>.</p></noscript>
+    <div class="editor-layout">
+      <section class="editor-settings" aria-label="Application settings">
+        <div class="editor-section-heading"><h2>Introduction</h2></div>
+        <div class="editor-general"><label for="config-title">Application title<input id="config-title" data-config="title" maxlength="200" required></label><label for="config-intro">Introduction<textarea id="config-intro" data-config="intro" maxlength="1500" rows="4"></textarea></label><label for="config-submit">Review button text<input id="config-submit" data-config="submitLabel" maxlength="60" required></label></div>
+        <div class="editor-section-heading"><h2>Your questions</h2><span id="question-count"></span></div>
+        <div id="question-list"></div>
+        <div class="editor-add"><label for="new-field-type">Add a question<select id="new-field-type"><option value="text">Short answer</option><option value="textarea">Long answer</option><option value="select">Dropdown choices</option><option value="checkbox">Checkbox</option><option value="email">Email address</option></select></label><button id="add-question" class="button" type="button">Add question <span aria-hidden="true">+</span></button></div>
+        <p class="editor-footer-note">Name and email stay required so BTS can contact applicants. This editor saves question settings only, never applicants’ answers.</p>
+      </section>
+      <section class="editor-preview" aria-labelledby="preview-heading"><div class="editor-preview-heading"><h2 id="preview-heading">Live preview</h2><span>Appearance only</span></div><div class="editor-preview-window"><h3 id="preview-title"></h3><p id="preview-intro"></p><div class="application-card"><div id="preview-questions"></div><button id="preview-submit" class="button" type="button" disabled>Review application</button></div></div></section>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="container footer-bottom"><span>Breaking the Sky · Application editor</span><a href="index.html">Back to the website ↗</a></div></footer>
+</body>
+</html>

@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const pages = ['index.html', 'team.html', 'apply.html', 'tutoring.html'];
+const pages = ['index.html', 'team.html', 'apply.html', 'tutoring.html', 'editor.html'];
 const content = new Map(await Promise.all(pages.map(async page => [page, await readFile(path.join(root, page), 'utf8')])));
 const errors = [];
 let references = 0;
@@ -15,7 +15,7 @@ for (const [page, html] of content) {
     const url = match[1];
     if (/^(https?:|mailto:|tel:|data:)/.test(url)) continue;
     const [targetPath, fragment] = url.split('#');
-    const target = targetPath || page;
+    const target = targetPath.split('?')[0] || page;
     references++;
     try { await access(path.join(root, target)); }
     catch { errors.push(`${page}: missing ${target}`); }

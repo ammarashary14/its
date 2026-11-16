@@ -2,10 +2,14 @@
   'use strict';
   const key = 'bts-theme';
   const root = document.documentElement;
-  const system = window.matchMedia?.('(prefers-color-scheme: dark)');
   let saved = null;
   try { saved = localStorage.getItem(key); } catch {}
-  let manual = saved === 'light' || saved === 'dark';
+  const requested = new URLSearchParams(window.location.search).get('theme');
+  if (requested === 'light' || requested === 'dark') {
+    saved = requested;
+    try { localStorage.setItem(key, requested); } catch {}
+  }
+  const hasPreference = saved === 'light' || saved === 'dark';
   function apply(theme) {
     root.dataset.theme = theme;
     root.style.colorScheme = theme;
@@ -17,24 +21,22 @@
       button.querySelector('.theme-label').textContent = dark ? 'Light' : 'Dark';
     });
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = dark ? '#211f1b' : '#f6f1e9';
+    if (meta) meta.content = dark ? '#1e2421' : '#f7f5ef';
   }
-  apply(manual ? saved : system?.matches ? 'dark' : 'light');
+  apply(hasPreference ? saved : 'light');
   function setup() {
     apply(root.dataset.theme);
     document.querySelectorAll('.theme-toggle').forEach(button => button.addEventListener('click', () => {
       const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-      manual = true;
       apply(next);
       try { localStorage.setItem(key, next); } catch {}
     }));
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup, { once: true });
   else setup();
-  system?.addEventListener?.('change', event => { if (!manual) apply(event.matches ? 'dark' : 'light'); });
   window.addEventListener('storage', event => {
     if (event.key !== key) return;
-    manual = event.newValue === 'light' || event.newValue === 'dark';
-    apply(manual ? event.newValue : system?.matches ? 'dark' : 'light');
+    const valid = event.newValue === 'light' || event.newValue === 'dark';
+    apply(valid ? event.newValue : 'light');
   });
 })();
