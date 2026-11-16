@@ -11,7 +11,7 @@
   const status = document.querySelector('#copy-status');
   const subject = form.dataset.kind === 'volunteer'
     ? 'Volunteer application — Breaking the Sky'
-    : 'Tutoring request — Breaking the Sky';
+    : '1-on-1 tutoring request — Breaking the Sky';
   let message = '';
 
   form.querySelectorAll('input, textarea, select').forEach(field => {

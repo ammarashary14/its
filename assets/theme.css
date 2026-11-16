@@ -119,6 +119,7 @@ body { background: var(--paper); color: var(--ink); }
 .tutoring-focus-copy strong { color: var(--ink); font-weight: 700; }
 .subject-tags { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; list-style: none; margin: 23px 0; }
 .subject-tags li { font-size: 11px; font-weight: 600; padding: 6px 13px; border: 1px solid var(--line); border-radius: 24px; background: var(--surface-soft); }
+.curriculum-subjects { margin: -13px 0 29px; }
 @media(max-width:850px) { .tutoring-focus { gap: 40px; } .tutoring-focus h2 { font-size: 36px; } }
 @media(max-width:650px) { .tutoring-focus { grid-template-columns: 1fr; gap: 25px; padding: 35px 0 0; margin-bottom: 55px; } .tutoring-focus h2 { font-size: 36px; } }
 .contact-inner>.contact-email { font-size: 18px; flex-shrink: 0; }
