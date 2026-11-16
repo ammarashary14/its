@@ -33,19 +33,21 @@ Connect `ammarashary14/its` to Cloudflare Pages. Use no framework preset, `npm r
 - `tutoring.html`: tutoring request with contact information, grade, subjects, goals, format, and availability.
 - `assets/app.js`: illustrative grade-level lessons, accessible tab interactions, and mobile navigation.
 - `assets/style.css`: base typography and responsive layouts.
-- `assets/theme.css`: pale ivory beige, charcoal typography, centered curriculum, neutral dark mode, and form layouts. Edit the theme variables at the top to change the palette.
+- `assets/theme.css`: warm linen beige, charcoal typography, centered curriculum, neutral dark mode, and form layouts. Edit the theme variables at the top to change the palette.
 - `assets/theme.js`: starts in light mode; an explicitly chosen light/dark preference is saved in `localStorage` under `bts-theme` and shared across pages.
-- `assets/forms.js`: client-side validation, review/edit, encoded email drafts, and copy fallback. Change `recipient` here and the visible contact links in the HTML to update the recipient.
+- `assets/forms.js`: client-side validation, review/edit, direct volunteer application delivery through FormSubmit, and tutoring email drafts. Change `recipient` and the FormSubmit endpoint here, and the visible contact links in the HTML, to update the recipient. A new recipient or site origin requires FormSubmit activation.
 - `editor.html` and `assets/editor.js`: edit the volunteer application with a live preview, add/remove/reorder questions, and import/export draft configuration.
 - `assets/application-config.js`: the published volunteer application schema and validation. `assets/application.js` renders the questions and optionally previews a local draft.
-- `assets/`: local photos, fonts, and the favicon. All required assets are included; the site makes no third-party requests.
+- `assets/`: local photos, fonts, and the favicon. All visual assets are included. The volunteer application sends a request to FormSubmit only after the applicant reviews and submits it.
 - `_headers`: Cloudflare security headers. Update the content security policy when adding a real form service, analytics, or other integrations.
 
 ## Content still to finalize
 
 The organization name and volunteer-school model come from the project brief. Grade bands, lesson content and timings, staff roles, and visual branding are proposals. Curriculum examples and staff profiles are labeled as placeholders. There are no invented impact statistics, endorsements, staff identities, or donation links.
 
-Applications and tutoring requests are addressed to **ammarashary@gmail.com**, as supplied by the owner. The forms validate entries and show a review before opening a prefilled email. **Visitors must send the email in their email app; the website does not send it automatically.** A copy fallback is included, and long messages use copy/paste to avoid email URL length limits. The website does not save personal details in browser storage or transmit them to a form service. The theme preference and optional draft question settings are persisted; applicants’ responses are not. A request does not confirm a volunteer placement or book a tutoring session. Confirm the volunteer process and grade coverage before final launch. For direct web submission in the future, connect an approved backend and update the headers and privacy information to match.
+Volunteer applications are reviewed and submitted directly from the website to **ammarashary@gmail.com** through [FormSubmit](https://formsubmit.co/). The page shows success only after the service acknowledges the submission; it does not promise inbox placement. Sending disables repeat clicks, errors retain answers, and a timeout explains that receipt is uncertain. A copy/contact fallback remains available. FormSubmit processes submission data under its [privacy policy](https://formsubmit.co/privacy). Its recipient activation must be completed for each hosting origin before accepting applications; repeat a clearly labeled setup test and confirm inbox delivery when changing the endpoint or domain. The browser does not store applicant responses in localStorage or sessionStorage. Theme preferences and draft question settings are the only local persistence. Local editor previews cannot send real applications; the published application remains available through `apply.html?published=1`.
+
+Tutoring requests continue to prepare a prefilled email that visitors send in their email app. A submitted application does not confirm volunteer placement or book a tutoring session. Confirm the volunteer process and grade coverage before final launch.
 
 ## Customize the volunteer application
 

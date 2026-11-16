@@ -243,3 +243,17 @@ h3,h4{font-weight:600;letter-spacing:-.035em}
   .sketch-book { display: none; }
   .hero .highlight-word svg { height: 8px; bottom: -5px; }
 }
+
+/* Direct volunteer submissions. */
+.form-honeypot { position: absolute!important; width: 1px; height: 1px; padding: 0!important; margin: -1px!important; overflow: hidden; clip: rect(0,0,0,0); clip-path: inset(50%); white-space: nowrap; }
+.form-help a { text-decoration: underline; text-underline-offset: 3px; }
+.review-actions button:disabled { cursor: wait; opacity: .6; }
+.review-actions #send-application:disabled { cursor: default; }
+.submission-error { border: 1px solid var(--accent); border-left-width: 3px; border-radius: 4px; padding: 16px; color: var(--ink); background: var(--surface-soft); font-size: 13px; line-height: 1.75; }
+.submission-fallback { border-top: 1px solid var(--line); padding-top: 17px; font-size: 12px; line-height: 1.8; }
+.application-success { padding: 15px 0; }
+.application-success h2 { font-size: clamp(32px, 4vw, 45px); margin: 16px 0 22px; }
+.application-success>p:not(.eyebrow) { font-size: 14px; line-height: 1.8; color: var(--muted); }
+.application-success .form-help { font-size: 12px!important; overflow-wrap: anywhere; }
+.application-success .text-link { margin-top: 14px; font-size: 13px; }
+.submission-check { display: inline-grid; place-items: center; width: 48px; height: 48px; margin-bottom: 24px; border: 1px solid var(--accent); border-radius: 50%; color: var(--accent); font-size: 24px; }
