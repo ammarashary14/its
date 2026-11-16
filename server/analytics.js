@@ -1,8 +1,10 @@
 import { HttpError } from './http.js';
+import { siteAnalyticsConfigured, loadSiteStats } from './site-analytics.js';
 
-export function analyticsConfigured(env) {
+function cloudflareAnalyticsConfigured(env) {
   return Boolean(env.CF_ANALYTICS_API_TOKEN && /^[a-f0-9]{32}$/i.test(String(env.CF_ZONE_ID || '')));
 }
+export function analyticsConfigured(env) { return cloudflareAnalyticsConfigured(env) || siteAnalyticsConfigured(env); }
 function count(value) {
   if (!Number.isFinite(value) || value < 0) throw new Error('Invalid analytics count');
   return value;
@@ -10,7 +12,10 @@ function count(value) {
 export async function loadStats(request, env, fetcher = fetch) {
   const input = new URL(request.url).searchParams.get('days') || '7';
   if (!['7', '30'].includes(input)) throw new HttpError(400, 'invalid_period', 'Choose a 7-day or 30-day period.');
-  if (!analyticsConfigured(env)) return { connected: false, reason: 'Connect Cloudflare Analytics to see traffic stats.' };
+  if (!cloudflareAnalyticsConfigured(env)) {
+    if (siteAnalyticsConfigured(env)) return loadSiteStats(request, env);
+    return { connected: false, reason: 'Website stats are not enabled yet.' };
+  }
   const days = Number(input);
   const end = new Date(); end.setUTCHours(0, 0, 0, 0);
   const start = new Date(end); start.setUTCDate(start.getUTCDate() - days);

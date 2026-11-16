@@ -24,6 +24,7 @@
     "OWNER_EMAIL": "ammarashary@gmail.com",
     "OWNER_EMAILS": "ammarashary@gmail.com,breakingtheskyadmissions@gmail.com",
     "ADMISSIONS_EMAIL": "breakingtheskyadmissions@gmail.com",
-    "APPLICATION_EMAIL_PROVIDER": "gmail"
+    "APPLICATION_EMAIL_PROVIDER": "gmail",
+    "BTS_SITE_ANALYTICS_ENABLED": "true"
   }
 }

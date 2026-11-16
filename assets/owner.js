@@ -178,17 +178,73 @@ function numeric(value) { return Number.isFinite(value)&&value>=0?value:null; }
 function numberText(value) { return numeric(value)===null?'—':new Intl.NumberFormat().format(value); }
 function byteText(value) {if(numeric(value)===null)return'—';if(value<1024)return value+' B';const units=['KB','MB','GB','TB'];let n=value/1024,index=0;while(n>=1024&&index<units.length-1){n/=1024;index++;}return new Intl.NumberFormat(undefined,{maximumFractionDigits:1}).format(n)+' '+units[index];}
 let statsRequestId = 0;
+const statsPageNames = { '/': 'Home', '/curriculum': 'Curriculum', '/team': 'Our people', '/tutoring': '1-on-1 tutoring', '/community': 'Community', '/contact': 'Contact us', '/apply': 'Volunteer application', '/schools': 'Schools we serve', '/sponsors': 'Sponsors', '/donate': 'Donate' };
+function statsDate(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const date = new Date(value + 'T12:00:00Z');
+  if (!Number.isFinite(date.getTime())) return null;
+  return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(date);
+}
+function renderStats(result, days) {
+  if (!result.totals || !Array.isArray(result.daily)) throw new Error('Traffic data is unavailable.');
+  const site = result.provider === 'site';
+  if (site && !Array.isArray(result.pages)) throw new Error('Page data is unavailable.');
+  $('#stats-connected').hidden = false; $('#stats-unconnected').hidden = true;
+  $('#stats-pageviews').textContent = numberText(result.totals.pageViews);
+  $('#stats-requests').textContent = numberText(site ? result.totals.applications : result.totals.requests);
+  $('#stats-bytes').textContent = site ? numberText(result.totals.activePages) : byteText(result.totals.bytes);
+  $('#stats-views-note').textContent = site ? 'Recorded public page loads' : 'Pages requested in this period';
+  $('#stats-secondary-label').textContent = site ? 'Applications' : 'Requests';
+  $('#stats-secondary-note').textContent = site ? 'Applications submitted in this period' : 'All requests, including assets';
+  $('#stats-third-label').textContent = site ? 'Pages viewed' : 'Bandwidth';
+  $('#stats-third-note').textContent = site ? 'Different pages with recorded views' : 'Data served by Cloudflare';
+  $('#overview-pageviews').textContent = numberText(result.totals.pageViews);
+  $('#overview-traffic-note').textContent = site ? 'Last ' + days + ' days · Includes today (UTC)' : 'Last ' + days + ' complete days · Cloudflare';
+  $('#stats-updated').textContent = result.updatedAt ? 'Updated ' + formatSaved(result.updatedAt) : '';
+  const start = statsDate(result.period?.start), end = statsDate(result.period?.end);
+  $('#stats-period').textContent = site
+    ? 'BTS website page views · ' + (start && end ? start + '–' + end + ', including today (UTC).' : 'Last ' + days + ' calendar days, including today (UTC).') + ' Counts begin after the website connection.'
+    : 'Cloudflare zone traffic · Complete UTC days. Unique IPs indicate approximate reach, not confirmed individual visitors.';
+  $('#stats-caption').textContent = site ? 'Daily BTS page views and applications, including today in UTC.' : 'Daily Cloudflare zone traffic. Unique IP addresses are counted separately each day.';
+  $('#stats-days').querySelectorAll('option').forEach(option => { option.textContent = 'Last ' + option.value + (site ? ' days, including today' : ' complete days'); });
+  const columns = site ? ['Date', 'Page views', 'Applications'] : ['Date', 'Page views', 'Requests', 'Unique IPs'];
+  $('#stats-columns').replaceChildren(...columns.map(title => { const th = node('th', '', title); th.scope = 'col'; return th; }));
+  const rows = $('#stats-rows'); rows.replaceChildren();
+  for (const day of result.daily) {
+    const date = statsDate(day.date); if (!date) continue;
+    const tr = node('tr'); tr.append(node('td', '', date), node('td', '', numberText(day.pageViews)), node('td', '', numberText(site ? day.applications : day.requests)));
+    if (!site) tr.append(node('td', '', numberText(day.uniqueIPs)));
+    rows.append(tr);
+  }
+  if (!rows.children.length) { const tr = node('tr'); const td = node('td', '', 'No daily records for this period.'); td.colSpan = columns.length; tr.append(td); rows.append(tr); }
+  $('#stats-pages-card').hidden = !site;
+  const pageRows = $('#stats-pages-rows'); pageRows.replaceChildren();
+  if (site) {
+    for (const page of result.pages) {
+      if (!Object.hasOwn(statsPageNames, page.path)) continue;
+      const tr = node('tr'); tr.append(node('td', '', statsPageNames[page.path]), node('td', '', numberText(page.pageViews))); pageRows.append(tr);
+    }
+    if (!pageRows.children.length) { const tr = node('tr'); const td = node('td', '', 'No page views recorded in this period yet.'); td.colSpan = 2; tr.append(td); pageRows.append(tr); }
+    $('#settings-analytics').textContent = 'Recording website page views';
+  } else $('#settings-analytics').textContent = 'Cloudflare zone analytics';
+}
 async function loadStats() {
-  if(!state.authenticated)return;const requestId=++statsRequestId;$('#refresh-stats').disabled=true;$('#refresh-stats').textContent='Refreshing…';
+  if (!state.authenticated) return;
+  const requestId = ++statsRequestId; $('#refresh-stats').disabled = true; $('#refresh-stats').textContent = 'Refreshing…';
   try {
-    const days=Number($('#stats-days').value);const result=await request('api/owner/stats?days='+days);if(requestId!==statsRequestId)return;
-    if(result.connected!==true){$('#stats-connected').hidden=true;$('#stats-unconnected').hidden=false;$('#stats-empty-description').textContent='Cloudflare analytics is not connected yet. Once it is configured, real traffic will appear here.';$('#overview-pageviews').textContent='—';$('#overview-traffic-note').textContent='Analytics not connected';return;}
-    if(!result.totals||!Array.isArray(result.daily))throw new Error('Traffic data is unavailable.');
-    $('#stats-connected').hidden=false;$('#stats-unconnected').hidden=true;$('#stats-pageviews').textContent=numberText(result.totals.pageViews);$('#stats-requests').textContent=numberText(result.totals.requests);$('#stats-bytes').textContent=byteText(result.totals.bytes);$('#overview-pageviews').textContent=numberText(result.totals.pageViews);$('#overview-traffic-note').textContent='Last '+days+' complete days · Cloudflare';
-    $('#stats-updated').textContent=result.updatedAt?'Updated '+formatSaved(result.updatedAt):'';$('#stats-period').textContent='Cloudflare zone traffic · Complete UTC days. Unique IPs indicate approximate reach, not confirmed individual visitors.';
-    const rows=$('#stats-rows');rows.replaceChildren();result.daily.forEach(day=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(day.date))return;const tr=node('tr');const date=new Date(day.date+'T12:00:00Z');tr.append(node('td','',new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',timeZone:'UTC'}).format(date)),node('td','',numberText(day.pageViews)),node('td','',numberText(day.requests)),node('td','',numberText(day.uniqueIPs)));rows.append(tr);});if(!rows.children.length){const tr=node('tr');const td=node('td','','No daily records for this period.');td.colSpan=4;tr.append(td);rows.append(tr);}
-  } catch {if(requestId!==statsRequestId)return;$('#stats-connected').hidden=true;$('#stats-unconnected').hidden=false;$('#stats-empty-description').textContent='Traffic data could not be loaded. Please try refreshing again. No estimated numbers are shown.';$('#overview-pageviews').textContent='—';$('#overview-traffic-note').textContent='Traffic temporarily unavailable';}
-  finally {if(requestId===statsRequestId){$('#refresh-stats').disabled=false;$('#refresh-stats').textContent='Refresh stats ↻';}}
+    const days = Number($('#stats-days').value); const result = await request('api/owner/stats?days=' + days); if (requestId !== statsRequestId) return;
+    if (result.connected !== true) {
+      $('#stats-connected').hidden = true; $('#stats-unconnected').hidden = false;
+      $('#stats-empty-description').textContent = 'Page view reporting starts after the website database is connected.';
+      $('#overview-pageviews').textContent = '—'; $('#overview-traffic-note').textContent = 'Page views not connected'; return;
+    }
+    renderStats(result, days);
+  } catch {
+    if (requestId !== statsRequestId) return;
+    $('#stats-connected').hidden = true; $('#stats-unconnected').hidden = false;
+    $('#stats-empty-description').textContent = 'Traffic data could not be loaded. Refresh to try again.';
+    $('#overview-pageviews').textContent = '—'; $('#overview-traffic-note').textContent = 'Traffic temporarily unavailable';
+  } finally { if (requestId === statsRequestId) { $('#refresh-stats').disabled = false; $('#refresh-stats').textContent = 'Refresh stats ↻'; } }
 }
 const disabledDuringPublish = new Map();
 function lockEditors(locked) {

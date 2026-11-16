@@ -42,7 +42,7 @@ The `functions/` adapters also remain available for a Cloudflare Pages deploymen
 - `assets/theme.css`: warm linen beige, charcoal typography, centered curriculum, neutral dark mode, and form layouts. Edit the theme variables at the top to change the palette.
 - `assets/theme.js`: starts in light mode; an explicitly chosen light/dark preference is saved in `localStorage` under `bts-theme` and shared across pages.
 - `assets/forms.js`: client-side validation, review/edit, volunteer application delivery, and tutoring email drafts. It uses FormSubmit on the current preview; a configured Cloudflare intake can store new applications for owner review. A failed submission never switches providers automatically. A new FormSubmit recipient or site origin requires activation.
-- `owner.html` and `assets/owner.js`: owner dashboard for site content, community links, staff profiles, and future Cloudflare traffic stats.
+- `owner.html` and `assets/owner.js`: owner dashboard for site content, community links, staff profiles, and aggregate site statistics.
 - `assets/site-content.json`, `assets/content-schema.js`, and `assets/site-content.js`: published content defaults, shared validation, and public rendering. Local drafts appear only with `?preview=1`.
 - `functions/api/` and `server/`: Cloudflare owner authentication, D1 publishing, and traffic analytics APIs. See `docs/cloudflare-owner-setup.md`.
 - `editor.html` and `assets/editor.js`: edit the volunteer application with a live preview, add/remove/reorder questions, and import/export draft configuration.
@@ -87,7 +87,13 @@ Before Cloudflare is connected, **Publish changes** is disabled and traffic metr
 
 Dashboard exports include a content payload and draft revision metadata. Preserve that envelope when importing back into the dashboard. When importing a file here for manual publication, validate its content payload and exclude hidden profiles from any public JSON or HTML. Exports may include hidden profiles, so keep backup files in private storage. On the connected Cloudflare backend, hidden records stay in D1 and are omitted by the public content API; the authenticated owner API returns them for editing.
 
-Follow [Cloudflare owner setup](docs/cloudflare-owner-setup.md) when connecting hosting. The backend supports verified Cloudflare Access identity, same-origin publication, optimistic revision checks, and server-only analytics tokens. The live account connection and traffic queries have not been configured yet. Run `npm run test:owner` for the backend checks; browser UI verification requires an available browser environment.
+Follow [Cloudflare owner setup](docs/cloudflare-owner-setup.md) when connecting hosting. The backend supports verified Cloudflare Access identity, same-origin publication, optimistic revision checks, and aggregate statistics stored in the existing D1 database. The automatic deployment applies the analytics migration and enables collection; its production result still needs verification. Run `npm run test:owner` for the backend checks; browser UI verification requires an available browser environment.
+
+## Site statistics
+
+The default stats view uses the existing `BTS_DB` database; no separate analytics token is required. Automatic setup applies `migrations/0004_site_analytics.sql` and sets `BTS_SITE_ANALYTICS_ENABLED=true`. Public pages send only a fixed page path to `/api/page-view`, which stores daily/path counters without IP addresses, referrers, query strings, cookies, or user IDs.
+
+The dashboard shows page views, saved applications, and active pages for the last 7 or 30 UTC calendar days, including today, plus daily views and applications. Page views are approximate counts, not people; collection starts when enabled and has no historical backfill. Application totals count records saved within the selected period, without importing previous FormSubmit emails. The optional Cloudflare zone provider remains documented in [owner setup](docs/cloudflare-owner-setup.md).
 
 ## Adjust profile photos
 

@@ -109,4 +109,24 @@
   });
   stepsToggle?.addEventListener('click', () => setStepsExpanded(stepsToggle.getAttribute('aria-expanded') !== 'true'));
 
+  // Aggregate page counts: no visitor identifier, query string, or referrer is sent.
+  const trackingHost = location.hostname === 'breakingthesky.com' || location.hostname === 'www.breakingthesky.com' || location.hostname.endsWith('.workers.dev');
+  const trackingQuery = new URLSearchParams(location.search);
+  const trackingPath = location.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+  const canonicalPath = trackingPath === '/index' ? '/' : trackingPath;
+  const publicPaths = new Set(['/', '/curriculum', '/team', '/tutoring', '/community', '/contact', '/apply', '/schools', '/sponsors', '/donate']);
+  const isDraftView = () => trackingQuery.has('preview') || trackingQuery.has('draft') || document.body.dataset.draft === 'true' || document.querySelector('[data-draft="true"]');
+  if (trackingHost && location.protocol === 'https:' && publicPaths.has(canonicalPath) && typeof fetch === 'function') {
+    let counted = false; let ready = document.readyState === 'complete';
+    const recordView = () => {
+      if (counted || !ready || document.visibilityState !== 'visible') return;
+      counted = true; document.removeEventListener('visibilitychange', recordView);
+      if (isDraftView()) return;
+      fetch('/api/page-view', { method: 'POST', credentials: 'omit', referrerPolicy: 'no-referrer', cache: 'no-store', keepalive: true, redirect: 'error', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path: canonicalPath }) }).catch(() => {});
+    };
+    document.addEventListener('visibilitychange', recordView);
+    if (!ready) document.addEventListener('DOMContentLoaded', () => { ready = true; recordView(); }, { once: true });
+    recordView();
+  }
+
 })();

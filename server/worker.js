@@ -1,5 +1,6 @@
 import { publicContent, ownerSession, ownerContent, ownerPublish, ownerStats } from './owner-api.js';
 import { publicApplications, ownerApplications, ownerApplicationSettings, ownerApplicationDecision } from './applications-api.js';
+import { pageView } from './site-analytics.js';
 import { json } from './http.js';
 
 // The same authenticated handlers also back the existing Pages Functions.
@@ -11,6 +12,7 @@ const routes = new Map([
   ['/api/owner/publish', ownerPublish],
   ['/api/owner/stats', ownerStats],
   ['/api/applications', publicApplications],
+  ['/api/page-view', pageView],
   ['/api/owner/applications', ownerApplications],
   ['/api/owner/application-settings', ownerApplicationSettings],
   ['/api/owner/applications/decision', ownerApplicationDecision]

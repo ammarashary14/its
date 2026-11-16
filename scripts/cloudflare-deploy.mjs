@@ -68,6 +68,7 @@ export function runtimeConfiguration(source, { databaseId, teamDomain, audience,
       OWNER_EMAILS: DEPLOY_TARGET.ownerEmails.join(','),
       ADMISSIONS_EMAIL: 'breakingtheskyadmissions@gmail.com',
       APPLICATION_EMAIL_PROVIDER: 'gmail',
+      BTS_SITE_ANALYTICS_ENABLED: 'true',
       CF_ACCESS_TEAM_DOMAIN: teamDomain,
       CF_ACCESS_AUD: audience,
       BTS_APPLICATIONS_ENABLED: ready ? 'true' : 'false'

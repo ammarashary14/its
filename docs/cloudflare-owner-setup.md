@@ -6,7 +6,7 @@ On GitHub Pages and the private static preview, the dashboard is a local draft e
 
 Follow [automatic Cloudflare setup](cloudflare-automatic-setup.md) for the current deployment workflow. In the `its` Worker’s Git build settings, use `npm run build` as the build command and `npm run deploy` as the deploy command. The scoped BTS build token needs the deployment permissions plus D1 Edit and the documented Access permissions.
 
-The setup scripts verify account access, reuse or create only the `bts-site` database, apply all migrations, configure the BTS owner Access application, and deploy the Worker with `BTS_DB` and the returned identity settings. They stop on missing permissions or conflicting existing configuration. The generated runtime configuration is temporary, contains no credentials, and is removed when the command finishes. Continue using `npm run deploy` so subsequent builds retain the database and sign-in configuration.
+The setup scripts verify account access, reuse or create only the `bts-site` database, apply all migrations, configure the BTS owner Access application, and deploy the Worker with `BTS_DB`, the returned identity settings, and `BTS_SITE_ANALYTICS_ENABLED=true`. They stop on missing permissions or conflicting existing configuration. The generated runtime configuration is temporary, contains no credentials, and is removed when the command finishes. Continue using `npm run deploy` so subsequent builds retain the database and sign-in configuration.
 
 A successful script run must be followed by the live checks below; local tests and a committed configuration do not establish that production setup succeeded.
 
@@ -14,8 +14,8 @@ A successful script run must be followed by the live checks below; local tests a
 
 1. Deploy the repository as Cloudflare Worker `its` using `npm run build` and `npx wrangler deploy`. The committed `wrangler.jsonc` serves `dist/` and sends API requests to `server/worker.js`. A Cloudflare Pages alternative uses `npm run build`, output `dist`, and the root `functions/` adapters.
 2. Create or identify the dedicated D1 database `bts-site`. For a manual Worker deployment, keep a `d1_databases` entry in `wrangler.jsonc` with `binding: "BTS_DB"`, `database_name: "bts-site"`, the real `database_id`, and `migrations_dir: "migrations"`. Do not use a placeholder ID or a database belonging to another project.
-3. After authenticating the scoped CLI, apply all repository migrations with `npx wrangler d1 migrations apply bts-site --remote`. This includes site content, applications and message settings, and application notification tracking. Do not seed real applicants or private profiles into migration files.
-4. Configure Access and the owner runtime variables below, then redeploy. Set `BTS_APPLICATIONS_ENABLED=true` only after the database schema and owner inbox are ready. The separate Gmail sender connection is described below.
+3. After authenticating the scoped CLI, apply all repository migrations with `npx wrangler d1 migrations apply bts-site --remote`. This includes site content, applications and message settings, notification tracking, and aggregate site statistics in `0004_site_analytics.sql`. Do not seed real applicants or private profiles into migration files.
+4. Configure Access and the owner runtime variables below, then redeploy. Set `BTS_APPLICATIONS_ENABLED=true` after the database schema and owner inbox are ready, and `BTS_SITE_ANALYTICS_ENABLED=true` after applying the analytics migration. The separate Gmail sender connection is described below.
 5. On the first content publication, the server saves revision 1. Public pages use `/api/content`; the signed-in dashboard uses `/api/owner/content`, which also includes hidden profiles. Local drafts stay on their current device until published or exported.
 
 ## Require owner sign-in
@@ -46,20 +46,26 @@ The sender and notification mailbox is `breakingtheskyadmissions@gmail.com`. Fol
 
 The runtime configuration uses `APPLICATION_EMAIL_PROVIDER=gmail` and `ADMISSIONS_EMAIL=breakingtheskyadmissions@gmail.com`. New application notifications go to that mailbox. Acceptance and rejection messages send from it to the email stored on the selected application. Owners write their messages in **Dashboard → Applications**, using `{{name}}`, `{{email}}`, and `{{reference}}`, then review the rendered email before sending. Saving a template does not send mail. Database setup does not establish Gmail delivery; verify both notification and decision sending with a controlled live test.
 
-## Connect traffic stats
+## Site statistics with the existing database
 
-After the custom domain is a Cloudflare zone receiving proxied traffic, create an API token scoped to that zone with **Zone → Analytics → Read**. Set:
+The default statistics use `BTS_DB`; no additional Cloudflare token is needed. Apply `migrations/0004_site_analytics.sql` and enable `BTS_SITE_ANALYTICS_ENABLED=true`, or use the automatic setup command, which does both.
+
+Public pages send only a fixed page path to `POST /api/page-view`. The service stores daily/path counters without IP addresses, referrers, query strings, cookies, or user IDs. Owner statistics remain behind the same authenticated `/api/owner/stats` endpoint.
+
+The dashboard covers the last 7 or 30 UTC calendar days **including today**. It shows page views, applications saved during that period, and active pages, with daily views and application counts. Page views are approximate counts rather than unique people. Collection starts when enabled and does not backfill earlier visits. Application totals come from saved application records within the selected date range; earlier FormSubmit emails are not imported.
+
+After deployment, visit a public page and confirm its count appears in the owner dashboard. A missing or unavailable database must not be described as a verified zero-traffic period. Local tests and the configuration flag alone do not establish that production collection is working.
+
+## Optional Cloudflare zone statistics
+
+The existing Cloudflare GraphQL provider remains available for zone-level request and bandwidth metrics. It is optional and separate from the default D1 statistics. To configure it, create a token scoped to the domain's zone with **Zone → Analytics → Read** and set:
 
 | Variable | Purpose |
 | --- | --- |
 | `CF_ZONE_ID` | The domain's 32-character zone ID. |
 | `CF_ANALYTICS_API_TOKEN` | The scoped token, saved as a **secret** in the Worker environment. |
 
-The token is used only inside the server. Never put it in `owner.html`, browser JavaScript, exported content, `.openai/hosting.json`, or a repository file.
-
-The stats endpoint queries Cloudflare's GraphQL `httpRequests1dGroups` dataset for the last 7 or 30 complete UTC days. It returns total requests, page views, and bytes, plus daily rows. Cloudflare's `uniq.uniques` is labeled **unique IPs**, not verified people, and is not summed into an overall unique-visitor total. These are zone-level traffic figures: if the zone also serves unrelated sites or subdomains, their traffic is included. They do not measure volunteer applications or email delivery.
-
-Data availability and retention depend on the Cloudflare zone plan and the dataset. A missing connection shows “not connected”; denied queries or unavailable data show an error instead of invented zeroes. Once authenticated, verify that the configured zone, period, and reported numbers match the Cloudflare dashboard before relying on them.
+This provider queries `httpRequests1dGroups` for the last 7 or 30 **complete UTC days**, excluding today. It returns requests, page views, bytes, and daily rows. Unique IPs are not unique people and are not summed across days. These figures cover the whole zone, including other sites or subdomains on it; they do not count BTS applications or email delivery. Availability and retention depend on the Cloudflare plan and dataset. Keep the token server-only and verify returned values against the Cloudflare dashboard.
 
 ## Publishing and hidden profiles
 
@@ -77,8 +83,8 @@ Profile photos and optional profile/community contact details are published cont
 - Publish a small edit and confirm it appears in a new public browser session.
 - Hide a test profile and verify its name, bio, and photo are absent from `/api/content`, while the owner dashboard retains it.
 - Open two owner tabs and confirm the second stale publication reports a conflict.
-- Confirm analytics numbers come from the selected zone, with no fake sample rows.
+- Open a public page and verify that the default site view records it. Check that the selected period includes today and saved application counts match records from that period. If using the optional zone provider, compare its complete-day metrics with Cloudflare.
 
-Local server checks run with `node --test tests/cloudflare-owner.test.mjs`; they use signed test JWTs, fake storage, and mocked provider responses. They verify authorization and API behavior, but do not establish that your production Access policy, D1 binding, or analytics token has been configured.
+Local server checks run with `node --test tests/cloudflare-owner.test.mjs`; they use signed test JWTs, fake storage, and mocked provider responses. They verify authorization and API behavior, but do not establish that your production Access policy, D1 binding, or statistics collection is working.
 
 References: [Access JWT validation](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/), [Pages Functions bindings](https://developers.cloudflare.com/pages/functions/bindings/), [D1 migrations](https://developers.cloudflare.com/d1/reference/migrations/), [GraphQL Analytics](https://developers.cloudflare.com/analytics/graphql-api/), [zone analytics metrics](https://developers.cloudflare.com/analytics/graphql-api/migration-guides/zone-analytics/).

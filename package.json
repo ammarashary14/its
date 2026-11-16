@@ -6,14 +6,15 @@
   "scripts": {
     "dev": "python3 -m http.server 3000 --bind 0.0.0.0",
     "build": "node scripts/build.mjs",
-    "check": "node --check assets/app.js && node --check assets/theme.js && node --check assets/forms.js && node --check assets/application-config.js && node --check assets/application.js && node --check assets/editor.js && node scripts/check.mjs && node --check assets/content-schema.js && node --check assets/site-content.js && node --check assets/owner.js && node --check assets/photo-cropper.js && node --check assets/owner-applications.js && node --check server/applications-api.js && node --check server/applications-store.js && node --check server/gmail-mailer.js && node --check scripts/cloudflare-deploy.mjs && node --check scripts/cloudflare-access.mjs && node --check scripts/cloudflare-api.mjs",
+    "check": "node --check assets/app.js && node --check assets/theme.js && node --check assets/forms.js && node --check assets/application-config.js && node --check assets/application.js && node --check assets/editor.js && node scripts/check.mjs && node --check assets/content-schema.js && node --check assets/site-content.js && node --check assets/owner.js && node --check assets/photo-cropper.js && node --check assets/owner-applications.js && node --check server/applications-api.js && node --check server/applications-store.js && node --check server/gmail-mailer.js && node --check server/site-analytics.js && node --check scripts/cloudflare-deploy.mjs && node --check scripts/cloudflare-access.mjs && node --check scripts/cloudflare-api.mjs",
     "test:owner": "node --test tests/cloudflare-owner.test.mjs",
     "test:photos": "node --test tests/photo-cropper.test.mjs",
     "test:content": "node --test tests/social-content.test.mjs",
     "test:applications": "node --test tests/applications-api.test.mjs",
     "deploy": "node scripts/cloudflare-deploy.mjs",
     "test:setup": "node --test tests/cloudflare-deploy.test.mjs tests/cloudflare-access-setup.test.mjs",
-    "test:gmail": "node --test tests/gmail-mailer.test.mjs"
+    "test:gmail": "node --test tests/gmail-mailer.test.mjs",
+    "test:stats": "node --test tests/site-analytics.test.mjs"
   },
   "type": "module",
   "engines": {

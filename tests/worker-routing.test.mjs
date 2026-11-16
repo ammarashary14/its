@@ -48,6 +48,16 @@ test('public intake preserves same-origin mutation restrictions', async () => {
   assert.equal(ASSETS.calls.length, 0);
 });
 
+test('page-view recording stays in the API router and rejects cross-origin writes', async () => {
+  const ASSETS = assets();
+  const response = await worker.fetch(request('/api/page-view', {
+    method: 'POST', headers: { Origin: 'https://other.example.org', 'Content-Type': 'application/json' }, body: '{"path":"/"}'
+  }), { ASSETS });
+  assert.equal(response.status, 403);
+  assert.equal((await response.json()).code, 'origin_rejected');
+  assert.equal(ASSETS.calls.length, 0);
+});
+
 test('bare and unknown API paths return JSON 404 for every method instead of serving HTML', async () => {
   const ASSETS = assets();
   for (const path of ['/api', '/api/', '/api/missing', '/api/owner/unknown', '/api/applications/']) {

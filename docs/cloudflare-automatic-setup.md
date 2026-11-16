@@ -9,7 +9,7 @@ The public Worker `its` and `breakingthesky.com` are selected for this project. 
    - **Access: Apps and Policies → Edit**
    - **Access: Organizations, Identity Providers, and Groups → Edit**
 2. In **Workers & Pages → its → Settings → Build**, keep the build command `npm run build`. Change the **Deploy command** to `npm run deploy`, and retain the BTS build token.
-3. Retry the latest build. The setup command reuses or creates only the `bts-site` database, applies `migrations/`, configures the BTS Access application, and deploys with `BTS_DB` and the returned identity settings. It stops on missing permissions or ambiguous existing resources. If Cloudflare requires initial Zero Trust onboarding, complete that in the dashboard and retry; the script does not change billing or subscription plans.
+3. Retry the latest build. The setup command reuses or creates only the `bts-site` database, applies `migrations/` (including `0004_site_analytics.sql`), configures the BTS Access application, and deploys with `BTS_DB`, the returned identity settings, and `BTS_SITE_ANALYTICS_ENABLED=true`. It stops on missing permissions or ambiguous existing resources. If Cloudflare requires initial Zero Trust onboarding, complete that in the dashboard and retry; the script does not change billing or subscription plans.
 
 The two authorized owner addresses are:
 
@@ -30,6 +30,12 @@ If Google does not offer App Passwords after 2-Step Verification is enabled, its
 
 After the backend and sender are connected, submit a clearly labeled test application using an address you control, check that the notification arrives and the record appears in the owner inbox, then test an owner-reviewed decision. Local tests and secret presence alone do not verify real Gmail delivery.
 
+## Site statistics
+
+The default statistics use the same D1 database, with no additional analytics token. Public pages report only a fixed path to `/api/page-view`; storage contains daily/path counters, not IP addresses, referrers, query strings, cookies, or user IDs. After a successful setup build, verify that a public page visit appears in the signed-in dashboard.
+
+The 7-day and 30-day views include today and show page views, stored applications, active pages, and daily totals. Page views are approximate rather than unique people. Collection starts when enabled, without historical backfill; application totals count saved records within the selected UTC date range. The setup command and local tests alone do not establish that production collection is working.
+
 ## Remaining optional connections
 
-Traffic analytics still uses the separately scoped zone analytics token described in [owner setup](cloudflare-owner-setup.md). Instagram, Facebook, school records, and the donation link can be filled in from the connected dashboard; they intentionally start empty.
+The legacy Cloudflare zone analytics provider is available with the separately scoped token described in [owner setup](cloudflare-owner-setup.md), but it is not required for the default site statistics. Instagram, Facebook, school records, and the donation link can be filled in from the connected dashboard; they intentionally start empty.
