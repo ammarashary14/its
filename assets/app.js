@@ -27,36 +27,36 @@
   // Illustrative curriculum. Replace these examples with approved BTS lessons.
   const lessons = {
     k2: {
-      title: ['Small discoveries.', 'Big little wonders.'],
-      description: 'Start with the everyday and make room for the unexpected. Young learners practice noticing, wondering, and sharing their ideas.',
-      skills: ['Observation', 'Curiosity', 'Sharing ideas'],
+      title: ['Shapes, patterns.', 'Little discoveries.'],
+      description: 'Explore early math and science through familiar things. Young learners notice shapes and patterns, observe the natural world, and share what they discover.',
+      skills: ['Shapes & patterns', 'Living things', 'Observation'],
       time: '20–30 MIN', activity: 'The wonder in everyday things',
       brief: 'Choose an everyday object. Look closely, draw what you notice, and share one question it makes you wonder about.',
       steps: ['Pick a familiar object, such as a leaf or pencil.', 'Look closely and draw three things you notice.', 'Share a question with a partner or the group.']
     },
     '35': {
-      title: ['A spark of an idea.', 'A chance to create.'],
-      description: 'Let curiosity become something you can build. Learners work together, try out ideas, and discover that there is more than one way to solve a problem.',
-      skills: ['Creative thinking', 'Teamwork', 'Explaining choices'],
+      title: ['Numbers, nature.', 'Ideas in motion.'],
+      description: 'Connect fractions and measurement with ideas from life science, earth science, and the forces around us. Learn by trying, observing, and explaining.',
+      skills: ['Fractions & measurement', 'Life & earth science', 'Forces & motion'],
       time: '30–40 MIN', activity: 'Build a bridge of possibilities',
       brief: 'With paper and tape, work in a small team to build a bridge between two books. Test it, talk about it, and try a new idea.',
       steps: ['Draw a plan together using only paper and tape.', 'Build a bridge between two books and test it with a small object.', 'Change one part of the design and explain what you learned.']
     },
     '68': {
-      title: ['More perspectives.', 'Better questions.'],
-      description: 'Make room for different ways of thinking. Learners examine a familiar challenge, compare ideas, and practice backing up their reasoning.',
-      skills: ['Reasoning', 'Discussion', 'Perspective-taking'],
-      time: '35–45 MIN', activity: 'One challenge, many viewpoints',
-      brief: 'Imagine a school wants to improve a shared space. Explore what different people might need, then compare possible solutions.',
-      steps: ['Choose a shared space, such as a library or playground.', 'Consider the needs of students, teachers, and others who use it.', 'Compare two improvements and explain the trade-offs.']
+      title: ['Math that connects.', 'Science that clicks.'],
+      description: 'Explore ratios and early algebra alongside biology, chemistry, and physics. Compare evidence, explain what you notice, and connect ideas across subjects.',
+      skills: ['Ratios & algebra', 'Biology & chemistry', 'Physics'],
+      time: '35–45 MIN', activity: 'What makes ice melt faster?',
+      brief: 'Compare ice melting on two different surfaces. Make a prediction, keep the comparison fair, and use measurements to explain what happens.',
+      steps: ['Place equal-sized ice cubes on two different room-temperature surfaces.', 'Record what changes at the same time intervals, keeping other conditions alike.', 'Compare your results and discuss heat transfer and any limits of the experiment.']
     },
     '912': {
-      title: ['A bigger picture.', 'A way forward.'],
-      description: 'Connect classroom thinking to the world beyond it. Learners identify a real need, explore what matters, and turn an idea into a practical first step.',
-      skills: ['Research', 'Communication', 'Planning'],
-      time: '40–50 MIN', activity: 'A small plan for a real change',
-      brief: 'Identify a need in your school or community. Sketch a response, consider the people it affects, and build a short proposal.',
-      steps: ['Choose a need and list what you know and still need to learn.', 'Outline one possible response, including resources and people involved.', 'Share a short proposal with a first step and a way to evaluate it.']
+      title: ['From equations', 'to explanations.'],
+      description: 'Build understanding in algebra, geometry, biology, chemistry, and physics. Break down challenging concepts and use mathematical reasoning to explain scientific ideas.',
+      skills: ['Algebra & geometry', 'Biology & chemistry', 'Physics'],
+      time: '40–50 MIN', activity: 'Make sense of motion',
+      brief: 'Sketch a distance–time graph for a short walk with a pause. Use the graph to connect mathematical slopes with physical motion.',
+      steps: ['Plan a short walk that includes steady movement and a pause.', 'Sketch how distance from the start changes over time.', 'Explain the slopes and flat sections, and how the graph would change for a faster walk.']
     }
   };
   const gradeTabs = [...document.querySelectorAll('[data-grade]')];
