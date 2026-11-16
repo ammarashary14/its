@@ -20,6 +20,9 @@ test('public API requests reach existing handlers without falling through to ass
   const status = await worker.fetch(request('/api/applications?check=1'), { ASSETS });
   assert.equal(status.status, 200);
   assert.deepEqual(await status.json(), { enabled: false });
+  const tutoring = await worker.fetch(request('/api/tutoring'), { ASSETS });
+  assert.equal(tutoring.status, 200);
+  assert.deepEqual(await tutoring.json(), { enabled: false });
   const content = await worker.fetch(request('/api/content'), { ASSETS });
   assert.equal(content.status, 503);
   assert.equal((await content.json()).code, 'storage_not_configured');
@@ -28,7 +31,7 @@ test('public API requests reach existing handlers without falling through to ass
 
 test('every private API route still requires verified owner identity', async () => {
   const ASSETS = assets();
-  const paths = ['/api/owner/session', '/api/owner/content', '/api/owner/publish', '/api/owner/stats', '/api/owner/applications', '/api/owner/application-settings', '/api/owner/applications/decision'];
+  const paths = ['/api/owner/session', '/api/owner/content', '/api/owner/publish', '/api/owner/stats', '/api/owner/applications', '/api/owner/application-settings', '/api/owner/applications/decision', '/api/owner/tutoring'];
   for (const path of paths) {
     const response = await worker.fetch(request(path), { ...ownerEnvironment, ASSETS });
     assert.equal(response.status, 401, path);
@@ -40,11 +43,13 @@ test('every private API route still requires verified owner identity', async () 
 
 test('public intake preserves same-origin mutation restrictions', async () => {
   const ASSETS = assets();
-  const response = await worker.fetch(request('/api/applications', {
-    method: 'POST', headers: { Origin: 'https://other.example.org', 'Content-Type': 'application/json' }, body: '{}'
-  }), { ASSETS });
-  assert.equal(response.status, 403);
-  assert.equal((await response.json()).code, 'origin_rejected');
+  for (const path of ['/api/applications', '/api/tutoring']) {
+    const response = await worker.fetch(request(path, {
+      method: 'POST', headers: { Origin: 'https://other.example.org', 'Content-Type': 'application/json' }, body: '{}'
+    }), { ASSETS });
+    assert.equal(response.status, 403, path);
+    assert.equal((await response.json()).code, 'origin_rejected', path);
+  }
   assert.equal(ASSETS.calls.length, 0);
 });
 

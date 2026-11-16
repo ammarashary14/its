@@ -89,6 +89,7 @@ test('existing database is preserved, migrations precede enabled intake, and con
   assert.equal(result.databaseId, database.uuid);
   assert.deepEqual(calls.map(args => args.slice(0, 3)), [['d1', 'list', '--json'], ['d1', 'migrations', 'apply'], ['deploy', '--config', path.join(cwd, DEPLOY_TARGET.runtimeConfig)]]);
   assert.equal(configs[0].vars.BTS_APPLICATIONS_ENABLED, 'false'); assert.equal(configs[1].vars.BTS_APPLICATIONS_ENABLED, 'true');
+  assert.equal(configs[0].vars.BTS_TUTORING_ENABLED, 'false'); assert.equal(configs[1].vars.BTS_TUTORING_ENABLED, 'true');
   assert.equal(configs[1].vars.CF_ACCESS_AUD, identity.audience); assert.equal(configs[1].vars.OWNER_EMAIL, DEPLOY_TARGET.ownerEmail);
   assert.equal(configs[1].vars.OWNER_EMAILS, 'ammarashary@gmail.com,breakingtheskyadmissions@gmail.com');
   assert.equal(configs[1].vars.EXISTING_SETTING, 'preserved'); assert.deepEqual(configs[1].routes, source.routes);

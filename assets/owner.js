@@ -18,7 +18,7 @@ function restoreDraft(value, serverRevision) {
   return { content, baseRevision, ownerComplete, savedAt: envelope && typeof value.savedAt === 'string' ? value.savedAt : null };
 }
 function draftEnvelope(content = state.content, savedAt = state.savedAt) { return { content, baseRevision: state.baseRevision, ownerComplete: state.ownerComplete, savedAt }; }
-const sectionNames = { overview: 'Overview', content: 'Site content', people: 'Team profiles', schools: 'Schools served', calendar: 'Calendar', applications: 'Applications', traffic: 'Traffic stats', settings: 'Settings' };
+const sectionNames = { overview: 'Overview', content: 'Site content', people: 'Team profiles', schools: 'Schools served', calendar: 'Calendar', applications: 'Applications', tutoring: 'Tutoring requests', traffic: 'Traffic stats', settings: 'Settings' };
 const contentGroups = [
   ['Homepage introduction', 'The first words visitors see.', [['home.headline','Headline',160],['home.headlineAccent','Second headline line',160],['home.description','Introduction',2000,true]]],
   ['Curriculum', 'Introduce math and science learning at each grade.', [['home.curriculumTitle','Heading',160],['home.curriculumAccent','Second heading line',160],['home.curriculumIntro','Curriculum description',2000,true]]],

@@ -71,7 +71,8 @@ export function runtimeConfiguration(source, { databaseId, teamDomain, audience,
       BTS_SITE_ANALYTICS_ENABLED: 'true',
       CF_ACCESS_TEAM_DOMAIN: teamDomain,
       CF_ACCESS_AUD: audience,
-      BTS_APPLICATIONS_ENABLED: ready ? 'true' : 'false'
+      BTS_APPLICATIONS_ENABLED: ready ? 'true' : 'false',
+      BTS_TUTORING_ENABLED: ready ? 'true' : 'false'
     }
   };
 }

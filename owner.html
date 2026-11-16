@@ -12,12 +12,13 @@
   <script src="assets/application-config.js?v=application-5" defer></script>
   <link rel="stylesheet" href="assets/style.css?v=ivory-3">
   <link rel="stylesheet" href="assets/theme.css?v=photo-10">
-  <link rel="stylesheet" href="assets/owner.css?v=ownerv15">
+  <link rel="stylesheet" href="assets/owner.css?v=tutoring-17">
   <link rel="stylesheet" href="assets/photo-cropper.css?v=photo-10">
   <link rel="stylesheet" href="assets/owner-schools.css?v=full-11">
-  <script type="module" src="assets/owner.js?v=ownerv15"></script>
+  <script type="module" src="assets/owner.js?v=tutoring-17"></script>
   <link rel="stylesheet" href="assets/owner-applications.css?v=full-11">
   <script type="module" src="assets/owner-applications.js?v=launch-12"></script>
+  <script type="module" src="assets/owner-tutoring.js?v=tutoring-17"></script>
 </head>
 <body class="owner-body">
   <a class="skip-link" href="#owner-main">Skip to dashboard</a>
@@ -32,6 +33,7 @@
         <button type="button" data-panel="schools"><span aria-hidden="true">⌂</span>Schools served</button>
         <button type="button" data-panel="calendar"><span aria-hidden="true">▦</span>Calendar</button>
         <button type="button" data-panel="applications"><span aria-hidden="true">▤</span>Applications</button>
+        <button type="button" data-panel="tutoring"><span aria-hidden="true">▧</span>Tutoring requests</button>
         <button type="button" data-panel="traffic"><span aria-hidden="true">↗</span>Traffic stats</button>
         <button type="button" data-panel="settings"><span aria-hidden="true">⚙</span>Settings</button>
       </nav>
@@ -92,6 +94,11 @@
           </div>
         </section>
 
+
+        <section class="owner-panel" id="panel-tutoring" aria-labelledby="heading-tutoring" hidden>
+          <div class="owner-section-intro"><p class="eyebrow">INDIVIDUAL LEARNING SUPPORT</p><h2 id="heading-tutoring" tabindex="-1">Tutoring requests.</h2><p>Review each student’s subjects, learning goals, and availability. The latest 100 requests are shown here.</p></div>
+          <div id="owner-tutoring-workspace"><p class="owner-card-footnote">Email notification recipient: <strong>ammarashary@gmail.com</strong>. Requests remain available here even if an email notification fails.</p><p id="tutoring-inbox-status" class="owner-status" role="status" aria-live="polite"></p><section class="owner-card owner-tutoring-inbox" aria-labelledby="tutoring-inbox-title"><div class="owner-card-heading"><div><h3 id="tutoring-inbox-title">Tutoring inbox</h3><p id="tutoring-request-count" class="owner-card-footnote">Loading requests…</p></div><button type="button" id="refresh-tutoring-requests" class="owner-secondary">Refresh requests ↻</button></div><div class="owner-tutoring-layout"><div id="tutoring-request-list" class="owner-tutoring-list" aria-label="Choose a tutoring request"></div><article id="tutoring-request-detail" class="owner-tutoring-detail"></article></div></section><p class="owner-card-footnote">Received times use your browser’s time zone. Request details are private to signed-in owners and are not saved in this browser.</p></div>
+        </section>
 
         <section class="owner-panel" id="panel-traffic" aria-labelledby="heading-traffic" hidden>
           <div class="owner-section-intro"><p class="eyebrow">UNDERSTAND YOUR REACH</p><h2 id="heading-traffic" tabindex="-1">Traffic stats.</h2><p>See page views and submitted applications, grouped by day. Recording begins when the website database is connected.</p></div>

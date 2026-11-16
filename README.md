@@ -36,7 +36,7 @@ The `functions/` adapters also remain available for a Cloudflare Pages deploymen
 - `team.html`: four staff placeholders. Replace the suggested roles, names, bios, and SVG portraits with the actual team. Add/remove an entire `article.staff-card` to change the roster.
 - `apply.html`: volunteer application with interests, grade preferences, availability, experience, and motivation.
 - `calendar.html`: public month calendar and upcoming events, managed in the owner dashboard. Starts empty until events are published.
-- `tutoring.html`: tutoring request with contact information, grade, subjects, goals, format, and availability.
+- `tutoring.html` and `assets/tutoring.js`: tutoring requests submitted directly on the website, with contact information, grade, subjects, goals, format, and availability.
 - `schools.html`, `sponsors.html`, and `donate.html`: school partnerships, sponsorship information, and the donation destination. Schools and the donation link start empty until the owner adds them.
 - `assets/app.js`: illustrative grade-level lessons, accessible tab interactions, and mobile navigation.
 - `assets/style.css`: base typography and responsive layouts.
@@ -126,3 +126,12 @@ Open **Owner dashboard → Calendar** to set the calendar’s IANA time zone and
 The public month view supports previous/next/today, date selection, and upcoming events. Dates stay in the calendar’s configured time zone rather than shifting with the visitor’s device. Hidden events are omitted from the public content API and retained in authenticated owner content. Older content and exports default to an empty calendar in UTC.
 
 `npm run test:calendar` checks shared validation, hidden event handling, date boundaries, and calendar behavior. Migration `0005_calendar_analytics.sql` adds calendar page counting while preserving existing statistics.
+
+
+## Tutoring requests
+
+The tutoring page reviews and submits requests to `/api/tutoring`. Successful requests are stored in the private `tutoring_requests` D1 table and appear in **Owner dashboard → Tutoring requests**. The inbox shows the 100 most recent requests; it is protected by the same verified owner sign-in as application review. Request details are not saved to browser storage.
+
+Notification emails use the configured admissions Gmail sender and go only to `ammarashary@gmail.com`, with the requester as Reply-To. A request stays saved even if email delivery fails. The owner inbox shows each notification's delivery status. Submitting the same reference and details again does not create a second request or notification. An uncertain client response keeps the original reference for a safe retry.
+
+Automatic deployment applies `0006_tutoring_requests.sql` before setting `BTS_TUTORING_ENABLED=true`. This feature uses the existing database, owner access, and Gmail secret; no new account setup is required. Run `npm run test:tutoring` for validation, storage, access, and notification checks with mocked delivery.

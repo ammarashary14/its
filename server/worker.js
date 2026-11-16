@@ -1,5 +1,6 @@
 import { publicContent, ownerSession, ownerContent, ownerPublish, ownerStats } from './owner-api.js';
 import { publicApplications, ownerApplications, ownerApplicationSettings, ownerApplicationDecision } from './applications-api.js';
+import { publicTutoring, ownerTutoring } from './tutoring-api.js';
 import { pageView } from './site-analytics.js';
 import { json } from './http.js';
 
@@ -12,6 +13,8 @@ const routes = new Map([
   ['/api/owner/publish', ownerPublish],
   ['/api/owner/stats', ownerStats],
   ['/api/applications', publicApplications],
+  ['/api/tutoring', publicTutoring],
+  ['/api/owner/tutoring', ownerTutoring],
   ['/api/page-view', pageView],
   ['/api/owner/applications', ownerApplications],
   ['/api/owner/application-settings', ownerApplicationSettings],
