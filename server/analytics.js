@@ -26,7 +26,7 @@ export async function loadStats(request, env, fetcher = fetch) {
   const timer = setTimeout(() => controller.abort(), 12000);
   try {
     const response = await fetcher('https://api.cloudflare.com/client/v4/graphql', {
-      method: 'POST', redirect: 'error', signal: controller.signal,
+      method: 'POST', redirect: 'manual', signal: controller.signal,
       headers: { Authorization: `Bearer ${env.CF_ANALYTICS_API_TOKEN}`, 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({ query })
     });

@@ -38,7 +38,9 @@ async function keysFor(issuer, refresh, fetcher) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 8000);
   try {
-    const response = await fetcher(`${issuer}/cdn-cgi/access/certs`, { signal: controller.signal, redirect: 'error' });
+    // Workers supports manual/follow redirects, but rejects redirect: 'error'.
+    // Manual plus the status check keeps key retrieval on the trusted issuer.
+    const response = await fetcher(`${issuer}/cdn-cgi/access/certs`, { signal: controller.signal, redirect: 'manual' });
     if (!response.ok) throw new Error('Certificate service rejected request');
     const text = await response.text();
     if (text.length > 128000) throw new Error('Certificate response too large');

@@ -239,7 +239,7 @@ async function sendLegacyResend(env, row, value, ownerEmail, fetcher) {
   const timer = setTimeout(() => controller.abort(), 15000);
   try {
     const response = await fetcher('https://api.resend.com/emails', {
-      method: 'POST', redirect: 'error', signal: controller.signal,
+      method: 'POST', redirect: 'manual', signal: controller.signal,
       headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json', 'Idempotency-Key': `bts-application-${value.id}-${value.decision}` },
       body: JSON.stringify({ from: `Breaking the Sky <${env.APPLICATION_FROM_EMAIL}>`, to: [row.email], reply_to: ownerEmail, subject: value.subject, text: value.body })
     });
