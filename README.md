@@ -27,10 +27,15 @@ Connect `ammarashary14/its` to Cloudflare Pages. Use no framework preset, `npm r
 
 ## Edit the website
 
-- `index.html`: homepage copy, approach, involvement paths, and FAQs.
+- `index.html`: homepage copy, centered classroom photo, approach, involvement paths, contact, and FAQs.
 - `team.html`: four staff placeholders. Replace the suggested roles, names, bios, and SVG portraits with the actual team. Add/remove an entire `article.staff-card` to change the roster.
-- `assets/app.js`: illustrative grade-level lessons, accessible tab interactions, mobile navigation, and inquiry draft downloads.
-- `assets/style.css`: colors, typography, and responsive layouts. Brand colors are CSS variables at the top.
+- `apply.html`: volunteer application with interests, grade preferences, availability, experience, and motivation.
+- `tutoring.html`: tutoring request with contact information, grade, subjects, goals, format, and availability.
+- `assets/app.js`: illustrative grade-level lessons, accessible tab interactions, and mobile navigation.
+- `assets/style.css`: base typography and responsive layouts.
+- `assets/theme.css`: calm beige light mode, espresso dark mode, centered hero, and form layouts. Edit the theme variables at the top to change the palette.
+- `assets/theme.js`: follows the device theme initially; the visitor's light/dark choice is saved in `localStorage` under `bts-theme` and shared across pages.
+- `assets/forms.js`: client-side validation, review/edit, encoded email drafts, and copy fallback. Change `recipient` here and the visible contact links in the HTML to update the recipient.
 - `assets/`: local photos, fonts, and the favicon. All required assets are included; the site makes no third-party requests.
 - `_headers`: Cloudflare security headers. Update the content security policy when adding a real form service, analytics, or other integrations.
 
@@ -38,7 +43,7 @@ Connect `ammarashary14/its` to Cloudflare Pages. Use no framework preset, `npm r
 
 The organization name and volunteer-school model come from the project brief. Grade bands, lesson content and timings, staff roles, and visual branding are proposals. Curriculum examples and staff profiles are labeled as placeholders. There are no invented impact statistics, endorsements, staff identities, or donation links.
 
-The inquiry dialog validates entries and downloads a plain-text draft to the visitor's device. **It does not submit information to BTS.** Entries are not stored in browser storage; closing the dialog clears them. Before launch, connect an approved submission destination, add contact information, confirm the volunteer process and grade coverage, and publish an appropriate privacy notice for the data collected.
+Applications and tutoring requests are addressed to **ammarashary@gmail.com**, as supplied by the owner. The forms validate entries and show a review before opening a prefilled email. **Visitors must send the email in their email app; the website does not send it automatically.** A copy fallback is included, and long messages use copy/paste to avoid email URL length limits. The website does not save personal details in browser storage or transmit them to a form service. Only the theme preference is persisted. A request does not confirm a volunteer placement or book a tutoring session. Confirm the volunteer process and grade coverage before final launch. For direct web submission in the future, connect an approved backend and update the headers and privacy information to match.
 
 ## Assets
 

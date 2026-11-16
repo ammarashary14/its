@@ -21,7 +21,7 @@
   document.addEventListener('click', event => {
     if (!event.target.closest('.site-header')) closeMenu();
   });
-  window.addEventListener('resize', () => { if (window.innerWidth > 650) closeMenu(); });
+  window.addEventListener('resize', () => { if (window.innerWidth > 950) closeMenu(); });
   document.querySelectorAll('[data-year]').forEach(item => { item.textContent = new Date().getFullYear(); });
 
   // Illustrative curriculum. Replace these examples with approved BTS lessons.
@@ -109,54 +109,4 @@
   });
   stepsToggle?.addEventListener('click', () => setStepsExpanded(stepsToggle.getAttribute('aria-expanded') !== 'true'));
 
-  const dialog = document.querySelector('#inquiry-dialog');
-  const form = document.querySelector('#inquiry-form');
-  const interest = document.querySelector('#inquiry-interest');
-  const status = document.querySelector('#form-status');
-  let opener;
-  document.querySelectorAll('[data-open-inquiry]').forEach(button => button.addEventListener('click', () => {
-    opener = button;
-    form.reset();
-    status.textContent = '';
-    interest.value = button.dataset.openInquiry;
-    dialog.showModal();
-    document.body.classList.add('dialog-open');
-  }));
-  dialog?.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
-  dialog?.addEventListener('click', event => { if (event.target === dialog) {
-    const rect = dialog.getBoundingClientRect();
-    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
-  }});
-  dialog?.addEventListener('close', () => {
-    form.reset();
-    status.textContent = '';
-    document.body.classList.remove('dialog-open');
-    opener?.focus();
-  });
-  form?.addEventListener('submit', event => {
-    event.preventDefault();
-    for (const name of ['name', 'message']) {
-      const field = form.elements.namedItem(name);
-      field.setCustomValidity(field.value.trim() ? '' : 'Please enter a value, not just spaces.');
-      field.addEventListener('input', () => field.setCustomValidity(''), { once: true });
-    }
-    if (!form.reportValidity()) return;
-    const data = new FormData(form);
-    const labels = { volunteer: 'Volunteering with BTS', school: 'Bringing BTS to my school', other: 'Something else' };
-    const content = [
-      'BREAKING THE SKY — INQUIRY DRAFT',
-      'This is a local draft. It has not been sent to BTS.', '',
-      `Interest: ${labels[data.get('interest')]}`,
-      `Name: ${String(data.get('name')).trim()}`,
-      `Email: ${String(data.get('email')).trim()}`,
-      `School / organization: ${String(data.get('organization')).trim() || 'Not provided'}`,
-      '', 'Message:', String(data.get('message')).trim(), ''
-    ].join('\n');
-    const url = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' }));
-    const link = document.createElement('a');
-    link.href = url; link.download = 'bts-inquiry-draft.txt';
-    document.body.append(link); link.click(); link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    status.textContent = 'Your download is ready. This is your copy only—nothing has been sent to BTS.';
-  });
 })();
