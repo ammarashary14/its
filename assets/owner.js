@@ -192,7 +192,7 @@ async function loadStats() {
 }
 const disabledDuringPublish = new Map();
 function lockEditors(locked) {
-  if (locked) document.querySelectorAll('#owner-main input, #owner-main textarea, #owner-main select, #owner-main button').forEach(control=>{disabledDuringPublish.set(control,control.disabled);control.disabled=true;});
+  if (locked) document.querySelectorAll('#owner-main input, #owner-main textarea, #owner-main select, #owner-main button').forEach(control=>{if(control.closest('#owner-applications-workspace'))return;disabledDuringPublish.set(control,control.disabled);control.disabled=true;});
   else {disabledDuringPublish.forEach((disabled,control)=>{control.disabled=disabled;});disabledDuringPublish.clear();}
 }
 async function publish() {
